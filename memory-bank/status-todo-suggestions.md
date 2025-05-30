@@ -1,135 +1,129 @@
-# PureFocus - Status, Todo & Suggestions
+# Status & To-Do List Suggestions
 
-**Document Version:** 1.3
-**Date:** 1 Juni 2025
-**Project:** PureFocus - Minimalist Focus Writing App
-**Status:** Phase 1 In Progress
+**Project:** PureFocus - Aplikasi Menulis Minimalis dengan Timer Pomodoro
+**Last Updated:** 3 Juni 2025
+**Author:** Neima Silk
+**Status:** Phase 1 Completed (50%), Phase 2 In Progress (Baby-Step 2.1 Dimulai)
 
-## Current Status
+## Current Progress
 
-**Active Phase:** Phase 1 - Core Text Editor (UNBLOCKED)
-**Current Task:** Text Editor Optimization
-**Progress:** Phase 0 is 100% complete. Phase 1 is 25% complete with Text Editor Foundation implemented.
+**Current Task:** Baby-Step 2.1: "Basic Timer Implementation"
 
-**Recently Completed Baby-Step:** Baby-Step 1.1: Text Editor Foundation
-- ✅ All tasks for Phase 0 are complete.
-- ✅ Application is running on the emulator.
-- ✅ Full-screen text editor UI implemented (`FocusWriteScreen.kt`).
-- ✅ ViewModel integration for text state (`MainViewModel.kt`).
-- ✅ Auto-save functionality implemented with debouncing in `PreferencesManager.kt`.
-- ✅ Performance optimization for text input implemented.
-- ✅ All unit tests are passing.
+**Phase 1 (Core Text Editor) Progress:** 50% (Baby-Step 1.1 dan 1.2 selesai)
 
-**RESOLVED ISSUES:**
-**Issue:** Unit tests fail in `MainViewModelTests.kt`, particularly `updateText updates uiState immediately`
-**Resolution:** 
-- Updated `mockito-kotlin` to `5.4.0`.
-- Updated `kotlinx-coroutines-test` to `1.10.2`.
-- Added `testDispatcher.scheduler.runCurrent()` in debounce tests.
-- All tests now pass successfully.
+**Recently Completed:**
+* Implementasi fungsionalitas "Salin Teks" dengan menu konteks dan Toast feedback.
+* Migrasi dari String ke TextFieldValue untuk manajemen posisi kursor.
+* Verifikasi seleksi teks dasar berfungsi dengan baik.
+* Optimasi penanganan teks untuk dokumen besar dengan profiling dan pengujian performa.
 
-**Next Task:** "Text Editor Optimization"
-- Implement copy/paste functionality with improved UX.
-- Optimize memory usage for large text documents.
-- Add text selection and basic formatting options.
-- Implement scroll position saving and restoration.
+**Issues Resolved:**
+* Fixed MainViewModelTests dengan mengupdate mockito-kotlin ke versi yang kompatibel dengan Kotlin 1.8.10.
+* Resolved issue dengan posisi kursor yang hilang saat rotasi layar atau navigasi dengan mengimplementasikan TextFieldValue di MainViewModel dan FocusWriteScreen.
+* Ditambahkan unit test untuk memverifikasi fungsionalitas TextFieldValue dan manajemen posisi kursor.
 
-## Current Baby-Step: Text Editor Optimization
+**Next Task (Baby-Step 2.2):** "Timer UI Integration with FocusWriteScreen"
+* Desain dan implementasikan UI timer yang minimalis di FocusWriteScreen.
+* Tambahkan kontrol dasar (mulai, jeda, reset) untuk timer.
+* Implementasikan notifikasi sederhana untuk transisi antar sesi.
 
-**Objective:** Enhance the text editor with improved UX features and optimize for large text documents.
+## High-Priority To-Do List (Near Future)
 
-**Tasks:**
-1. Enhance `FocusWriteScreen.kt` with copy/paste improvements.
-   - Add custom copy/paste menu with improved UX.
-   - Implement text selection highlighting.
-   - Add scroll position saving and restoration.
+1.  **Baby-Step 2.1: Implementasi Timer Dasar (Current)**
+    * Buat `PomodoroViewModel` untuk mengelola state dan logika timer.
+    * Implementasikan timer dasar dengan sesi kerja 25 menit dan istirahat 5 menit.
+    * Pastikan timer dapat berjalan di background (minimal selama aplikasi aktif).
 
-2. Optimize `MainViewModel.kt` for memory efficiency.
-   - Implement chunking for large text documents.
-   - Add progressive loading for better performance.
-   - Optimize debounce logic for frequent updates.
+2.  **Baby-Step 2.2: Integrasi UI Timer dengan FocusWriteScreen**
+    * Tambahkan UI minimal untuk timer di `FocusWriteScreen`.
+    * Implementasikan notifikasi sederhana untuk transisi sesi.
 
-3. Add text selection and formatting features.
-   - Implement basic text selection UI.
-   - Add simple formatting options (bold, italic).
-   - Ensure formatting persists with text content.
+3.  **Baby-Step 2.3: Manajemen Sesi**
+    * Implementasikan pelacakan sesi yang telah diselesaikan.
+    * Tambahkan statistik dasar (jumlah sesi, total waktu fokus).
 
-4. Enhance scroll position management.
-   - Save scroll position with text content.
-   - Restore position on app restart.
-   - Implement smooth scrolling animations.
+4.  **Verifikasi bahwa target performa inti tetap terpenuhi.**
 
-**Success Criteria:**
-- Text editor handles documents up to 100,000 characters without performance degradation.
-- Copy/paste operations work smoothly with custom UI.
-- Text selection is intuitive and responsive.
-- Scroll position is maintained across app restarts.
-- Memory usage stays below 50MB for large documents.
-- All unit tests pass.
+## Baby-Step To-Do List Suggestion (Untuk Baby-Step 2.1: "Basic Timer Implementation")
 
-**Validation Method:**
-- Run unit tests for ViewModel and text processing.
-- Manual testing with large text documents.
-- Use Android Studio Profiler to verify memory usage.
-- Verify scroll position persistence across app restarts.
+**Objective:** Mengimplementasikan fungsionalitas timer Pomodoro dasar yang dapat berjalan di background (minimal selama aplikasi aktif) dan mendukung sesi kerja 25 menit dan istirahat pendek 5 menit.
 
-### Phase 1: Core Text Editor (25% Complete)
-- ✅ **Baby-Step 1.1: Text Editor Foundation** (Completed June 1, 2025)
-- ⏳ **Baby-Step 1.2: Text Editor Optimization** (Current) (Copy, Large Text Handling)
-
-## Baby-Step To-Do List Suggestion
-
-### Next Baby-Step: "Text Editor Optimization"
-
-**Objective:** Enhance the text editor with improved memory management, copy/paste functionality, and text selection features while maintaining high performance.
-
-**Estimated Duration:** 3-4 days
+**Estimated Duration:** 3-4 hari
 
 **Detailed Tasks:**
-1.  **Copy/Paste Enhancement (`FocusWriteScreen.kt`)**
-    *   Implement custom copy/paste UI elements for better user experience.
-    *   Add visual feedback for text selection.
-    *   Ensure clipboard operations work efficiently with large text.
-2.  **Memory Optimization (`MainViewModel.kt`)**
-    *   Implement efficient text handling for large documents.
-    *   Consider chunking or lazy loading for very large text.
-    *   Add memory usage monitoring and optimization.
-3.  **Text Selection and Basic Formatting**
-    *   Implement text selection UI with handles.
-    *   Add basic formatting options (bold, italic) if appropriate for the minimalist design.
-    *   Ensure selection state persists appropriately.
-4.  **Scroll Position Management**
-    *   Save and restore scroll position when app is backgrounded/resumed.
-    *   Implement smooth scrolling and maintain position during text changes.
-    *   Add scroll position to saved state.
 
-**Success Criteria:**
--   Copy/paste operations work smoothly with visual feedback.
--   Memory usage remains stable (< 50MB) even with large text documents (10,000+ characters).
--   Text selection is intuitive and responsive.
--   Scroll position is maintained when app is backgrounded and resumed.
--   All operations maintain the app's performance target (< 16ms per frame).
+1.  **Implementasi ViewModel untuk Timer Pomodoro (`PomodoroViewModel.kt`)**
+    * **Deskripsi:** Membuat ViewModel yang mengelola state dan logika timer Pomodoro.
+    * **Files to Create/Modify:** `app/src/main/java/com/neimasilk/purefocus/ui/PomodoroViewModel.kt`
+    * **Implementation Steps:**
+        1.  Buat data class `PomodoroState` untuk menyimpan state timer (waktu tersisa, status sesi, dll).
+        2.  Implementasikan logika untuk menghitung waktu mundur menggunakan coroutine flow.
+        3.  Tambahkan fungsi untuk memulai, menjeda, dan mereset timer.
+        4.  Implementasikan transisi otomatis antara sesi kerja dan istirahat.
+    * **Acceptance Criteria:**
+        * Timer dapat dihitung mundur dengan akurat.
+        * Transisi antara sesi kerja dan istirahat berfungsi dengan benar.
+        * State timer dipertahankan selama aplikasi aktif.
+    * **Validation Method:**
+        * Uji timer dengan berbagai durasi dan verifikasi akurasi waktu.
+        * Verifikasi transisi otomatis antara sesi kerja dan istirahat.
 
-**Validation Methods:**
--   Test with large text documents to verify memory efficiency.
--   Measure and compare memory usage before and after optimizations.
--   Test copy/paste with various text sizes and content types.
--   Verify scroll position restoration after app restart.
--   Use Android Studio Profiler to monitor performance during all operations.
+2.  **Integrasi Timer dengan Lifecycle Aplikasi (`MainActivity.kt`)**
+    * **Deskripsi:** Memastikan timer tetap berjalan bahkan ketika aplikasi berada di background (minimal selama aplikasi aktif).
+    * **Files to Create/Modify:** `app/src/main/java/com/neimasilk/purefocus/MainActivity.kt`
+    * **Implementation Steps:**
+        1.  Inisialisasi `PomodoroViewModel` di `MainActivity`.
+        2.  Implementasikan logika untuk menangani lifecycle events (onPause, onResume) untuk mempertahankan state timer.
+        3.  Gunakan `LifecycleObserver` untuk mengelola timer berdasarkan lifecycle aplikasi.
+    * **Acceptance Criteria:**
+        * Timer tetap berjalan ketika aplikasi berada di background (minimal selama aplikasi aktif).
+        * State timer dipertahankan ketika aplikasi kembali ke foreground.
+    * **Validation Method:**
+        * Uji dengan menempatkan aplikasi di background dan kemudian kembali ke foreground.
+        * Verifikasi bahwa timer tetap berjalan dengan akurat.
 
-## Suggestions and Considerations
+3.  **Implementasi Penyimpanan Preferensi Timer (`PreferencesManager.kt`)**
+    * **Deskripsi:** Menyimpan dan memulihkan preferensi timer (durasi sesi kerja, durasi istirahat) di `PreferencesManager`.
+    * **Files to Create/Modify:** `app/src/main/java/com/neimasilk/purefocus/data/PreferencesManager.kt`
+    * **Implementation Steps:**
+        1.  Tambahkan properti untuk menyimpan durasi sesi kerja dan istirahat.
+        2.  Implementasikan metode untuk mengakses dan memperbarui preferensi timer.
+    * **Acceptance Criteria:**
+        * Preferensi timer disimpan dan dipulihkan dengan benar.
+        * Perubahan preferensi segera tercermin dalam timer.
+    * **Validation Method:**
+        * Ubah preferensi timer, tutup aplikasi, dan buka kembali.
+        * Verifikasi bahwa preferensi dipertahankan.
 
-### Performance Optimization Reminders
--   Prioritize `remember` and `derivedStateOf` to minimize recompositions.
--   Profile frequently, especially the text input path.
--   Test on a physical device if possible, including lower-end models.
+4.  **Unit Testing untuk Timer (`PomodoroViewModelTests.kt`)**
+    * **Deskripsi:** Membuat unit test untuk memverifikasi fungsionalitas timer.
+    * **Files to Create/Modify:** `app/src/test/java/com/neimasilk/purefocus/ui/PomodoroViewModelTests.kt`
+    * **Implementation Steps:**
+        1.  Buat test untuk memverifikasi perhitungan waktu mundur.
+        2.  Buat test untuk memverifikasi transisi antara sesi kerja dan istirahat.
+        3.  Buat test untuk memverifikasi interaksi dengan `PreferencesManager`.
+    * **Acceptance Criteria:**
+        * Semua test berhasil (PASS).
+        * Test mencakup semua fungsionalitas inti timer.
+    * **Validation Method:**
+        * Jalankan test dan verifikasi bahwa semua test berhasil.
+        3.  Pulihkan posisi scroll saat `FocusWriteScreen` pertama kali ditampilkan atau saat teks dimuat.
+    * **Acceptance Criteria:**
+        * Posisi scroll dipulihkan saat kembali ke aplikasi setelah dijeda.
+        * Posisi scroll dipulihkan saat aplikasi dibuka kembali (jika dipersistensi).
+    * **Validation Method:**
+        * Gulir ke posisi tertentu dalam teks panjang, tinggalkan aplikasi (misalnya, tekan tombol home), lalu kembali. Verifikasi posisi scroll.
+        * Jika dipersistensi, tutup paksa aplikasi, buka kembali, dan verifikasi.
 
-### Development Best Practices
--   Create new files in appropriate package structures (e.g., `ui/screen/`, `data/`).
--   Write unit tests for ViewModel logic, especially auto-save.
+**Success Criteria untuk Baby-Step 1.2 secara keseluruhan:**
+* Fungsionalitas salin teks bekerja dengan andal.
+* Aplikasi menangani teks besar (misalnya, 10.000+ karakter) tanpa penurunan performa yang nyata atau penggunaan memori yang berlebihan.
+* Seleksi teks dasar berfungsi dengan baik.
+* (Jika diimplementasikan) Posisi scroll dapat dipulihkan.
+* Semua operasi mempertahankan target performa aplikasi (<16ms per frame, penggunaan memori <50MB).
+* Semua unit test yang ada tetap PASS, dan test baru (jika ada) juga PASS.
 
----
-
-**Next Update:** After "Text Editor Optimization" baby-step completion.
-**Review Frequency:** After each baby-step completion.
-**Document Owner:** Development team
+**Validation Methods untuk Baby-Step 1.2 secara keseluruhan:**
+* Uji manual semua fungsionalitas baru pada emulator dan perangkat fisik (jika memungkinkan).
+* Gunakan Android Studio Profiler secara ekstensif untuk memantau CPU, memori, dan rekomposisi Compose selama pengujian dengan teks berbagai ukuran.
+* Verifikasi bahwa target performa inti tetap terpenuhi.

@@ -1,5 +1,7 @@
 package com.neimasilk.purefocus.ui
 
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neimasilk.purefocus.data.PreferencesManager
@@ -18,7 +20,7 @@ import kotlinx.coroutines.launch
  */
 data class MainUiState(
     val isDarkMode: Boolean = false,
-    val text: String = ""
+    val textFieldValue: TextFieldValue = TextFieldValue(text = "", selection = TextRange(0))
 )
 
 /**
@@ -30,7 +32,10 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
     // State UI yang diobservasi oleh UI
     private val _uiState = MutableStateFlow(MainUiState(
         isDarkMode = preferencesManager.isDarkMode,
-        text = preferencesManager.lastText
+        textFieldValue = TextFieldValue(
+            text = preferencesManager.lastText,
+            selection = TextRange(preferencesManager.lastText.length)
+        )
     ))
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
@@ -50,7 +55,16 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
      * untuk mengurangi operasi I/O yang berlebihan
      */
     fun updateText(newText: String) {
-        _uiState.update { it.copy(text = newText) }
+        val currentValue = _uiState.value.textFieldValue
+        val newValue = currentValue.copy(text = newText)
+        updateTextFieldValue(newValue)
+    }
+    
+    /**
+     * Update TextFieldValue untuk mendukung pemulihan posisi kursor
+     */
+    fun updateTextFieldValue(newValue: TextFieldValue) {
+        _uiState.update { it.copy(textFieldValue = newValue) }
     }
     
     // Inisialisasi debouncing untuk auto-save
@@ -58,7 +72,7 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
         // Observe perubahan text dan simpan ke preferences setelah 500ms tidak ada perubahan
         viewModelScope.launch {
             _uiState
-                .map { it.text }
+                .map { it.textFieldValue.text }
                 .distinctUntilChanged()
                 .debounce(500) // Tunggu 500ms setelah input terakhir
                 .collect { text ->

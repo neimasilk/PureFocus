@@ -49,16 +49,22 @@
 ## Current Status
 
 **Active Phase:** Phase 1 - Core Text Editor (UNBLOCKED)
-**Current Task:** Text Editor Optimization
-**Progress:** Phase 0 is 100% complete. Phase 1 is 25% complete with Text Editor Foundation implemented.
+**Current Status**
 
-**Recently Completed Baby-Step:** Baby-Step 1.1: Text Editor Foundation
+**Active Phase:** Phase 1 - Core Text Editor (UNBLOCKED)
+**Current Task:** Pomodoro Timer Implementation (Preparing for Phase 2)
+**Progress:** Phase 0 is 100% complete. Phase 1 is 50% complete with Text Editor Foundation and Optimization implemented.
+
+**Recently Completed Baby-Step:** Baby-Step 1.2: Text Editor Optimization
 - ✅ All tasks for Phase 0 are complete.
 - ✅ Application is running on the emulator.
 - ✅ Full-screen text editor UI implemented (`FocusWriteScreen.kt`).
 - ✅ ViewModel integration for text state (`MainViewModel.kt`).
-- ✅ Auto-save functionality implemented with debouncing in `PreferencesManager.kt`.
+- ✅ Auto-save functionality implemented with debouncing in `PreferencesManager.kt`).
 - ✅ Performance optimization for text input implemented.
+- ✅ Copy text functionality implemented with context menu.
+- ✅ TextFieldValue implementation for cursor position restoration.
+- ✅ Text selection support added.
 - ✅ All unit tests are passing.
 
 **RESOLVED ISSUES:**
@@ -69,11 +75,17 @@
 - Added `testDispatcher.scheduler.runCurrent()` in debounce tests.
 - All tests now pass successfully.
 
-**Next Task:** "Text Editor Optimization"
-- Implement copy/paste functionality with improved UX.
-- Optimize memory usage for large text documents.
-- Add text selection and basic formatting options.
-- Implement scroll position saving and restoration.
+**Issue:** Need to maintain cursor position when editing text
+**Resolution:**
+- Replaced String with TextFieldValue in MainViewModel
+- Updated FocusWriteScreen to support both String and TextFieldValue
+- Added context menu for text copying
+- Added visual feedback via Toast when text is copied
+
+**Next Task:** "Baby-Step 2.1: Basic Timer Implementation"
+- Create ViewModel for Pomodoro timer.
+- Implement core logic for 25-minute work sessions and 5-minute short breaks.
+- Ensure timer can run in the background (at least while the app is active).
 
 ## Phase Progress Summary
 
@@ -85,9 +97,9 @@
 - ✅ Performance monitoring setup (initial considerations)
 - ✅ Final validation and testing (basic run successful)
 
-### Phase 1: Core Text Editor (0% Complete)
-- ⏳ **Baby-Step 1.1: Text Editor Foundation** (Current)
-- ⏳ Baby-Step 1.2: Text Editor Optimization (Copy, Large Text Handling)
+### Phase 1: Core Text Editor (50% Complete)
+- ✅ Baby-Step 1.1: Text Editor Foundation
+- ✅ Baby-Step 1.2: Text Editor Optimization (Copy, Text Selection, Cursor Position)
 
 ### Phase 2: Pomodoro Timer Integration (Not Started)
 - ⏳ Basic timer implementation

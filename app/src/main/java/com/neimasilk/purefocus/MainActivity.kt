@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
@@ -49,8 +50,8 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Scaffold { innerPadding ->
                         FocusWriteScreen(
-                            text = uiState.text,
-                            onTextChanged = { viewModel.updateText(it) },
+                            textFieldValue = uiState.textFieldValue,
+                            onTextFieldValueChanged = { viewModel.updateTextFieldValue(it) },
                             modifier = Modifier.padding(innerPadding)
                         )
                     }

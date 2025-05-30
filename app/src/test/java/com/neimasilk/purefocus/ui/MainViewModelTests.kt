@@ -1,5 +1,7 @@
 package com.neimasilk.purefocus.ui
 
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import com.neimasilk.purefocus.data.PreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,7 +50,21 @@ class MainViewModelTests {
         viewModel.updateText(newText)
         
         // Then - verify the state was updated
-        assertEquals(newText, viewModel.uiState.value.text)
+        assertEquals(newText, viewModel.uiState.value.textFieldValue.text)
+    }
+    
+    @Test
+    fun `updateTextFieldValue updates uiState with correct TextFieldValue`() = runTest {
+        // Given
+        val newText = "Hello, PureFocus!"
+        val newTextFieldValue = TextFieldValue(text = newText, selection = TextRange(5, 10))
+        
+        // When
+        viewModel.updateTextFieldValue(newTextFieldValue)
+        
+        // Then - verify the state was updated with correct text and selection
+        assertEquals(newText, viewModel.uiState.value.textFieldValue.text)
+        assertEquals(TextRange(5, 10), viewModel.uiState.value.textFieldValue.selection)
     }
     
     @Test
@@ -83,7 +99,7 @@ class MainViewModelTests {
         val newViewModel = MainViewModel(preferencesManager)
         
         // Then - verify the state was initialized with the saved text
-        assertEquals(savedText, newViewModel.uiState.value.text)
+        assertEquals(savedText, newViewModel.uiState.value.textFieldValue.text)
     }
     
     @Test
@@ -106,5 +122,33 @@ class MainViewModelTests {
         
         // Then - only the last text should be saved
         verify(preferencesManager).lastText = "Text 3"
+        assertEquals("Text 3", viewModel.uiState.value.textFieldValue.text)
+    }
+    
+    @Test
+    fun `multiple rapid TextFieldValue updates preserve selection`() = runTest {
+        // Given
+        val text1 = TextFieldValue("Text 1", selection = TextRange(3))
+        val text2 = TextFieldValue("Text 2", selection = TextRange(4))
+        val text3 = TextFieldValue("Text 3", selection = TextRange(5))
+        
+        // When - multiple rapid updates with different selections
+        viewModel.updateTextFieldValue(text1)
+        testDispatcher.scheduler.advanceTimeBy(100)
+        viewModel.updateTextFieldValue(text2)
+        testDispatcher.scheduler.advanceTimeBy(100)
+        viewModel.updateTextFieldValue(text3)
+        
+        // Then - selection should be preserved for the latest update
+        assertEquals(text3.selection, viewModel.uiState.value.textFieldValue.selection)
+        
+        // When - advance time past debounce delay
+        testDispatcher.scheduler.advanceTimeBy(500) // Total 700ms
+        testDispatcher.scheduler.runCurrent() // Run pending tasks
+        
+        // Then - only the last text should be saved, and selection still preserved
+        verify(preferencesManager).lastText = "Text 3"
+        assertEquals("Text 3", viewModel.uiState.value.textFieldValue.text)
+        assertEquals(TextRange(5), viewModel.uiState.value.textFieldValue.selection)
     }
 }
