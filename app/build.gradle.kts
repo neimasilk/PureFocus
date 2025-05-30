@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.neimasilk.purefocus"
-    compileSdk = 35
+    compileSdk = 30
 
     defaultConfig {
         applicationId = "com.neimasilk.purefocus"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 30
         versionCode = 1
         versionName = "1.0"
 
@@ -74,6 +74,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
     testImplementation("org.mockito:mockito-inline:3.12.4")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2") // For testing coroutines
+    testImplementation("app.cash.turbine:turbine:0.13.0") // For StateFlow testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
