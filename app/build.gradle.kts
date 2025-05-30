@@ -1,8 +1,9 @@
 plugins {
-    
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    
+    alias(libs.plugins.hilt.android)
+    id("kotlin-kapt")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 android {
@@ -33,14 +34,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompilerExtension.get()
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
@@ -74,6 +75,11 @@ dependencies {
     
     // Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.android)
+    
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
     
     // Testing
     // Ganti dependensi testing dengan versi yang lebih stabil

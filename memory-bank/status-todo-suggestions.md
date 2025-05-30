@@ -1,206 +1,102 @@
-# Status & To-Do List Suggestions
+# Status, To-Do, dan Saran Proyek PureFocus
 
-**Project:** PureFocus - Aplikasi Menulis Minimalis dengan Timer Pomodoro
-**Last Updated:** 30 Mei 2025
-**Author:** Gemini (berdasarkan input Neima Silk)
-**Status:** Fase 1 (Editor Teks Inti) 50% Selesai. Semua tes unit lolos. Siap memulai Fase 2.
+Dokumen ini melacak status proyek saat ini, daftar pekerjaan yang direncanakan, dan saran untuk langkah-langkah kecil (baby steps) dalam pengembangan.
 
-## Current Progress
+## Status Saat Ini (per [Tanggal Update Terakhir - misal, 30 Mei 2025])
 
-**Current Task:** Mempersiapkan Baby-Step 2.1: "Implementasi Timer Dasar"
-**Active Phase:** Fase 1 - Core Text Editor (50% Selesai, siap transisi ke Fase 2)
+### Yang Sudah Selesai (Done):
 
-**Recently Completed (Recap dari Baby-Step 1.1 & 1.2):**
-* Implementasi UI editor teks layar penuh (`FocusWriteScreen.kt`) menggunakan `BasicTextField`.
-* Integrasi `MainViewModel` untuk mengelola state teks (`textFieldValue`).
-* Fungsionalitas penyimpanan otomatis teks ke `PreferencesManager` dengan *debouncing* (500ms).
-* Implementasi fitur "Salin Semua Teks" melalui menu konteks (tekan lama) dengan umpan balik Toast.
-* Migrasi dari `String` ke `TextFieldValue` untuk mendukung pemulihan posisi kursor dan seleksi teks.
-* Semua unit tes untuk `PreferencesManagerTests` dan `MainViewModelTests` berhasil dijalankan (PASS).
+* **V0.1 - Fondasi & UI Timer Dasar:**
+    * [x] Inisialisasi proyek Android dengan Kotlin & Jetpack Compose.
+    * [x] Implementasi UI dasar untuk timer Pomodoro (tampilan waktu, tombol start/pause/reset/skip).
+    * [x] Implementasi logika dasar ViewModel untuk timer (`PomodoroTimerViewModel`).
+    * [x] Pengaturan Dependency Injection dengan Hilt.
+    * [x] Pembuatan model data dasar (`PomodoroState`, `SessionType`).
+* **V0.2 - Manajemen Preferensi:**
+    * [x] Implementasi `PreferencesManager` menggunakan DataStore untuk menyimpan durasi sesi (fokus, istirahat pendek, istirahat panjang, siklus).
+    * [x] Integrasi `PreferencesManager` dengan `PomodoroTimerViewModel` untuk menggunakan durasi yang disimpan.
+    * [x] Pembuatan UI sederhana untuk mengatur preferensi durasi (mungkin belum ada, tapi logikanya sudah).
+* **V0.3 - Logika Inti Timer Pomodoro:**
+    * [x] Implementasi penuh logika `CountDownTimer` di `PomodoroTimerViewModel`.
+    * [x] Penanganan transisi otomatis antar sesi (Fokus -> Istirahat Pendek -> Fokus -> Istirahat Panjang).
+    * [x] Pelacakan siklus Pomodoro.
+    * [x] Fungsionalitas tombol: Start, Pause, Reset, Skip.
+* **V0.4 - Pengujian Unit Awal:**
+    * [x] Penulisan unit test untuk `PreferencesManager`.
+    * [x] Penulisan unit test untuk `PomodoroTimerViewModel` (logika timer, transisi sesi).
+    * [x] Penulisan unit test untuk `MainViewModel` (jika ada logika spesifik).
+* **Lainnya:**
+    * [x] Penyiapan struktur proyek (MVVM).
+    * [x] Dokumentasi awal di `memory-bank` (proposal, arsitektur, tech stack, dll.).
+    * [x] UI Dasar untuk `MainScreen` yang menampilkan timer dan kontrol.
+    * [x] Placeholder awal untuk `FocusWriteScreen.kt`.
 
-**Issues Resolved (Recap):**
-* Masalah kegagalan unit tes di `MainViewModelTests.kt` terkait Mockito dan Coroutines Test telah diatasi.
+### Yang Sedang Dikerjakan (In Progress):
 
-## High-Priority To-Do List (Near Future)
+* [ ] Penyempurnaan UI `MainScreen` berdasarkan feedback atau kebutuhan lebih lanjut.
+* [ ] Integrasi awal `FocusWriteScreen` (navigasi atau tampilan kondisional).
 
-Sesuai dengan `implementation-plan.md`:
+## Daftar Pekerjaan di Masa Depan (Future To-Do)
 
-1.  **Baby-Step 2.1: Implementasi Timer Dasar (Next)**
-    * Buat `PomodoroTimerViewModel` untuk mengelola state dan logika timer.
-    * Implementasikan logika inti untuk sesi kerja 25 menit dan istirahat pendek 5 menit (dapat dikonfigurasi nantinya).
-    * Pastikan timer dapat berjalan secara akurat dan state-nya dapat dikelola (mulai, jeda, reset).
-    * Pastikan timer dapat bertahan dari perubahan siklus hidup aplikasi (minimal selama aplikasi aktif).
-2.  **Baby-Step 2.2: Integrasi UI Timer dan Notifikasi**
-    * Desain dan implementasikan UI timer yang sangat minimalis sebagai *overlay* atau bagian dari `FocusWriteScreen` tanpa mengganggu area tulis.
-    * Tambahkan kontrol dasar (mulai, jeda, reset) untuk timer yang mudah diakses.
-    * Implementasikan notifikasi yang lembut dan tidak mengganggu untuk transisi antar sesi (misalnya, akhir sesi kerja, akhir sesi istirahat).
-3.  **Verifikasi bahwa target performa inti tetap terpenuhi** setelah penambahan fitur timer.
-4.  **Baby-Step 2.3 (dari implementation-plan.md adalah "Timer UI and Notifications", namun bisa dipecah lagi): Manajemen Sesi Lanjutan & Istirahat Panjang**
-    * Implementasikan logika untuk istirahat panjang (misalnya, 15-30 menit) setelah beberapa sesi kerja (misalnya, 4 sesi).
-    * Pastikan transisi antar semua jenis sesi (kerja, istirahat pendek, istirahat panjang) berjalan mulus.
+### Prioritas Tinggi (MVP Lanjutan):
 
-## Baby-Step To-Do List Suggestion (Untuk Baby-Step 2.1: "Implementasi Timer Dasar")
+1.  **Implementasi Penuh Fitur "Focus Write Mode":**
+    * Integrasi `TextField` untuk input teks di `FocusWriteScreen`.
+    * Mekanisme penyimpanan otomatis teks yang ditulis pengguna (misalnya, per sesi atau secara periodik).
+    * Mekanisme pemuatan teks terakhir saat membuka kembali sesi atau aplikasi.
+    * Transisi UI yang mulus antara tampilan timer dan mode tulis fokus.
+    * Menyembunyikan/menampilkan elemen UI yang tidak relevan saat dalam mode tulis.
+2.  **Notifikasi Akhir Sesi:**
+    * Implementasi notifikasi sistem untuk memberitahu pengguna akhir setiap sesi Pomodoro (fokus, istirahat).
+    * Memungkinkan pengguna untuk memulai sesi berikutnya dari notifikasi (opsional).
+3.  **UI Pengaturan Preferensi yang Lebih Baik:**
+    * Jika belum ada, buat layar atau dialog khusus untuk pengguna mengatur durasi sesi dengan mudah.
 
-**Objective:** Mengimplementasikan fungsionalitas inti dari timer Pomodoro, termasuk logika state, manajemen waktu, dan persistensi dasar state timer jika diperlukan, tanpa UI yang kompleks pada tahap ini. Fokus pada logika di ViewModel.
+### Prioritas Menengah:
 
-**Estimated Duration:** 2-3 hari
+4.  **Penyempurnaan UI/UX Keseluruhan:**
+    * Animasi transisi.
+    * Tema (terang/gelap) jika diinginkan.
+    * Responsifitas layout untuk berbagai ukuran layar.
+    * Iconography yang lebih baik.
+5.  **Sound Notification/Alerts:**
+    * Suara penanda akhir sesi (opsional, dapat dikonfigurasi pengguna).
+6.  **Statistik Dasar (Sederhana):**
+    * Pelacakan jumlah sesi fokus yang diselesaikan per hari (opsional, jika ada waktu).
+7.  **Pengujian Instrumentasi/UI:**
+    * Menulis tes UI untuk alur utama (misalnya, menjalankan satu siklus Pomodoro, interaksi dengan Focus Write Mode).
 
-**Detailed Tasks:**
+### Prioritas Rendah (Nice to Have):
 
-1.  **Buat `PomodoroTimerViewModel.kt` dan `PomodoroState.kt`**
-    * **Deskripsi:** Membuat ViewModel baru untuk mengelola semua logika terkait timer Pomodoro dan data class untuk merepresentasikan state timer.
-    * **Files to Create/Modify:**
-        * `app/src/main/java/com/neimasilk/purefocus/ui/PomodoroTimerViewModel.kt` (Baru)
-        * `app/src/main/java/com/neimasilk/purefocus/ui/PomodoroState.kt` (Baru)
-    * **Implementation Steps:**
-        1.  Definisikan `PomodoroState`:
-            * `timeLeftInMillis: Long`
-            * `currentSessionType: SessionType` (Enum: `WORK`, `SHORT_BREAK`, `LONG_BREAK`)
-            * `timerRunning: Boolean`
-            * `pomodorosCompletedInCycle: Int`
-        2.  Buat `PomodoroTimerViewModel`:
-            * Gunakan `MutableStateFlow<PomodoroState>` untuk mengelola state.
-            * Sediakan fungsi `startTimer()`, `pauseTimer()`, `resetTimer()`, `skipSession()`.
-            * Implementasikan logika countdown menggunakan `kotlinx.coroutines.flow.timer` atau `CountDownTimer` dalam `viewModelScope`.
-            * Logika awal untuk transisi otomatis dari `WORK` ke `SHORT_BREAK`.
-    * **Acceptance Criteria:**
-        * `PomodoroState` dapat merepresentasikan semua kondisi dasar timer.
-        * Fungsi dasar ViewModel (start, pause, reset) dapat memanipulasi `PomodoroState` dengan benar.
-        * Countdown timer berjalan akurat dalam `viewModelScope`.
-    * **Validation Method:**
-        * Unit test untuk `PomodoroTimerViewModel` (lihat Task 4).
-        * Logging manual dari state perubahan untuk verifikasi awal.
+8.  **Integrasi dengan Kalender/Tugas (Eksternal):** Sangat opsional.
+9.  **Fitur Kustomisasi Lebih Lanjut:** Warna tema, suara notifikasi kustom.
+10. **Tutorial/Onboarding Pengguna.**
 
-2.  **Integrasikan Durasi Default Timer dari `PreferencesManager`**
-    * **Deskripsi:** Memungkinkan `PomodoroTimerViewModel` untuk mengambil durasi sesi default (misalnya, kerja, istirahat pendek) dari `PreferencesManager`. Untuk saat ini, bisa hardcode jika `PreferencesManager` belum mendukungnya, dengan TODO untuk mengambil dari preferensi nanti.
-    * **Files to Create/Modify:**
-        * `app/src/main/java/com/neimasilk/purefocus/ui/PomodoroTimerViewModel.kt`
-        * (Opsional, jika menambah sekarang) `app/src/main/java/com/neimasilk/purefocus/data/PreferencesManager.kt`
-    * **Implementation Steps:**
-        1.  Tambahkan konstanta untuk durasi default (misal, 25 menit kerja, 5 menit istirahat pendek).
-        2.  Gunakan durasi ini saat memulai atau mereset sesi.
-        3.  (Jika menambah ke `PreferencesManager`): Tambahkan key dan getter/setter untuk `workSessionDuration`, `shortBreakDuration`, `longBreakDuration`.
-    * **Acceptance Criteria:**
-        * Timer menggunakan durasi yang telah ditentukan untuk setiap jenis sesi.
-    * **Validation Method:**
-        * Verifikasi melalui logging atau unit test bahwa durasi sesi yang benar digunakan.
+## Saran "Baby-Step Todolist" (Fokus Berikutnya)
 
-3.  **Sediakan `PomodoroTimerViewModel` di `MainActivity` (atau tingkat yang sesuai)**
-    * **Deskripsi:** Menginisialisasi `PomodoroTimerViewModel` sehingga dapat diakses dan state-nya dapat diobservasi nantinya oleh UI.
-    * **Files to Create/Modify:**
-        * `app/src/main/java/com/neimasilk/purefocus/MainActivity.kt`
-    * **Implementation Steps:**
-        1.  Inisialisasi `PomodoroTimerViewModel` di `MainActivity` menggunakan `ViewModelProvider`.
-        2.  Untuk saat ini, cukup inisialisasi. Pengg# Status & To-Do List Suggestions
+Berikut adalah langkah-langkah kecil yang disarankan untuk dikerjakan selanjutnya, berfokus pada **Implementasi Penuh Fitur "Focus Write Mode"**:
 
-**Project:** PureFocus - Aplikasi Menulis Minimalis dengan Timer Pomodoro
-**Last Updated:** 5 Juni 2025 
-**Author:** Neima Silk
-**Status:** Phase 1 Completed (50%), Phase 2 In Progress (Baby-Step 2.1 Selesai, Baby-Step 2.2 Dimulai)
-
-## Current Progress
-
-**Current Task:** Baby-Step 2.2: "Timer UI Integration with FocusWriteScreen"
-
-**Phase 1 (Core Text Editor) Progress:** 50% (Baby-Step 1.1 dan 1.2 selesai)
-**Phase 2 (Pomodoro Timer) Progress:** Baby-Step 2.1 Selesai.
-
-**Recently Completed:**
-* **Baby-Step 2.1: Basic Timer Implementation**
-    * Implementasi `PomodoroTimerViewModel` dengan logika inti timer (start, pause, reset, skip).
-    * Definisi `PomodoroState` dan `SessionType`.
-    * Inisialisasi ViewModel di `MainActivity`.
-    * Penulisan unit test untuk `PomodoroTimerViewModel` (eksekusi terkendala masalah SDK).
-* Implementasi fungsionalitas "Salin Teks" dengan menu konteks dan Toast feedback.
-* Migrasi dari String ke TextFieldValue untuk manajemen posisi kursor.
-* Verifikasi seleksi teks dasar berfungsi dengan baik.
-* Optimasi penanganan teks untuk dokumen besar dengan profiling dan pengujian performa.
-
-**Issues Resolved:**
-* Fixed MainViewModelTests dengan mengupdate mockito-kotlin ke versi yang kompatibel dengan Kotlin 1.8.10.
-* Resolved issue dengan posisi kursor yang hilang saat rotasi layar atau navigasi dengan mengimplementasikan TextFieldValue di MainViewModel dan FocusWriteScreen.
-* Ditambahkan unit test untuk memverifikasi fungsionalitas TextFieldValue dan manajemen posisi kursor.
-* (Catatan Tambahan) Eksekusi test untuk Baby-Step 2.1 terkendala masalah environment SDK worker.
-
-**Next Task (Baby-Step 2.2):** "Timer UI Integration with FocusWriteScreen" 
-* Desain dan implementasikan UI timer yang minimalis di FocusWriteScreen.
-* Tambahkan kontrol dasar (mulai, jeda, reset) untuk timer.
-* Implementasikan notifikasi sederhana untuk transisi antar sesi.
-
-## High-Priority To-Do List (Near Future)
-
-1.  **Baby-Step 2.2: Integrasi UI Timer dengan FocusWriteScreen (Current)**
-    * Tambahkan UI minimal untuk timer di `FocusWriteScreen`.
-    * Implementasikan notifikasi sederhana untuk transisi sesi.
-
-2.  **Baby-Step 2.3: Manajemen Sesi**
-    * Implementasikan pelacakan sesi yang telah diselesaikan.
-    * Tambahkan statistik dasar (jumlah sesi, total waktu fokus).
-
-3.  **Verifikasi bahwa target performa inti tetap terpenuhi.** (Setelah integrasi UI Timer)
-
-4.  **(SELESAI) Baby-Step 2.1: Implementasi Timer Dasar**
-    * Buat `PomodoroViewModel` untuk mengelola state dan logika timer.
-    * Implementasikan timer dasar dengan sesi kerja 25 menit dan istirahat 5 menit.
-    * Pastikan timer dapat berjalan di background (minimal selama aplikasi aktif).
-
-## Baby-Step To-Do List Suggestion (Untuk Baby-Step 2.2: "Timer UI Integration with FocusWriteScreen")
-
-**Objective:** Mengintegrasikan UI Timer yang minimalis ke dalam `FocusWriteScreen` dan menyediakan kontrol dasar serta notifikasi transisi sesi.
-
-**Estimated Duration:** (Akan ditentukan)
-
-**Detailed Tasks:** (Akan dirinci dalam baby-step.md berikutnya)
-
-1.  **Desain UI Timer Minimalis di `FocusWriteScreen`**
-    * **Deskripsi:** Merancang dan mengimplementasikan tampilan visual untuk timer (misalnya, teks waktu tersisa, indikator sesi).
-    * **Files to Create/Modify:** `app/src/main/java/com/neimasilk/purefocus/ui/FocusWriteScreen.kt`
-    * **Acceptance Criteria:** UI timer terlihat jelas namun tidak mengganggu area tulis.
-
-2.  **Implementasi Kontrol Timer (Start, Pause, Reset)**
-    * **Deskripsi:** Menambahkan tombol atau gestur untuk mengontrol timer dari `FocusWriteScreen`.
-    * **Files to Create/Modify:** `app/src/main/java/com/neimasilk/purefocus/ui/FocusWriteScreen.kt`, `app/src/main/java/com/neimasilk/purefocus/ui/PomodoroTimerViewModel.kt` (jika perlu interaksi tambahan).
-    * **Acceptance Criteria:** Kontrol timer responsif dan berfungsi sesuai harapan.
-
-3.  **Implementasi Notifikasi Transisi Sesi**
-    * **Deskripsi:** Memberikan feedback (misalnya, suara lembut atau getaran singkat) saat sesi kerja berakhir dan sesi istirahat dimulai, atau sebaliknya.
-    * **Files to Create/Modify:** `app/src/main/java/com/neimasilk/purefocus/ui/PomodoroTimerViewModel.kt` (untuk memicu notifikasi), `MainActivity.kt` (potensial untuk setup channel notifikasi).
-    * **Acceptance Criteria:** Notifikasi disampaikan dengan tepat waktu dan tidak intrusif.
-
-**(Bagian detail untuk Baby-Step 2.1 yang lama telah dihapus karena sudah selesai.)**
-
----
-_Dokumen ini akan diupdate seiring progres proyek._
-_Pastikan untuk merujuk pada `baby-step.md` yang relevan untuk detail implementasi tugas saat ini._unaan state akan dilakukan di Baby-Step berikutnya saat membuat UI.
-    * **Acceptance Criteria:**
-        * ViewModel berhasil diinisialisasi tanpa *crash*.
-    * **Validation Method:**
-        * Jalankan aplikasi, pastikan tidak ada *crash* terkait inisialisasi ViewModel.
-
-4.  **Unit Testing Awal untuk `PomodoroTimerViewModel`**
-    * **Deskripsi:** Membuat unit test dasar untuk memverifikasi logika inti dari `PomodoroTimerViewModel`.
-    * **Files to Create/Modify:**
-        * `app/src/test/java/com/neimasilk/purefocus/ui/PomodoroTimerViewModelTests.kt` (Baru)
-    * **Implementation Steps:**
-        1.  Gunakan `StandardTestDispatcher` seperti di `MainViewModelTests`.
-        2.  Tes fungsi `startTimer()`: verifikasi `timerRunning` menjadi true dan `timeLeftInMillis` mulai berkurang.
-        3.  Tes fungsi `pauseTimer()`: verifikasi `timerRunning` menjadi false dan `timeLeftInMillis` berhenti berkurang.
-        4.  Tes fungsi `resetTimer()`: verifikasi state kembali ke kondisi awal sesi kerja.
-        5.  Tes transisi dari sesi kerja ke istirahat pendek setelah waktu habis.
-    * **Acceptance Criteria:**
-        * Semua unit tes berhasil (PASS).
-        * Cakupan tes mencakup skenario dasar start, pause, reset, dan transisi sesi.
-    * **Validation Method:**
-        * Jalankan `./gradlew testDebugUnitTest` dan pastikan semua tes baru lolos.
-
-**Success Criteria untuk Baby-Step 2.1 secara keseluruhan:**
-* Logika inti timer Pomodoro (start, pause, reset, countdown, transisi sesi dasar) berfungsi di dalam `PomodoroTimerViewModel`.
-* State timer dapat dikelola dan diobservasi (meskipun belum ditampilkan di UI).
-* Unit test memvalidasi fungsionalitas inti ViewModel.
-* Tidak ada dampak negatif pada fungsionalitas editor teks yang sudah ada.
-* Target performa aplikasi tetap terjaga.
-
-**Validation Methods untuk Baby-Step 2.1 secara keseluruhan:**
-* Jalankan semua unit test, pastikan PASS.
-* Lakukan pengujian manual dengan logging untuk memverifikasi alur state timer.
-* Pastikan aplikasi tetap berjalan lancar tanpa *crash* atau penurunan performa yang nyata.
+1.  **Baby Step 1: State Management untuk Teks di `FocusWriteScreen`**
+    * **Tugas:** Tentukan bagaimana state teks di `FocusWriteScreen` akan dikelola.
+    * **Detail:** Apakah akan ada `ViewModel` khusus untuk `FocusWriteScreen` (`FocusWriteViewModel`) atau state teks akan dikelola di `MainViewModel` atau `PomodoroTimerViewModel`?
+    * **Rekomendasi Awal:** Buat `FocusWriteViewModel` untuk enkapsulasi logika terkait penulisan.
+    * **Deliverable:** Keputusan desain dan pembuatan file `FocusWriteViewModel.kt` (kosong atau dengan struktur dasar).
+2.  **Baby Step 2: UI Dasar `FocusWriteScreen` dengan `TextField` Aktif**
+    * **Tugas:** Buat `TextField` yang berfungsi penuh di `FocusWriteScreen.kt`.
+    * **Detail:** `TextField` harus bisa menerima input pengguna. State teks dari `TextField` ini harus terhubung ke `ViewModel` yang diputuskan di Baby Step 1.
+    * **Deliverable:** `FocusWriteScreen.kt` yang menampilkan `TextField` dan input pengguna tercermin dalam state `ViewModel`.
+3.  **Baby Step 3: Tampilan Kondisional `FocusWriteScreen`**
+    * **Tugas:** Atur logika di `MainActivity` atau `MainScreen` untuk menampilkan `FocusWriteScreen` (atau kontennya) hanya selama sesi "Fokus" Pomodoro.
+    * **Detail:** Sembunyikan timer utama atau elemen lain yang tidak relevan saat `FocusWriteScreen` aktif. `PomodoroTimerViewModel` menyediakan `currentSessionType`.
+    * **Deliverable:** Aplikasi beralih antara tampilan timer dan tampilan tulis fokus sesuai dengan tipe sesi Pomodoro.
+4.  **Baby Step 4: Penyimpanan Teks Sederhana (Misalnya ke DataStore atau File Lokal)**
+    * **Tugas:** Implementasikan mekanisme untuk menyimpan teks dari `FocusWriteScreen` saat sesi fokus berakhir atau saat aplikasi ditutup.
+    * **Detail:** Pilih mekanisme penyimpanan (DataStore untuk teks sederhana bisa jadi pilihan awal, atau file `.txt` di penyimpanan internal aplikasi). Simpan teks saat `onStop` di Activity/Fragment atau saat transisi sesi dari Fokus.
+    * **Deliverable:** Teks yang ditulis pengguna disimpan.
+5.  **Baby Step 5: Pemuatan Teks Sederhana**
+    * **Tugas:** Implementasikan mekanisme untuk memuat teks yang tersimpan saat `FocusWriteScreen` ditampilkan atau saat sesi fokus dimulai.
+    * **Detail:** Baca dari DataStore atau file lokal yang digunakan di Baby Step 4.
+    * **Deliverable:** Teks yang sebelumnya disimpan muncul kembali di `FocusWriteScreen`.
+6.  **Baby Step 6: Unit Test untuk `FocusWriteViewModel` (jika dibuat)**
+    * **Tugas:** Tulis unit test untuk logika dasar di `FocusWriteViewModel` (misalnya, update state teks, trigger simpan/muat).
+    * **Deliverable:** Suite pengujian untuk `FocusWriteViewModel`.

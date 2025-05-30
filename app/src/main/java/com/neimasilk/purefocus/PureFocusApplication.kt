@@ -5,11 +5,14 @@ import android.os.StrictMode
 import android.os.SystemClock
 import com.neimasilk.purefocus.BuildConfig
 import com.neimasilk.purefocus.util.PerformanceMonitor
+import dagger.hilt.android.HiltAndroidApp
 
 /**
  * Application class untuk PureFocus.
  * Menangani inisialisasi aplikasi dan konfigurasi StrictMode.
+ * Menggunakan Hilt untuk dependency injection.
  */
+@HiltAndroidApp
 class PureFocusApplication : Application() {
     private val startupTime = SystemClock.elapsedRealtime()
     

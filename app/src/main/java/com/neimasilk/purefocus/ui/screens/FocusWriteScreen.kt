@@ -30,7 +30,48 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.neimasilk.purefocus.ui.FocusWriteViewModel
 import com.neimasilk.purefocus.util.PerformanceMonitor
+
+/**
+ * Layar utama untuk menulis teks dengan fokus penuh menggunakan FocusWriteViewModel.
+ * Menyediakan area teks penuh layar tanpa distraksi.
+ * 
+ * Versi ini menggunakan Hilt untuk dependency injection.
+ */
+@Composable
+fun FocusWriteScreen(
+    modifier: Modifier = Modifier,
+    viewModel: FocusWriteViewModel = hiltViewModel()
+) {
+    val text by viewModel.text.collectAsStateWithLifecycle()
+    
+    // Konversi String ke TextFieldValue untuk digunakan internal
+    val textFieldValue = remember(text) { TextFieldValue(text = text, selection = TextRange(text.length)) }
+    var textFieldValueState by remember { mutableStateOf(textFieldValue) }
+    
+    // Update textFieldValueState ketika text dari ViewModel berubah
+    LaunchedEffect(text) {
+        if (textFieldValueState.text != text) {
+            textFieldValueState = TextFieldValue(text = text, selection = TextRange(text.length))
+        }
+    }
+    
+    // Implementasi FocusWriteScreen dengan TextFieldValue
+    FocusWriteScreenImpl(
+        value = textFieldValueState,
+        onValueChange = { newValue ->
+            textFieldValueState = newValue
+            // Hanya panggil onTextChanged jika teks berubah
+            if (newValue.text != text) {
+                viewModel.onTextChanged(newValue.text)
+            }
+        },
+        modifier = modifier
+    )
+}
 
 /**
  * Layar utama untuk menulis teks dengan fokus penuh.
