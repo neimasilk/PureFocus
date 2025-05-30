@@ -20,12 +20,14 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.ui.MainViewModel
+import com.neimasilk.purefocus.ui.PomodoroTimerViewModel
 import com.neimasilk.purefocus.ui.screens.FocusWriteScreen
 import com.neimasilk.purefocus.ui.theme.PureFocusTheme
 import com.neimasilk.purefocus.util.PerformanceMonitor
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
+    private lateinit var pomodoroViewModel: PomodoroTimerViewModel
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,7 @@ class MainActivity : ComponentActivity() {
             initializer { MainViewModel(preferencesManager) } 
         }
         viewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
+        pomodoroViewModel = ViewModelProvider(this).get(PomodoroTimerViewModel::class.java)
         
         enableEdgeToEdge()
         setContent {
