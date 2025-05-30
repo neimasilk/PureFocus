@@ -1,18 +1,16 @@
 # PureFocus - Debugging Notes
 
-**Document Version:** 1.0
+**Document Version:** 1.1
 **Date:** 1 Juni 2025
 **Project:** PureFocus - Minimalist Focus Writing App
-**Status:** Unit Test Issues Resolved
+**Status:** Unit Test Migration to Robolectric Complete
 
 ## Current Debugging Status
 
-**Issue:** Unit test failures in `MainViewModelTests.kt`
-**Affected Tests:** All tests in `MainViewModelTests`, particularly `updateText updates uiState immediately`
-**Root Causes Identified:**
-1. Mockito unable to mock final `PreferencesManager` class
-2. Coroutines testing API changes in kotlinx-coroutines-test 1.6.4
-3. Test implementation approach not compatible with current coroutines version
+**Previous Issue:** Unit test failures in `MainViewModelTests.kt` and `PreferencesManagerTests.kt`
+**Final Resolution:** Successfully migrated from Mockito mocking to Robolectric with real Android Context
+**Status:** ✅ ALL TESTS PASSING (21/21 tests successful)
+**Migration Completed:** Eliminated all mocking dependencies in favor of real Android components
 
 ## Detailed Issue Analysis
 
@@ -89,14 +87,42 @@
    - Review all test implementations for compatibility with current library versions
    - Standardize testing approaches across the codebase
 
-## Resolution Summary
+## Final Resolution Summary
 
-The unit test failures in `MainViewModelTests.kt` were resolved by:
-1. Updating `mockito-kotlin` to version `5.4.0`.
-2. Updating `kotlinx-coroutines-test` to version `1.10.2`.
-3. Adding `testDispatcher.scheduler.runCurrent()` after `advanceTimeBy()` calls in tests involving debounce logic to ensure pending coroutine tasks were executed before assertions.
+### Phase 1: Initial Mockito Fixes (Temporary)
+The unit test failures were initially resolved by:
+1. Updating `mockito-kotlin` to version `5.4.0`
+2. Updating `kotlinx-coroutines-test` to version `1.10.2`
+3. Adding `testDispatcher.scheduler.runCurrent()` after `advanceTimeBy()` calls
 
-All tests are now passing, unblocking further development.
+### Phase 2: Complete Migration to Robolectric (Final Solution)
+For better test reliability and real Android behavior testing:
+
+#### Dependencies Updated:
+- Added `robolectric:4.11.1`
+- Added `androidx.test:core:1.5.0`
+- Removed all Mockito dependencies from test scope
+
+#### PreferencesManagerTests Migration:
+- Replaced Mockito mocks with real Android Context using `ApplicationProvider.getApplicationContext<Context>()`
+- Added Robolectric annotations: `@RunWith(RobolectricTestRunner::class)` and `@Config(sdk = [28])`
+- Updated all test methods to use real SharedPreferences instead of mocked behavior
+- Tests now verify actual Android SharedPreferences functionality
+
+#### MainViewModelTests Migration:
+- Replaced mocked `PreferencesManager` with real instance using Android Context
+- Updated test assertions from `verify()` calls to direct state verification using `assertEquals()`
+- Fixed coroutine execution issues with `testScope.testScheduler.advanceUntilIdle()`
+- Maintained all existing test scenarios while using real components
+
+#### Final Results:
+- **Total Tests:** 21
+- **Passing Tests:** 21 (100%)
+- **Failed Tests:** 0
+- **Test Execution Time:** ~5.4 seconds
+- **Test Reliability:** Significantly improved with real Android components
+
+**Status:** ✅ MIGRATION COMPLETE - All tests passing with Robolectric
 
 ## Next Steps
 

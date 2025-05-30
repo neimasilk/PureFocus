@@ -1,5 +1,5 @@
 [versions]
-agp = "8.0.2"
+agp = "8.10.1"
 kotlin = "1.8.10"
 composeCompilerExtension = "1.4.3"
 # composeCompiler = "1.4.4" # This was likely incorrect, compose compiler version is tied to Kotlin version

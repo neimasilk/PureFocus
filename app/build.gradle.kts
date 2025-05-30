@@ -60,6 +60,7 @@ dependencies {
     
     // Activity Compose
     implementation(libs.androidx.activity.compose)
+    implementation("androidx.activity:activity:1.8.1") // Untuk enableEdgeToEdge
     
     // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
@@ -80,8 +81,10 @@ dependencies {
     // Gunakan versi yang lebih rendah atau lebih stabil dari Mockito
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
     testImplementation("org.mockito:mockito-inline:3.12.4")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0") // For testing coroutines
-    testImplementation("app.cash.turbine:turbine:0.7.0") // For StateFlow testing
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4") // For testing coroutines
+    testImplementation("app.cash.turbine:turbine:0.12.1") // For StateFlow testing
+    testImplementation("org.robolectric:robolectric:4.11.1") // For Android unit testing
+    testImplementation("androidx.test:core:1.5.0") // For ApplicationProvider
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

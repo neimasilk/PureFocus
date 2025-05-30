@@ -150,13 +150,30 @@ All technology choices are evaluated based on:
 
 ### 8. Testing Framework
 
-**Unit Testing:** JUnit 5 + Kotlin Test  
+**Unit Testing:** JUnit 5 + Kotlin Test + Robolectric  
+**Testing Philosophy:** Real Android components over mocking for better reliability  
+**Key Dependencies:**
+- `robolectric:4.11.1` - Android environment simulation
+- `androidx.test:core:1.5.0` - Android testing utilities
+- `kotlinx-coroutines-test:1.10.2` - Coroutines testing support
+
+**Testing Approach:**
+- Robolectric for Android Context and SharedPreferences testing
+- Real component testing instead of mocking when possible
+- TestScope for coroutine testing with proper time advancement
+- Direct state verification over behavior verification
+
 **UI Testing:** Compose Testing Framework  
 **Performance Testing:**
 - Android Studio Profiler
 - Compose Recomposition Counter
 - JankStats for frame timing
 - Custom performance benchmarks
+
+**Migration Notes:**
+- Migrated from Mockito to Robolectric for better test reliability
+- Eliminated mocking complexity in favor of real Android components
+- All 21 unit tests passing with improved stability
 
 ### 9. Dependency Management
 

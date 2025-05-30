@@ -1,37 +1,31 @@
 package com.neimasilk.purefocus.data
 
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28])
 class PreferencesManagerTests {
     
     private lateinit var context: Context
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
     private lateinit var preferencesManager: PreferencesManager
     
     @Before
     fun setup() {
-        // Mock SharedPreferences dan Editor
-        context = mock()
-        sharedPreferences = mock()
-        editor = mock()
+        // Use real Android context from Robolectric
+        context = ApplicationProvider.getApplicationContext()
         
-        // Setup behavior untuk mock
-        whenever(context.getSharedPreferences(any(), any())).thenReturn(sharedPreferences)
-        whenever(sharedPreferences.edit()).thenReturn(editor)
-        whenever(editor.putString(any(), any())).thenReturn(editor)
-        whenever(editor.putBoolean(any(), any())).thenReturn(editor)
+        // Clear any existing preferences for clean test state
+        context.getSharedPreferences("purefocus_preferences", Context.MODE_PRIVATE)
+            .edit().clear().apply()
         
-        // Inisialisasi PreferencesManager dengan mock
+        // Inisialisasi PreferencesManager dengan real context
         preferencesManager = PreferencesManager(context)
     }
     
@@ -39,7 +33,7 @@ class PreferencesManagerTests {
     fun `lastText getter returns value from SharedPreferences`() {
         // Given
         val expectedText = "Test text"
-        whenever(sharedPreferences.getString(eq("last_text"), any())).thenReturn(expectedText)
+        preferencesManager.lastText = expectedText
         
         // When
         val result = preferencesManager.lastText
@@ -50,8 +44,8 @@ class PreferencesManagerTests {
     
     @Test
     fun `lastText getter returns empty string when SharedPreferences returns null`() {
-        // Given
-        whenever(sharedPreferences.getString(eq("last_text"), any())).thenReturn(null)
+        // Given - fresh PreferencesManager with no stored value
+        // (setup already clears preferences)
         
         // When
         val result = preferencesManager.lastText
@@ -69,15 +63,15 @@ class PreferencesManagerTests {
         preferencesManager.lastText = textToSave
         
         // Then
-        verify(editor).putString(eq("last_text"), eq(textToSave))
-        verify(editor).apply()
+        val savedText = preferencesManager.lastText
+        assertEquals(textToSave, savedText)
     }
     
     @Test
     fun `isDarkMode getter returns value from SharedPreferences`() {
         // Given
         val expectedValue = true
-        whenever(sharedPreferences.getBoolean(eq("dark_mode"), any())).thenReturn(expectedValue)
+        preferencesManager.isDarkMode = expectedValue
         
         // When
         val result = preferencesManager.isDarkMode
@@ -95,7 +89,7 @@ class PreferencesManagerTests {
         preferencesManager.isDarkMode = valueToSave
         
         // Then
-        verify(editor).putBoolean(eq("dark_mode"), eq(valueToSave))
-        verify(editor).apply()
+        val savedValue = preferencesManager.isDarkMode
+        assertEquals(valueToSave, savedValue)
     }
 }

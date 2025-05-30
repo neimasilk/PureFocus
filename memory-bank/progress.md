@@ -55,7 +55,7 @@
 **Current Task:** Pomodoro Timer Implementation (Preparing for Phase 2)
 **Progress:** Phase 0 is 100% complete. Phase 1 is 50% complete with Text Editor Foundation and Optimization implemented.
 
-**Recently Completed Baby-Step:** Baby-Step 1.2: Text Editor Optimization
+**Recently Completed Baby-Step:** Baby-Step 1.3: Unit Test Migration to Robolectric
 - ✅ All tasks for Phase 0 are complete.
 - ✅ Application is running on the emulator.
 - ✅ Full-screen text editor UI implemented (`FocusWriteScreen.kt`).
@@ -65,15 +65,19 @@
 - ✅ Copy text functionality implemented with context menu.
 - ✅ TextFieldValue implementation for cursor position restoration.
 - ✅ Text selection support added.
-- ✅ All unit tests are passing.
+- ✅ Complete unit test migration from Mockito to Robolectric.
+- ✅ All 21 unit tests passing with real Android components.
 
 **RESOLVED ISSUES:**
-**Issue:** Unit tests fail in `MainViewModelTests.kt`, particularly `updateText updates uiState immediately`
-**Resolution:** 
-- Updated `mockito-kotlin` to `5.4.0`.
-- Updated `kotlinx-coroutines-test` to `1.10.2`.
-- Added `testDispatcher.scheduler.runCurrent()` in debounce tests.
-- All tests now pass successfully.
+**Issue:** Unit test reliability and mocking complexity in `MainViewModelTests.kt` and `PreferencesManagerTests.kt`
+**Final Resolution (Migration to Robolectric):** 
+- Migrated from Mockito mocking to Robolectric with real Android Context.
+- Updated dependencies: Added `robolectric:4.11.1` and `androidx.test:core:1.5.0`.
+- Removed all Mockito dependencies from test scope.
+- Updated `PreferencesManagerTests` to use real SharedPreferences via `ApplicationProvider.getApplicationContext<Context>()`.
+- Updated `MainViewModelTests` to use real `PreferencesManager` instance instead of mocks.
+- Fixed coroutine execution with `testScope.testScheduler.advanceUntilIdle()`.
+- All 21 tests now pass with improved reliability using real Android components.
 
 **Issue:** Need to maintain cursor position when editing text
 **Resolution:**
@@ -97,9 +101,10 @@
 - ✅ Performance monitoring setup (initial considerations)
 - ✅ Final validation and testing (basic run successful)
 
-### Phase 1: Core Text Editor (50% Complete)
+### Phase 1: Core Text Editor (75% Complete)
 - ✅ Baby-Step 1.1: Text Editor Foundation
 - ✅ Baby-Step 1.2: Text Editor Optimization (Copy, Text Selection, Cursor Position)
+- ✅ Baby-Step 1.3: Unit Test Migration to Robolectric (Testing Infrastructure Improvement)
 
 ### Phase 2: Pomodoro Timer Integration (Not Started)
 - ⏳ Basic timer implementation

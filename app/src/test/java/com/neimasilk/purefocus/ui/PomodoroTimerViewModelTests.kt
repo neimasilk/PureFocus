@@ -9,14 +9,15 @@ import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 
 @ExperimentalCoroutinesApi
 class PomodoroTimerViewModelTests {
 
-    private val testDispatcher = StandardTestDispatcher()
+    private val testScope = TestScope()
+    private val testDispatcher = StandardTestDispatcher(testScope.testScheduler)
     private lateinit var viewModel: PomodoroTimerViewModel
 
     @Before
@@ -31,7 +32,7 @@ class PomodoroTimerViewModelTests {
     }
 
     @Test
-    fun `initial state is correct`() = runTest {
+    fun `initial state is correct`() = testScope.runTest {
         val initialState = viewModel.uiState.value
         assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS, initialState.timeLeftInMillis)
         assertEquals(SessionType.WORK, initialState.currentSessionType)
@@ -40,22 +41,24 @@ class PomodoroTimerViewModelTests {
     }
 
     @Test
-    fun `startTimer updates state and time correctly`() = runTest {
+    fun `startTimer updates state and time correctly`() = testScope.runTest {
         viewModel.uiState.test {
-            assertFalse(awaitItem().isTimerRunning, "Initial state should be not running")
+            assertFalse("Initial state should be not running", awaitItem().isTimerRunning)
 
             viewModel.startTimer()
-            assertTrue(awaitItem().isTimerRunning, "Timer should be running after start")
+            assertTrue("Timer should be running after start", awaitItem().isTimerRunning)
 
             // Advance time by 1 second
-            testDispatcher.scheduler.advanceTimeBy(1000L)
-            testDispatcher.scheduler.runCurrent() // Execute tasks scheduled for the current time
-            assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS - 1000L, awaitItem().timeLeftInMillis)
+            testScope.testScheduler.advanceTimeBy(1000L)
+            testScope.testScheduler.runCurrent() // Execute tasks scheduled for the current time
+            val firstUpdate = awaitItem()
+            assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS - 1000L, firstUpdate.timeLeftInMillis)
 
-            // Advance time by another 2 seconds
-            testDispatcher.scheduler.advanceTimeBy(2000L)
-            testDispatcher.scheduler.runCurrent()
-            assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS - 3000L, awaitItem().timeLeftInMillis)
+            // Advance time by another 1 second (total 2 seconds)
+            testScope.testScheduler.advanceTimeBy(1000L)
+            testScope.testScheduler.runCurrent()
+            val secondUpdate = awaitItem()
+            assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS - 2000L, secondUpdate.timeLeftInMillis)
 
             // Cancel turbine to avoid further emissions if any
             cancelAndConsumeRemainingEvents()
@@ -63,9 +66,10 @@ class PomodoroTimerViewModelTests {
     }
 
     @Test
-    fun `pauseTimer stops time and updates state`() = runTest {
+    fun `pauseTimer stops time and updates state`() = testScope.runTest {
         viewModel.startTimer()
-        testDispatcher.scheduler.advanceTimeBy(5000L); testDispatcher.scheduler.runCurrent()
+        testScope.testScheduler.advanceTimeBy(5000L)
+        testScope.testScheduler.runCurrent()
         val timeWhenPaused = viewModel.uiState.value.timeLeftInMillis
         assertTrue(viewModel.uiState.value.isTimerRunning)
 
@@ -74,32 +78,36 @@ class PomodoroTimerViewModelTests {
         assertEquals(timeWhenPaused, viewModel.uiState.value.timeLeftInMillis)
 
         // Advance time further to ensure timer is actually paused
-        testDispatcher.scheduler.advanceTimeBy(3000L); testDispatcher.scheduler.runCurrent()
+        testScope.testScheduler.advanceTimeBy(3000L)
+        testScope.testScheduler.runCurrent()
         assertFalse(viewModel.uiState.value.isTimerRunning)
         assertEquals(timeWhenPaused, viewModel.uiState.value.timeLeftInMillis)
     }
 
     @Test
-    fun `resumeTimer (start after pause) continues countdown`() = runTest {
+    fun `resumeTimer (start after pause) continues countdown`() = testScope.runTest {
         viewModel.startTimer()
-        testDispatcher.scheduler.advanceTimeBy(3000L); testDispatcher.scheduler.runCurrent()
+        testScope.testScheduler.advanceTimeBy(3000L)
+        testScope.testScheduler.runCurrent()
         viewModel.pauseTimer()
         val timeWhenPaused = viewModel.uiState.value.timeLeftInMillis
         assertFalse(viewModel.uiState.value.isTimerRunning)
 
         viewModel.startTimer() // Resume
         assertTrue(viewModel.uiState.value.isTimerRunning)
-        assertEquals(timeWhenPaused, viewModel.uiState.value.timeLeftInMillis, "Time should be same immediately after resume")
+        assertEquals("Time should be same immediately after resume", timeWhenPaused, viewModel.uiState.value.timeLeftInMillis)
 
-        testDispatcher.scheduler.advanceTimeBy(2000L); testDispatcher.scheduler.runCurrent()
+        testScope.testScheduler.advanceTimeBy(2000L)
+        testScope.testScheduler.runCurrent()
         assertTrue(viewModel.uiState.value.isTimerRunning)
         assertEquals(timeWhenPaused - 2000L, viewModel.uiState.value.timeLeftInMillis)
     }
 
     @Test
-    fun `resetTimer resets to initial WORK state when running`() = runTest {
+    fun `resetTimer resets to initial WORK state when running`() = testScope.runTest {
         viewModel.startTimer()
-        testDispatcher.scheduler.advanceTimeBy(5000L); testDispatcher.scheduler.runCurrent()
+        testScope.testScheduler.advanceTimeBy(5000L)
+        testScope.testScheduler.runCurrent()
         // Assuming pomodorosCompletedInCycle is 0 initially
         viewModel.resetTimer()
 
@@ -111,9 +119,10 @@ class PomodoroTimerViewModelTests {
     }
     
     @Test
-    fun `resetTimer resets to initial WORK state when paused`() = runTest {
+    fun `resetTimer resets to initial WORK state when paused`() = testScope.runTest {
         viewModel.startTimer()
-        testDispatcher.scheduler.advanceTimeBy(5000L); testDispatcher.scheduler.runCurrent()
+        testScope.testScheduler.advanceTimeBy(5000L)
+        testScope.testScheduler.runCurrent()
         viewModel.pauseTimer()
         // Assuming pomodorosCompletedInCycle is 0 initially
         viewModel.resetTimer()
@@ -126,53 +135,44 @@ class PomodoroTimerViewModelTests {
     }
 
     @Test
-    fun `work session finishes transitions to short break`() = runTest {
+    fun `work session finishes transitions to short break`() = testScope.runTest {
         viewModel.uiState.test {
             assertEquals(SessionType.WORK, awaitItem().currentSessionType)
             viewModel.startTimer()
             awaitItem() // isTimerRunning = true, WORK session
 
-            testDispatcher.scheduler.advanceTimeBy(PomodoroTimerViewModel.WORK_DURATION_MILLIS)
-            testDispatcher.scheduler.runCurrent()
+            // Advance time by full work duration plus a bit more to ensure timer finishes
+            testScope.testScheduler.advanceTimeBy(PomodoroTimerViewModel.WORK_DURATION_MILLIS + 1000L)
+            testScope.testScheduler.runCurrent()
             
-            val finishedState = awaitItem() // This should be the state after time is up but before handleSessionFinish fully updates
-                                      // It might be timeLeftInMillis = 0, isTimerRunning = true
-            // Depending on exact emission order, we might get an intermediate state or the final one.
-            // Let's check the state after handleSessionFinish must have run.
-            // handleSessionFinish calls pauseTimer, which sets isTimerRunning=false and emits.
-            // Then it updates session type, time, etc. and emits again.
-
-            var stateAfterFinish = finishedState
-            if (stateAfterFinish.isTimerRunning || stateAfterFinish.timeLeftInMillis > 0) {
-                 stateAfterFinish = awaitItem() // capture isTimerRunning = false if that's a separate emission
-            }
-             if (stateAfterFinish.isTimerRunning || stateAfterFinish.currentSessionType == SessionType.WORK) {
-                 stateAfterFinish = awaitItem() // capture the final state
+            // Skip intermediate states and get to the final state after session transition
+            var finalState = awaitItem()
+            while (finalState.currentSessionType == SessionType.WORK || finalState.isTimerRunning) {
+                finalState = awaitItem()
             }
 
-
-            assertEquals(SessionType.SHORT_BREAK, stateAfterFinish.currentSessionType)
-            assertEquals(PomodoroTimerViewModel.SHORT_BREAK_DURATION_MILLIS, stateAfterFinish.timeLeftInMillis)
-            assertFalse(stateAfterFinish.isTimerRunning)
-            assertEquals(1, stateAfterFinish.pomodorosCompletedInCycle)
+            assertEquals(SessionType.SHORT_BREAK, finalState.currentSessionType)
+            assertEquals(PomodoroTimerViewModel.SHORT_BREAK_DURATION_MILLIS, finalState.timeLeftInMillis)
+            assertFalse(finalState.isTimerRunning)
+            assertEquals(1, finalState.pomodorosCompletedInCycle)
             
             cancelAndConsumeRemainingEvents()
         }
     }
 
     @Test
-    fun `skipSession from WORK transitions to SHORT_BREAK`() = runTest {
+    fun `skipSession from WORK transitions to SHORT_BREAK`() = testScope.runTest {
         assertEquals(0, viewModel.uiState.value.pomodorosCompletedInCycle)
         viewModel.skipSession()
         val state = viewModel.uiState.value
         assertEquals(SessionType.SHORT_BREAK, state.currentSessionType)
         assertEquals(PomodoroTimerViewModel.SHORT_BREAK_DURATION_MILLIS, state.timeLeftInMillis)
         assertFalse(state.isTimerRunning)
-        assertEquals(1, state.pomodorosCompletedInCycle, "Pomodoros should increment when skipping WORK")
+        assertEquals("Pomodoros should increment when skipping WORK", 1, state.pomodorosCompletedInCycle)
     }
 
     @Test
-    fun `skipSession from SHORT_BREAK transitions to WORK`() = runTest {
+    fun `skipSession from SHORT_BREAK transitions to WORK`() = testScope.runTest {
         // Get to SHORT_BREAK first by skipping a WORK session
         viewModel.skipSession() // Now in SHORT_BREAK, pomodorosCompletedInCycle = 1
         assertEquals(SessionType.SHORT_BREAK, viewModel.uiState.value.currentSessionType)
@@ -183,6 +183,6 @@ class PomodoroTimerViewModelTests {
         assertEquals(SessionType.WORK, state.currentSessionType)
         assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS, state.timeLeftInMillis)
         assertFalse(state.isTimerRunning)
-        assertEquals(1, state.pomodorosCompletedInCycle, "Pomodoros should NOT increment when skipping SHORT_BREAK")
+        assertEquals("Pomodoros should NOT increment when skipping SHORT_BREAK", 1, state.pomodorosCompletedInCycle)
     }
 }
