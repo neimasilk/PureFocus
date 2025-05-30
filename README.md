@@ -1,4 +1,196 @@
-# PureFocus: The Blazing-Fast Minimalist Focus App
+# PureFocus
+
+**The Fastest, Most Minimalist Focus Writing App for Android**
+
+[![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://android.com)
+[![Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg)](https://kotlinlang.org)
+[![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-orange.svg)](https://developer.android.com/jetpack/compose)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## 🎯 Vision
+
+PureFocus is designed with one unwavering principle: **Speed and Simplicity Above All Else**. Every design decision, every line of code, and every feature is evaluated against one question: "Does this make the app faster and simpler?"
+
+## ✨ Features
+
+### 🚀 Lightning Fast Performance
+- **< 1 second** app launch time
+- **60fps** text input with zero lag
+- **< 50MB** memory usage
+- **< 10MB** app size
+
+### ✍️ Distraction-Free Writing
+- Full-screen, minimalist text editor
+- No formatting distractions - pure focus on content
+- Automatic text saving every few seconds
+- One-tap text copying for easy export
+
+### 🍅 Integrated Pomodoro Timer
+- Non-intrusive timer overlay
+- Standard 25-minute work sessions
+- 5-minute short breaks, 15-30 minute long breaks
+- Gentle, non-disruptive notifications
+- Zero impact on writing performance
+
+### 🎨 Minimal Design
+- Clean light/dark themes
+- Instantly understandable interface
+- Zero learning curve
+- Optional word/character count (disabled by default)
+
+## 🏗️ Architecture
+
+**Built for Performance:**
+- **Native Android** with Kotlin
+- **Jetpack Compose** for modern, efficient UI
+- **MVVM Architecture** for clean separation
+- **SharedPreferences** for lightning-fast data access
+- **Zero third-party UI libraries** for maximum control
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Android 7.0 (API 24) or higher
+- ~10MB storage space
+
+### Installation
+1. Download the APK from [Releases](../../releases)
+2. Install on your Android device
+3. Launch and start writing immediately
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/PureFocus.git
+cd PureFocus
+
+# Open in Android Studio
+# Build and run
+```
+
+**Development Requirements:**
+- Android Studio (latest stable)
+- JDK 11 or higher
+- Android SDK 34+
+- Physical Android device (recommended for performance testing)
+
+## 📊 Performance Targets
+
+| Metric | Target | Status |
+|--------|--------|---------|
+| App Launch Time | < 1 second | 🔄 In Development |
+| Text Input Latency | < 16ms (60fps) | 🔄 In Development |
+| Memory Usage | < 50MB | 🔄 In Development |
+| APK Size | < 10MB | 🔄 In Development |
+| Battery Impact | Minimal | 🔄 In Development |
+
+## 🛠️ Development Philosophy
+
+PureFocus follows the **"Vibe Coding"** methodology:
+
+1. **Human as Lead Architect** - Strategic planning by humans
+2. **AI as Execution Assistant** - Implementation support
+3. **Context is King** - Comprehensive project documentation
+4. **Baby Steps** - Small, testable development iterations
+5. **Living Documentation** - Continuously updated project knowledge
+
+## 📁 Project Structure
+
+```
+PureFocus/
+├── app/                    # Android application code
+│   ├── src/main/kotlin/    # Kotlin source files
+│   └── src/main/res/       # Android resources
+├── memory-bank/            # Project documentation
+│   ├── proposal.md         # Project proposal
+│   ├── product-design-doc.md
+│   ├── tech-stack.md
+│   ├── implementation-plan.md
+│   ├── architecture.md
+│   ├── progress.md
+│   └── vibe-coding.md      # Development methodology
+└── README.md               # This file
+```
+
+## 🎯 MVP Scope
+
+**What's Included:**
+- ✅ Full-screen text editor
+- ✅ Integrated Pomodoro timer
+- ✅ Auto-save functionality
+- ✅ Copy text feature
+- ✅ Light/dark themes
+- ✅ Basic timer customization
+
+**Intentionally Excluded (for speed and simplicity):**
+- ❌ Rich text formatting
+- ❌ Multiple documents
+- ❌ Cloud sync
+- ❌ Complex settings
+- ❌ Social features
+- ❌ Analytics or tracking
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+./gradlew test
+
+# Run UI tests
+./gradlew connectedAndroidTest
+
+# Performance testing
+# Use Android Studio Profiler for continuous monitoring
+```
+
+## 📈 Development Progress
+
+- **Phase 0:** Initial Setup ✅
+- **Phase 1:** Core Text Editor 🔄
+- **Phase 2:** Pomodoro Integration ⏳
+- **Phase 3:** Settings & Polish ⏳
+- **Phase 4:** Testing & Validation ⏳
+
+See [progress.md](memory-bank/progress.md) for detailed development tracking.
+
+## 🤝 Contributing
+
+PureFocus prioritizes **performance and simplicity** above all else. Contributions must:
+
+1. **Maintain or improve performance targets**
+2. **Reduce complexity, not add it**
+3. **Include performance benchmarks**
+4. **Follow the established architecture**
+5. **Update documentation accordingly**
+
+### Contribution Process
+1. Read the [implementation plan](memory-bank/implementation-plan.md)
+2. Check current [progress](memory-bank/progress.md)
+3. Follow the baby-step methodology
+4. Include performance validation
+5. Update relevant documentation
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Cal Newport** - Deep Work methodology inspiration
+- **Francesco Cirillo** - Pomodoro Technique
+- **Nicolas Zullo & ModernKataKupas** - Vibe Coding methodology inspiration
+- **Android Team** - Jetpack Compose framework
+
+## 📞 Contact
+
+For questions about the project philosophy or development approach, please refer to the comprehensive documentation in the `memory-bank/` directory.
+
+---
+
+**"Speed and Simplicity Above All Else"** - PureFocus Development Philosophy
+
+*Built with ❤️ for writers who value focus over features*: The Blazing-Fast Minimalist Focus App
 
 ## Project Description
 
