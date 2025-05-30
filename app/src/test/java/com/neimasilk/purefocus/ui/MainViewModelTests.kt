@@ -3,11 +3,7 @@ package com.neimasilk.purefocus.ui
 import com.neimasilk.purefocus.data.PreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -25,7 +21,6 @@ import org.mockito.kotlin.any
 class MainViewModelTests {
     
     private val testDispatcher = StandardTestDispatcher()
-    private val testScope = TestScope(testDispatcher)
     
     private lateinit var preferencesManager: PreferencesManager
     private lateinit var viewModel: MainViewModel
@@ -36,6 +31,7 @@ class MainViewModelTests {
         preferencesManager = mock()
         whenever(preferencesManager.isDarkMode).thenReturn(false)
         whenever(preferencesManager.lastText).thenReturn("")
+        viewModel = MainViewModel(preferencesManager)
     }
     
     @After
@@ -44,70 +40,69 @@ class MainViewModelTests {
     }
     
     @Test
-    fun `updateText updates uiState immediately`() = testScope.runTest {
+    fun `updateText updates uiState immediately`() = runTest {
         // Given
-        viewModel = MainViewModel(preferencesManager)
         val newText = "Hello, PureFocus!"
         
         // When
         viewModel.updateText(newText)
         
-        // Then
+        // Then - verify the state was updated
         assertEquals(newText, viewModel.uiState.value.text)
     }
     
     @Test
-    fun `text is saved to preferences after debounce delay`() = testScope.runTest {
+    fun `text is saved to preferences after debounce delay`() = runTest {
         // Given
-        viewModel = MainViewModel(preferencesManager)
         val newText = "Hello, PureFocus!"
         
         // When
         viewModel.updateText(newText)
         
         // Advance time by less than debounce delay (500ms)
-        advanceTimeBy(300)
+        testDispatcher.scheduler.advanceTimeBy(300)
         
         // Then - text should not be saved yet
         verify(preferencesManager, times(0)).lastText = newText
         
         // When - advance time past debounce delay
-        advanceTimeBy(300) // Total 600ms
+        testDispatcher.scheduler.advanceTimeBy(300) // Total 600ms
+        testDispatcher.scheduler.runCurrent() // Run pending tasks
         
         // Then - text should be saved
         verify(preferencesManager).lastText = newText
     }
     
     @Test
-    fun `text is loaded from preferences on init`() = testScope.runTest {
+    fun `text is loaded from preferences on init`() = runTest {
         // Given
         val savedText = "Saved text"
         whenever(preferencesManager.lastText).thenReturn(savedText)
         
-        // When
-        viewModel = MainViewModel(preferencesManager)
+        // When - create a new viewModel to trigger init
+        val newViewModel = MainViewModel(preferencesManager)
         
-        // Then
-        assertEquals(savedText, viewModel.uiState.value.text)
+        // Then - verify the state was initialized with the saved text
+        assertEquals(savedText, newViewModel.uiState.value.text)
     }
     
     @Test
-    fun `multiple rapid text updates only save once`() = testScope.runTest {
+    fun `multiple rapid text updates only save once`() = runTest {
         // Given
-        viewModel = MainViewModel(preferencesManager)
         
         // When - multiple rapid updates
         viewModel.updateText("Text 1")
-        advanceTimeBy(100)
+        testDispatcher.scheduler.advanceTimeBy(100)
         viewModel.updateText("Text 2")
-        advanceTimeBy(100)
+        testDispatcher.scheduler.advanceTimeBy(100)
         viewModel.updateText("Text 3")
         
         // Then - no saves yet
         verify(preferencesManager, times(0)).lastText = any()
         
         // When - advance time past debounce delay
-        advanceTimeBy(500) // Total 700ms
+        testDispatcher.scheduler.advanceTimeBy(500) // Total 700ms
+        testDispatcher.scheduler.runCurrent() // Run pending tasks
         
         // Then - only the last text should be saved
         verify(preferencesManager).lastText = "Text 3"

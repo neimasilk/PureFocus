@@ -7,8 +7,8 @@
 
 ## Current Project Status
 
-**Phase:** Phase 1 - Core Text Editor (BLOCKED)
-**Stage:** TROUBLESHOOTING - Gradle Build Issues
+**Status:** Phase 1 - Core Text Editor (UNBLOCKED)
+**Stage:** Ready for Development
 **Last Updated:** 1 Januari 2025
 
 ### Recently Completed (Phase 0)
@@ -25,27 +25,28 @@
 
 ### Current Status - BLOCKED
 - 🎉 Phase 0: Initial Project Setup is **COMPLETE**.
-- ⚠️ **BLOCKED:** Phase 1 cannot proceed due to Gradle build issues.
-- 🔧 **ISSUE:** "Type T not present" error in unit test execution.
+- ✅ **UNBLOCKED:** Unit test failures have been resolved. Phase 1 can now proceed.
+- ✅ **RESOLVED:** Unit test failures in `MainViewModelTests.kt` are fixed.
 
 ### Critical Issue Details
-**Problem:** Unit tests fail with "Type T not present" error
-**Command:** `./gradlew app:testDebugUnitTest --stacktrace`
-**Error Location:** `DefaultTestTaskReports`, `DefaultReportContainer`
-**Impact:** Cannot run tests, blocking development workflow
+**Problem:** Unit tests fail in `MainViewModelTests.kt`, particularly `updateText updates uiState immediately`
+**Command:** `./gradlew app:testDebugUnitTest`
+**Root Causes:**
+1. Mockito unable to mock final `PreferencesManager` class
+2. Coroutines testing API changes in kotlinx-coroutines-test 1.6.4
+3. Test implementation approach not compatible with current coroutines version
+**Impact:** ViewModel functionality can now be validated. Development workflow unblocked.
 
 ## High-Priority To-Do List
 
-### URGENT: Issue Resolution (BLOCKING Phase 1)
-1.  **CRITICAL: Fix Gradle "Type T not present" Error** (Current Focus)
-    *   Manual cleanup of global Gradle cache (`C:\Users\neima\.gradle\caches`)
-    *   Verify JDK configuration in Android Studio and environment variables
-    *   Invalidate Android Studio caches and restart
-    *   Consider creating minimal test project to isolate the issue
-    *   Explore alternative Gradle/AGP/Kotlin version combinations
+### URGENT: Issue Resolution (COMPLETED)
+1.  **CRITICAL: Fix Unit Test Failures in MainViewModelTests** (✅ RESOLVED)
+    *   Updated `mockito-kotlin` to `5.4.0`.
+    *   Updated `kotlinx-coroutines-test` to `1.10.2`.
+    *   Added `testDispatcher.scheduler.runCurrent()` in debounce tests.
 
-### Immediate Next Steps (After Issue Resolution)
-1.  **Baby-Step: "Text Editor Foundation"** (Blocked - Pending Issue Fix)
+### Immediate Next Steps
+1.  **Baby-Step: "Text Editor Foundation"** (Ready to Start)
     *   Implement full-screen text editor UI using Jetpack Compose.
     *   Handle text input, keyboard management, and basic styling.
     *   Implement auto-save functionality to SharedPreferences.

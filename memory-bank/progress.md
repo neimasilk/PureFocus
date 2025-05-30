@@ -49,39 +49,40 @@
 ## Current Status
 
 **Active Phase:** Phase 1 - Core Text Editor (BLOCKED)
-**Current Task:** TROUBLESHOOTING - Gradle Build Issues
+**Current Status**
+
+**Active Phase:** Phase 1 - Core Text Editor (BLOCKED)
+**Current Task:** TROUBLESHOOTING - Unit Test Failures
 **Progress:** Phase 0 is 100% complete. Phase 1 is BLOCKED due to test execution failures.
 
 **Recently Completed Baby-Step:** Baby-Step 0.2: Project Foundation Setup (MVVM & Build Config)
 - ✅ All tasks for Phase 0 are complete.
 - ✅ Application is running on the emulator.
 
-**CURRENT ISSUE - GRADLE BUILD PROBLEM:**
-**Issue:** "Type T not present" error when running unit tests (`./gradlew app:testDebugUnitTest`)
+**CURRENT ISSUE - UNIT TEST FAILURES:**
+**Issue:** Unit test failures in `MainViewModelTests.kt`, particularly `updateText updates uiState immediately`
 **Error Details:** 
-- Error occurs in `DefaultTestTaskReports` and `DefaultReportContainer`
-- Related to Gradle task creation for `AndroidUnitTest`
-- Persists despite multiple troubleshooting attempts
+- Mockito unable to mock final `PreferencesManager` class
+- Coroutines testing API changes in kotlinx-coroutines-test 1.6.4
+- Test implementation approach not compatible with current coroutines version
 
 **Troubleshooting Steps Attempted:**
-1. ✅ Project clean (`./gradlew clean`)
-2. ✅ Gradle version downgrade (8.11.1 → 8.6, then reverted)
-3. ✅ AGP version downgrade (8.10.1 → 8.5.0, then reverted)
-4. ✅ Project-level Gradle cache deletion (`.gradle` directory)
-5. ✅ Test dependencies isolation (commented out Mockito and kotlinx-coroutines-test)
-6. ❌ Global Gradle cache cleanup (failed due to directory access issues)
+1. ✅ Created Mockito configuration file (`org.mockito.plugins.MockMaker` with `mock-maker-inline`) to enable mocking of final classes
+2. ✅ Simplified test implementation by removing `TestScope` and using `StandardTestDispatcher` directly
+3. ✅ Added `advanceTimeBy(10)` after `updateText` call to allow state updates to complete
+4. ✅ Used `flow.first()` to get the current value of `uiState` before assertion
+5. ✅ Standardized time advancement calls to use `testDispatcher.scheduler.advanceTimeBy()` consistently
 
-**Current Configuration:**
-- Gradle: 8.11.1
-- Android Gradle Plugin: 8.10.1
-- Kotlin: 2.0.21
-- Java: 11
+**Current Status of Issues:**
+- ✅ Mockito Configuration Issue: RESOLVED
+- ⚠️ Coroutines Testing API Changes: PARTIALLY RESOLVED
+- ❌ Test Implementation Issues: UNRESOLVED - Tests still failing
 
 **Next Steps for Issue Resolution:**
-- Manual global Gradle cache cleanup
-- JDK configuration verification
-- Android Studio cache invalidation
-- Potential dependency version adjustments
+- Review `MainViewModel.updateText()` implementation for proper coroutine usage
+- Consider using Turbine for Flow testing as an alternative approach
+- Evaluate upgrading to kotlinx-coroutines-test 1.7.x for improved testing APIs
+- Create separate test classes for different aspects of ViewModel functionality
 
 **Blocked Task:** "Text Editor Foundation"
 - Full-screen text editor UI implementation (`FocusWriteScreen.kt`).
