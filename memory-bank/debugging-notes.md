@@ -1,7 +1,7 @@
 # PureFocus - Debugging Notes
 
-**Document Version:** 1.1
-**Date:** 1 Juni 2025
+**Document Version:** 1.2
+**Date:** 2 Juni 2025
 **Project:** PureFocus - Minimalist Focus Writing App
 **Status:** Unit Test Migration to Robolectric Complete
 
@@ -133,3 +133,56 @@ For better test reliability and real Android behavior testing:
 **Document Update Frequency:** After significant debugging progress
 **Next Update:** As needed for new debugging sessions
 **Review Schedule:** As needed during debugging sessions
+
+---
+
+## Gradle Build Debugging - AbstractManagedExecutor Error
+
+**Date:** 2 Juni 2025
+**Issue:** Persistent `java.util.concurrent.RejectedExecutionException` related to `org.gradle.internal.concurrent.AbstractManagedExecutor` when running any Gradle task (e.g., `./gradlew tasks`, `./gradlew help`).
+**Status:** ⚠️ UNRESOLVED (by automated means) - Requires manual testing with Administrator privileges.
+**Update:** Panduan troubleshooting lengkap telah dibuat di [gradle-troubleshooting-guide.md](./gradle-troubleshooting-guide.md).
+
+### Diagnostic Steps and Attempts:
+
+1.  **Initial Checks & Basic Tasks:**
+    *   Ran `./gradlew help` and `./gradlew tasks` with various logging options (`--stacktrace`, `--info`, `--warning-mode all`).
+    *   Consistent failure with `AbstractManagedExecutor` error, build failing in ~2 seconds.
+
+2.  **Configuration File Review & Modification:**
+    *   Reviewed `build.gradle.kts` (root and app), `settings.gradle.kts`, `gradle.properties`, `gradle-wrapper.properties`, `gradlew.bat`.
+    *   Temporarily commented out `org.gradle.jvmargs` in `gradle.properties` – no change, error persisted, build time increased. Reverted change.
+    *   Verified Gradle wrapper version: `gradle-8.11.1-bin.zip`.
+
+3.  **Cache Cleaning:**
+    *   Deleted project-local `.gradle` directory. Error persisted.
+    *   Stopped Gradle daemons using `./gradlew --stop`. (No daemons were found running before this command).
+    *   Deleted global Gradle cache (`C:\Users\neima\.gradle`). Error persisted, build time increased significantly for the first run after cache clear, then back to ~2s failure.
+
+4.  **Java Environment Investigation:**
+    *   Checked `JAVA_HOME`: Pointed to `C:\Program Files\Android\Android Studio\jbr` (OpenJDK 21.0.6).
+    *   Checked `java -version` from PATH: Showed Java 24.0.1.
+    *   Ran Gradle with `JAVA_HOME` temporarily unset (to force usage of Java from PATH) – error persisted.
+    *   Ran Gradle with `-Dorg.gradle.daemon=false` – error persisted.
+
+5.  **System Environment Variables:**
+    *   Listed all environment variables (`Get-ChildItem Env:`). No obvious conflicting variables found.
+
+### Summary of Findings:
+
+*   The `AbstractManagedExecutor` error is highly persistent and occurs very early in Gradle's initialization phase.
+*   Modifying JVM arguments, cleaning caches (local and global), and changing the Java version (between JBR 21 and system Java 24) did not resolve the issue.
+*   Disabling the Gradle daemon also had no effect.
+*   Standard Gradle logs did not provide specific details about the root cause of the `RejectedExecutionException`.
+
+### Final Recommendation (as of 2 Juni 2025):
+
+*   The issue could be related to system-level permissions or interference from other software.
+*   **Next Step:** Manually run Gradle commands from a PowerShell terminal opened **as Administrator** to rule out permission issues.
+    *   `cd "C:\Users\neima\Documents\PureFocus"`
+    *   `./gradlew tasks --stacktrace --info --warning-mode all`
+*   If running as administrator fails, further investigation might involve:
+    *   Checking security software (antivirus, firewall).
+    *   System integrity checks.
+    *   Testing on a different machine or a clean Windows environment.
+    *   Reporting the issue to Gradle with detailed system information if it's suspected to be a bug.

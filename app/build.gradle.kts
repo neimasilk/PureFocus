@@ -6,9 +6,12 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+
 android {
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     namespace = "com.neimasilk.purefocus"
     compileSdk = 34
@@ -34,19 +37,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompilerExtension.get()
     }
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
     }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
+    // Removed Java toolchain configuration to use system default Java
+    // The second buildFeatures block was consolidated and removed
 }
 
 dependencies {
@@ -82,15 +83,13 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     
     // Testing
-    // Ganti dependensi testing dengan versi yang lebih stabil
     testImplementation(libs.junit)
-    // Gunakan versi yang lebih rendah atau lebih stabil dari Mockito
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-    testImplementation("org.mockito:mockito-inline:3.12.4")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4") // For testing coroutines
-    testImplementation("app.cash.turbine:turbine:0.12.1") // For StateFlow testing
+    // Menggunakan Robolectric untuk testing dengan real Android components
     testImplementation("org.robolectric:robolectric:4.11.1") // For Android unit testing
     testImplementation("androidx.test:core:1.5.0") // For ApplicationProvider
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2") // For testing coroutines
+    testImplementation("app.cash.turbine:turbine:0.12.1") // For StateFlow testing
+    
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

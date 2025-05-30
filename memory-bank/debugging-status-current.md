@@ -1,5 +1,7 @@
 # Status Debugging Terkini - PureFocus Android Project
 
+> **Update Terbaru:** Panduan troubleshooting Gradle telah dibuat untuk mengatasi masalah build. Lihat [gradle-troubleshooting-guide.md](./gradle-troubleshooting-guide.md) untuk detail lengkap.
+
 ## Ringkasan Masalah yang Telah Diselesaikan
 
 ### 1. Ketidakcocokan Versi Java/Kotlin
