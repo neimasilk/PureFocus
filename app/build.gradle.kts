@@ -1,17 +1,21 @@
 plugins {
+    
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    
 }
 
 android {
+    buildFeatures {
+        compose = true
+    }
     namespace = "com.neimasilk.purefocus"
-    compileSdk = 30
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.neimasilk.purefocus"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -31,6 +35,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompilerExtension.get()
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -71,10 +78,10 @@ dependencies {
     // Ganti dependensi testing dengan versi yang lebih stabil
     testImplementation(libs.junit)
     // Gunakan versi yang lebih rendah atau lebih stabil dari Mockito
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
     testImplementation("org.mockito:mockito-inline:3.12.4")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2") // For testing coroutines
-    testImplementation("app.cash.turbine:turbine:0.13.0") // For StateFlow testing
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0") // For testing coroutines
+    testImplementation("app.cash.turbine:turbine:0.7.0") // For StateFlow testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
