@@ -1,17 +1,17 @@
 # PureFocus - Status, Todo & Suggestions
 
-**Document Version:** 1.1  
-**Date:** 31 Mei 2025  
-**Project:** PureFocus - Minimalist Focus Writing App  
-**Status:** Initial Setup Phase
+**Document Version:** 1.2
+**Date:** 31 Mei 2025
+**Project:** PureFocus - Minimalist Focus Writing App
+**Status:** Phase 0 Complete, Ready for Phase 1
 
 ## Current Project Status
 
-**Phase:** Phase 0 - Initial Project Setup  
-**Stage:** Environment Setup and Basic Architecture Implementation  
+**Phase:** Phase 0 - Initial Project Setup (COMPLETED)
+**Stage:** Application successfully running on emulator.
 **Last Updated:** 31 Mei 2025
 
-### Recently Completed
+### Recently Completed (Phase 0)
 - ✅ Project proposal finalized (v1.2)
 - ✅ Product Design Document created
 - ✅ Technology Stack documented
@@ -20,125 +20,85 @@
 - ✅ Repository created and configured
 - ✅ Android Studio project setup with Kotlin and Jetpack Compose
 - ✅ Basic project structure with theme system implemented
+- ✅ Core MVVM architecture foundation implemented (`PureFocusApplication.kt`, `MainActivity.kt` updated, `build.gradle.kts` for `BuildConfig`)
+- ✅ Application successfully builds and runs on emulator.
 
 ### Current Status
-- 📝 Core planning documents completed
-- 🔄 Environment setup partially completed
-- 🔄 Basic architecture implementation in progress
+- 🎉 Phase 0: Initial Project Setup is **COMPLETE**.
+- 🚀 Ready to start Phase 1: Core Text Editor.
 
 ## High-Priority To-Do List
 
-### Immediate Next Steps (Phase 0 Completion)
-1. **Architecture Foundation Completion**
-   - Implement full MVVM architecture structure
-   - Create SharedPreferences wrapper class
-   - Implement ViewModel with StateFlow
-   - Add theme persistence functionality
+### Immediate Next Steps (Phase 1 Start)
+1.  **Baby-Step: "Text Editor Foundation"** (Current Focus)
+    *   Implement full-screen text editor UI using Jetpack Compose.
+    *   Handle text input, keyboard management, and basic styling.
+    *   Implement auto-save functionality to SharedPreferences.
+    *   Optimize for performance (input latency, recompositions).
 
-2. **Performance Foundation**
-   - Configure ProGuard for release builds (enable minify and shrinkResources)
-   - Create performance monitoring utilities
-   - Implement StrictMode for debug builds
-   - Create Application class and register in AndroidManifest
-
-3. **Phase 1 Preparation**
-   - Write unit tests for initial components
-   - Validate performance metrics (startup time, memory usage)
-   - Create first baby-step for text editor implementation
-   - Set up testing framework
-
-### Medium-Term Goals (Next 2-3 Weeks)
-1. **Core Text Editor Development**
-   - Full-screen text input implementation
-   - Auto-save mechanism
-   - Performance optimization
-   - Copy functionality
-
-2. **Pomodoro Timer Integration**
-   - Basic timer functionality
-   - Non-intrusive UI integration
-   - Notification system
-
-3. **Essential Settings**
-   - Minimal settings interface
-   - Timer customization
-   - Optional word count
+### Medium-Term Goals (Next 2-3 Weeks - Phase 1 & 2)
+1.  **Core Text Editor Development (Phase 1)**
+    *   Complete "Text Editor Foundation" baby-step.
+    *   Implement text editor optimization (copy, memory usage for large text).
+2.  **Pomodoro Timer Integration (Phase 2)**
+    *   Basic timer implementation (ViewModel, coroutines).
+    *   Timer UI and notifications (minimal, non-intrusive).
 
 ## Baby-Step To-Do List Suggestion
 
 ### Next Baby-Step: "Text Editor Foundation"
 
-**Objective:** Implement the core text editor functionality with full-screen editing and auto-save capabilities.
+**Objective:** Implement the core text editor functionality with full-screen editing and auto-save capabilities, ensuring high performance.
 
 **Estimated Duration:** 3-4 days
 
 **Detailed Tasks:**
-1. **Text Editor UI Implementation**
-   - Create full-screen text input component with Compose
-   - Implement soft keyboard handling
-   - Configure edge-to-edge display
-   - Optimize for minimal UI elements
-
-2. **Auto-Save Functionality**
-   - Implement text change listener
-   - Create auto-save mechanism with SharedPreferences
-   - Add debounce functionality to prevent excessive writes
-   - Implement state restoration on app restart
-
-3. **Performance Optimization**
-   - Optimize Compose recomposition for text input
-   - Measure and optimize input latency
-   - Implement efficient text rendering
-   - Add performance monitoring for text operations
-
-4. **Basic Text Operations**
-   - Implement copy/paste functionality
-   - Add basic text selection
-   - Implement scroll behavior for long text
-   - Handle text buffer efficiently
+1.  **Text Editor UI Implementation (`FocusWriteScreen.kt`)**
+    *   Create a new Composable function `FocusWriteScreen` in a new file `app/src/main/java/com/neimasilk/purefocus/ui/screen/FocusWriteScreen.kt`.
+    *   This screen should contain a full-screen `BasicTextField` for text input.
+    *   Ensure the text field takes up the entire screen, edge-to-edge.
+    *   Implement basic keyboard handling (show/hide, focus management).
+    *   Apply basic text styling (font size, color) from the existing theme.
+2.  **ViewModel Integration (`MainViewModel.kt`)**
+    *   Add a `MutableStateFlow<String>` to `MainViewModel.kt` to hold the editor's text content.
+    *   Connect `FocusWriteScreen` to this StateFlow to display and update the text.
+3.  **Auto-Save Functionality (`MainViewModel.kt` & `PreferencesManager.kt`)**
+    *   In `MainViewModel.kt`, observe changes to the text StateFlow.
+    *   Implement a debounced auto-save mechanism (e.g., save 1-2 seconds after the user stops typing).
+    *   Use `PreferencesManager.kt` (create if it doesn't exist, or update if it does) to save the text to SharedPreferences under a key like `KEY_EDITOR_DRAFT`.
+    *   Load the saved draft from SharedPreferences when the ViewModel is initialized.
+4.  **Performance Optimization & Testing**
+    *   Focus on minimizing recompositions in `FocusWriteScreen` during text input.
+    *   Manually test typing responsiveness. Aim for <16ms input latency.
+    *   Test auto-save and text restoration after app restart.
 
 **Success Criteria:**
-- Text editor launches in under 1 second
-- Input latency less than 16ms (60fps typing experience)
-- Text auto-saves reliably after changes
-- Text state persists across app restarts
-- Memory usage remains under 50MB during extended typing
+-   `FocusWriteScreen.kt` displays a full-screen text editor.
+-   Text input is smooth and responsive (feels like 60fps).
+-   Text is automatically saved to SharedPreferences a few seconds after typing stops.
+-   The last saved text is restored when the app restarts.
+-   Memory usage remains stable and low (< 50MB) during typing.
 
 **Validation Methods:**
-- Measure startup time with performance monitoring
-- Test typing experience on various devices
-- Verify text persistence after force-closing app
-- Monitor memory usage during extended typing sessions
-- Validate smooth scrolling with large text documents
+-   Run the app and verify the full-screen editor.
+-   Type extensively and observe UI responsiveness.
+-   Check SharedPreferences (e.g., via Device File Explorer) to confirm text is saved.
+-   Restart the app (close and reopen) to verify text restoration.
+-   Use Android Studio Profiler to monitor recompositions and memory usage.
 
 ## Suggestions and Considerations
 
 ### Performance Optimization Reminders
-- Continuously monitor app startup time during development
-- Profile memory usage after each major feature addition
-- Test on lower-end devices to ensure broad compatibility
-- Measure and optimize Compose recomposition frequency
+-   Prioritize `remember` and `derivedStateOf` to minimize recompositions.
+-   Profile frequently, especially the text input path.
+-   Test on a physical device if possible, including lower-end models.
 
 ### Development Best Practices
-- Commit frequently with clear, descriptive messages
-- Test each baby-step thoroughly before proceeding
-- Update architecture.md with significant structural changes
-- Maintain performance targets throughout development
-
-### Risk Mitigation
-- Keep backup of working versions before major changes
-- Test on multiple Android versions and devices
-- Monitor for memory leaks during extended usage
-- Validate auto-save functionality regularly
-
-### Future Considerations
-- Plan for accessibility features early in development
-- Consider internationalization structure for future expansion
-- Design with potential iOS port in mind (but don't compromise Android optimization)
-- Keep user feedback collection strategy in mind for post-MVP
+-   Create new files in appropriate package structures (e.g., `ui/screen/`, `data/`).
+-   Write unit tests for ViewModel logic, especially auto-save.
 
 ---
 
-**Next Update:** After environment setup completion  
-**Review Frequency:** After each baby-step completion  
+**Next Update:** After completion of the "Text Editor Foundation" baby-step.
+**Review Frequency:** After each baby-step completion.
 **Document Owner:** Development team

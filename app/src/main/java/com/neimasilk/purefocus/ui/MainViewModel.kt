@@ -3,9 +3,13 @@ package com.neimasilk.purefocus.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neimasilk.purefocus.data.PreferencesManager
+import com.neimasilk.purefocus.util.PerformanceMonitor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -42,12 +46,28 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
     }
 
     /**
-     * Update teks dan simpan ke preferences
+     * Update teks dan simpan ke preferences dengan debouncing
+     * untuk mengurangi operasi I/O yang berlebihan
      */
     fun updateText(newText: String) {
         _uiState.update { it.copy(text = newText) }
+    }
+    
+    // Inisialisasi debouncing untuk auto-save
+    init {
+        // Observe perubahan text dan simpan ke preferences setelah 500ms tidak ada perubahan
         viewModelScope.launch {
-            preferencesManager.lastText = newText
+            _uiState
+                .map { it.text }
+                .distinctUntilChanged()
+                .debounce(500) // Tunggu 500ms setelah input terakhir
+                .collect { text ->
+                    // Hanya simpan jika teks tidak kosong atau berbeda dari yang tersimpan
+                    if (text != preferencesManager.lastText) {
+                        preferencesManager.lastText = text
+                        PerformanceMonitor.logMemoryUsage() // Monitor penggunaan memori setelah save
+                    }
+                }
         }
     }
 }

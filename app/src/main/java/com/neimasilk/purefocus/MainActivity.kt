@@ -4,17 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +19,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.ui.MainViewModel
+import com.neimasilk.purefocus.ui.screens.FocusWriteScreen
 import com.neimasilk.purefocus.ui.theme.PureFocusTheme
 import com.neimasilk.purefocus.util.PerformanceMonitor
 
@@ -50,11 +48,9 @@ class MainActivity : ComponentActivity() {
             PureFocusTheme(darkTheme = uiState.isDarkMode) {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Scaffold { innerPadding ->
-                        MainScreen(
+                        FocusWriteScreen(
                             text = uiState.text,
-                            isDarkMode = uiState.isDarkMode,
                             onTextChanged = { viewModel.updateText(it) },
-                            onToggleTheme = { viewModel.toggleTheme() },
                             modifier = Modifier.padding(innerPadding)
                         )
                     }
@@ -68,32 +64,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MainScreen(
-    text: String,
-    isDarkMode: Boolean,
-    onTextChanged: (String) -> Unit,
-    onToggleTheme: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        // Placeholder untuk implementasi text editor
-        Text(
-            text = "Hello PureFocus!",
-            style = MaterialTheme.typography.headlineMedium
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
+fun FocusWriteScreenPreview() {
     PureFocusTheme {
-        MainScreen(
-            text = "",
-            isDarkMode = false,
-            onTextChanged = {},
-            onToggleTheme = {}
+        FocusWriteScreen(
+            text = "Ini adalah contoh teks untuk preview.",
+            onTextChanged = {}
         )
     }
 }
