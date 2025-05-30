@@ -1,106 +1,121 @@
 # PureFocus - Status, Todo & Suggestions
 
-**Document Version:** 1.2
-**Date:** 31 Mei 2025
+**Document Version:** 1.3
+**Date:** 1 Juni 2025
 **Project:** PureFocus - Minimalist Focus Writing App
-**Status:** Phase 0 Complete, Ready for Phase 1
+**Status:** Phase 1 In Progress
 
-## Current Project Status
+## Current Status
 
-**Status:** Phase 1 - Core Text Editor (UNBLOCKED)
-**Stage:** Ready for Development
-**Last Updated:** 1 Januari 2025
+**Active Phase:** Phase 1 - Core Text Editor (UNBLOCKED)
+**Current Task:** Text Editor Optimization
+**Progress:** Phase 0 is 100% complete. Phase 1 is 25% complete with Text Editor Foundation implemented.
 
-### Recently Completed (Phase 0)
-- ✅ Project proposal finalized (v1.2)
-- ✅ Product Design Document created
-- ✅ Technology Stack documented
-- ✅ MVP Implementation Plan detailed
-- ✅ Memory bank structure established
-- ✅ Repository created and configured
-- ✅ Android Studio project setup with Kotlin and Jetpack Compose
-- ✅ Basic project structure with theme system implemented
-- ✅ Core MVVM architecture foundation implemented (`PureFocusApplication.kt`, `MainActivity.kt` updated, `build.gradle.kts` for `BuildConfig`)
-- ✅ Application successfully builds and runs on emulator.
+**Recently Completed Baby-Step:** Baby-Step 1.1: Text Editor Foundation
+- ✅ All tasks for Phase 0 are complete.
+- ✅ Application is running on the emulator.
+- ✅ Full-screen text editor UI implemented (`FocusWriteScreen.kt`).
+- ✅ ViewModel integration for text state (`MainViewModel.kt`).
+- ✅ Auto-save functionality implemented with debouncing in `PreferencesManager.kt`.
+- ✅ Performance optimization for text input implemented.
+- ✅ All unit tests are passing.
 
-### Current Status - BLOCKED
-- 🎉 Phase 0: Initial Project Setup is **COMPLETE**.
-- ✅ **UNBLOCKED:** Unit test failures have been resolved. Phase 1 can now proceed.
-- ✅ **RESOLVED:** Unit test failures in `MainViewModelTests.kt` are fixed.
+**RESOLVED ISSUES:**
+**Issue:** Unit tests fail in `MainViewModelTests.kt`, particularly `updateText updates uiState immediately`
+**Resolution:** 
+- Updated `mockito-kotlin` to `5.4.0`.
+- Updated `kotlinx-coroutines-test` to `1.10.2`.
+- Added `testDispatcher.scheduler.runCurrent()` in debounce tests.
+- All tests now pass successfully.
 
-### Critical Issue Details
-**Problem:** Unit tests fail in `MainViewModelTests.kt`, particularly `updateText updates uiState immediately`
-**Command:** `./gradlew app:testDebugUnitTest`
-**Root Causes:**
-1. Mockito unable to mock final `PreferencesManager` class
-2. Coroutines testing API changes in kotlinx-coroutines-test 1.6.4
-3. Test implementation approach not compatible with current coroutines version
-**Impact:** ViewModel functionality can now be validated. Development workflow unblocked.
+**Next Task:** "Text Editor Optimization"
+- Implement copy/paste functionality with improved UX.
+- Optimize memory usage for large text documents.
+- Add text selection and basic formatting options.
+- Implement scroll position saving and restoration.
 
-## High-Priority To-Do List
+## Current Baby-Step: Text Editor Optimization
 
-### URGENT: Issue Resolution (COMPLETED)
-1.  **CRITICAL: Fix Unit Test Failures in MainViewModelTests** (✅ RESOLVED)
-    *   Updated `mockito-kotlin` to `5.4.0`.
-    *   Updated `kotlinx-coroutines-test` to `1.10.2`.
-    *   Added `testDispatcher.scheduler.runCurrent()` in debounce tests.
+**Objective:** Enhance the text editor with improved UX features and optimize for large text documents.
 
-### Immediate Next Steps
-1.  **Baby-Step: "Text Editor Foundation"** (Ready to Start)
-    *   Implement full-screen text editor UI using Jetpack Compose.
-    *   Handle text input, keyboard management, and basic styling.
-    *   Implement auto-save functionality to SharedPreferences.
-    *   Optimize for performance (input latency, recompositions).
+**Tasks:**
+1. Enhance `FocusWriteScreen.kt` with copy/paste improvements.
+   - Add custom copy/paste menu with improved UX.
+   - Implement text selection highlighting.
+   - Add scroll position saving and restoration.
 
-### Medium-Term Goals (Next 2-3 Weeks - Phase 1 & 2)
-1.  **Core Text Editor Development (Phase 1)**
-    *   Complete "Text Editor Foundation" baby-step.
-    *   Implement text editor optimization (copy, memory usage for large text).
-2.  **Pomodoro Timer Integration (Phase 2)**
-    *   Basic timer implementation (ViewModel, coroutines).
-    *   Timer UI and notifications (minimal, non-intrusive).
+2. Optimize `MainViewModel.kt` for memory efficiency.
+   - Implement chunking for large text documents.
+   - Add progressive loading for better performance.
+   - Optimize debounce logic for frequent updates.
+
+3. Add text selection and formatting features.
+   - Implement basic text selection UI.
+   - Add simple formatting options (bold, italic).
+   - Ensure formatting persists with text content.
+
+4. Enhance scroll position management.
+   - Save scroll position with text content.
+   - Restore position on app restart.
+   - Implement smooth scrolling animations.
+
+**Success Criteria:**
+- Text editor handles documents up to 100,000 characters without performance degradation.
+- Copy/paste operations work smoothly with custom UI.
+- Text selection is intuitive and responsive.
+- Scroll position is maintained across app restarts.
+- Memory usage stays below 50MB for large documents.
+- All unit tests pass.
+
+**Validation Method:**
+- Run unit tests for ViewModel and text processing.
+- Manual testing with large text documents.
+- Use Android Studio Profiler to verify memory usage.
+- Verify scroll position persistence across app restarts.
+
+### Phase 1: Core Text Editor (25% Complete)
+- ✅ **Baby-Step 1.1: Text Editor Foundation** (Completed June 1, 2025)
+- ⏳ **Baby-Step 1.2: Text Editor Optimization** (Current) (Copy, Large Text Handling)
 
 ## Baby-Step To-Do List Suggestion
 
-### Next Baby-Step: "Text Editor Foundation"
+### Next Baby-Step: "Text Editor Optimization"
 
-**Objective:** Implement the core text editor functionality with full-screen editing and auto-save capabilities, ensuring high performance.
+**Objective:** Enhance the text editor with improved memory management, copy/paste functionality, and text selection features while maintaining high performance.
 
 **Estimated Duration:** 3-4 days
 
 **Detailed Tasks:**
-1.  **Text Editor UI Implementation (`FocusWriteScreen.kt`)**
-    *   Create a new Composable function `FocusWriteScreen` in a new file `app/src/main/java/com/neimasilk/purefocus/ui/screen/FocusWriteScreen.kt`.
-    *   This screen should contain a full-screen `BasicTextField` for text input.
-    *   Ensure the text field takes up the entire screen, edge-to-edge.
-    *   Implement basic keyboard handling (show/hide, focus management).
-    *   Apply basic text styling (font size, color) from the existing theme.
-2.  **ViewModel Integration (`MainViewModel.kt`)**
-    *   Add a `MutableStateFlow<String>` to `MainViewModel.kt` to hold the editor's text content.
-    *   Connect `FocusWriteScreen` to this StateFlow to display and update the text.
-3.  **Auto-Save Functionality (`MainViewModel.kt` & `PreferencesManager.kt`)**
-    *   In `MainViewModel.kt`, observe changes to the text StateFlow.
-    *   Implement a debounced auto-save mechanism (e.g., save 1-2 seconds after the user stops typing).
-    *   Use `PreferencesManager.kt` (create if it doesn't exist, or update if it does) to save the text to SharedPreferences under a key like `KEY_EDITOR_DRAFT`.
-    *   Load the saved draft from SharedPreferences when the ViewModel is initialized.
-4.  **Performance Optimization & Testing**
-    *   Focus on minimizing recompositions in `FocusWriteScreen` during text input.
-    *   Manually test typing responsiveness. Aim for <16ms input latency.
-    *   Test auto-save and text restoration after app restart.
+1.  **Copy/Paste Enhancement (`FocusWriteScreen.kt`)**
+    *   Implement custom copy/paste UI elements for better user experience.
+    *   Add visual feedback for text selection.
+    *   Ensure clipboard operations work efficiently with large text.
+2.  **Memory Optimization (`MainViewModel.kt`)**
+    *   Implement efficient text handling for large documents.
+    *   Consider chunking or lazy loading for very large text.
+    *   Add memory usage monitoring and optimization.
+3.  **Text Selection and Basic Formatting**
+    *   Implement text selection UI with handles.
+    *   Add basic formatting options (bold, italic) if appropriate for the minimalist design.
+    *   Ensure selection state persists appropriately.
+4.  **Scroll Position Management**
+    *   Save and restore scroll position when app is backgrounded/resumed.
+    *   Implement smooth scrolling and maintain position during text changes.
+    *   Add scroll position to saved state.
 
 **Success Criteria:**
--   `FocusWriteScreen.kt` displays a full-screen text editor.
--   Text input is smooth and responsive (feels like 60fps).
--   Text is automatically saved to SharedPreferences a few seconds after typing stops.
--   The last saved text is restored when the app restarts.
--   Memory usage remains stable and low (< 50MB) during typing.
+-   Copy/paste operations work smoothly with visual feedback.
+-   Memory usage remains stable (< 50MB) even with large text documents (10,000+ characters).
+-   Text selection is intuitive and responsive.
+-   Scroll position is maintained when app is backgrounded and resumed.
+-   All operations maintain the app's performance target (< 16ms per frame).
 
 **Validation Methods:**
--   Run the app and verify the full-screen editor.
--   Type extensively and observe UI responsiveness.
--   Check SharedPreferences (e.g., via Device File Explorer) to confirm text is saved.
--   Restart the app (close and reopen) to verify text restoration.
--   Use Android Studio Profiler to monitor recompositions and memory usage.
+-   Test with large text documents to verify memory efficiency.
+-   Measure and compare memory usage before and after optimizations.
+-   Test copy/paste with various text sizes and content types.
+-   Verify scroll position restoration after app restart.
+-   Use Android Studio Profiler to monitor performance during all operations.
 
 ## Suggestions and Considerations
 
@@ -115,6 +130,6 @@
 
 ---
 
-**Next Update:** After completion of the "Text Editor Foundation" baby-step.
+**Next Update:** After "Text Editor Optimization" baby-step completion.
 **Review Frequency:** After each baby-step completion.
 **Document Owner:** Development team
