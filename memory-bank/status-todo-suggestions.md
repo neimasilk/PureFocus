@@ -1,157 +1,115 @@
-# Status, To-Do, and Suggestions for PureFocus
+# PureFocus: Status, To-Do & Saran
 
-## Status Saat Ini (per 31 Mei 2025)
+## Status Saat Ini (Per 31 Mei 2025)
 
-**Konteks Proyek:** PureFocus adalah aplikasi Android yang dirancang untuk meningkatkan fokus pengguna melalui teknik Pomodoro dan fitur "Focus Write". Arsitektur mengikuti MVVM dengan Hilt untuk DI, Coroutines & Flow untuk asynchronous programming, DataStore untuk preferensi, dan Jetpack Compose untuk UI.
+Aplikasi PureFocus telah mencapai tonggak penting. Fungsionalitas inti telah berhasil diimplementasikan dan diverifikasi melalui serangkaian unit test dan UI test yang semuanya lolos.
 
-**Pencapaian Utama:**
-* Fondasi aplikasi (struktur proyek, DI, navigasi dasar) telah dibangun.
-* Logika inti untuk Pomodoro Timer (`PomodoroTimerViewModel`) telah diimplementasikan, termasuk:
-    * Manajemen state (Idle, Running, Paused).
-    * Transisi antar sesi (Focus, Short Break, Long Break).
-    * Fungsi timer (start, pause, reset, skip).
-    * Penghitungan siklus Pomodoro.
-* Manajemen preferensi untuk durasi sesi (`PreferencesManager` menggunakan DataStore) telah diimplementasikan.
-* Layar awal untuk "Focus Write" (`FocusWriteScreen`) telah dibuat menggunakan Jetpack Compose, menampilkan timer dan area input teks dasar.
-* Unit test untuk `PreferencesManager` dan `PomodoroTimerViewModel` telah dibuat dan **semua lolos**. Pengujian Flow menggunakan `Turbine`.
-* Dependensi proyek telah dikonfigurasi dengan baik.
-* Dasar `PerformanceMonitor` telah ada.
-* **[BARU] Sistem notifikasi untuk akhir sesi fokus** telah diimplementasikan:
-    * `NotificationHelper` untuk menampilkan notifikasi.
-    * Event-driven notification melalui `showFocusEndNotificationEvent` di `PomodoroTimerViewModel`.
-    * Integrasi notifikasi di `MainActivity` dengan collection dari Flow event.
-* **[BARU] UI Pengaturan (Settings Screen)** telah diimplementasikan:
-    * `SettingsScreen` dengan input untuk durasi sesi fokus.
-    * `SettingsViewModel` untuk manajemen state pengaturan.
-    * Navigasi antara `FocusWriteScreen` dan `SettingsScreen` di `MainActivity`.
-    * Integrasi dengan `PreferencesManager` untuk penyimpanan pengaturan.
-* **[BARU] Foreground Service untuk Timer** telah diimplementasikan:
-    * `PomodoroService` sebagai foreground service untuk menjaga timer tetap berjalan.
-    * Notifikasi persisten yang menampilkan status timer dan waktu tersisa.
-    * Integrasi dengan `PomodoroTimerViewModel` melalui `SharedFlow` untuk kontrol service.
-    * Pembaruan `AndroidManifest.xml` dengan deklarasi service dan izin yang diperlukan.
-    * Perbaikan masalah izin notifikasi di `NotificationHelper.kt`.
-* **[BARU] Instrumented Test untuk FocusWriteScreen** telah diimplementasikan:
-    * `FocusWriteScreenTest` dengan test case untuk memverifikasi keberadaan elemen UI dasar.
-    * Penambahan `testTag` ke `BasicTextField` di `FocusWriteScreen` untuk mendukung testing.
-    * Test APK berhasil di-build dan siap untuk dijalankan pada device/emulator.
-    * Struktur testing UI telah disiapkan untuk pengembangan test lebih lanjut.
+**Fitur yang Telah Diimplementasikan & Diverifikasi:**
 
-**Kesimpulan Status:**
-Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Semua Baby Steps (1-5) telah berhasil diselesaikan**: Notifikasi, Settings UI, Focus Write Text Logging, Foreground Service, dan Instrumented Test. Aplikasi kini memiliki sistem notifikasi yang berfungsi, UI pengaturan yang terintegrasi, foreground service yang memastikan timer berjalan dengan akurat bahkan saat aplikasi di background, logging teks focus write, dan struktur testing UI yang solid. Semua unit test lolos, build berhasil, dan instrumented test APK siap dijalankan. Proyek siap untuk tahap pengembangan berikutnya dengan fondasi yang solid dan teruji.
+* **Timer Pomodoro Inti:**
+    * Sesi Fokus, Istirahat Pendek, dan Istirahat Panjang.
+    * Timer menghitung mundur secara akurat.
+    * Fungsionalitas untuk Memulai, Jeda, Atur Ulang, dan Lewati sesi.
+    * Siklus otomatis antar sesi (Fokus -> Istirahat Pendek, dengan Istirahat Panjang setelah sejumlah siklus tertentu).
+* **Pengaturan:**
+    * Durasi yang dapat disesuaikan untuk sesi Fokus, Istirahat Pendek, Istirahat Panjang.
+    * Interval Istirahat Panjang yang dapat disesuaikan.
+    * Pengaturan disimpan secara persisten menggunakan DataStore.
+* **Layar Focus Write:**
+    * Area input teks bebas gangguan.
+    * Teks disimpan dan dimuat kembali sesuai dengan state sesi fokus (disimpan melalui DataStore).
+* **Foreground Service:**
+    * Timer Pomodoro berjalan sebagai foreground service, memastikan kelangsungan bahkan saat aplikasi di latar belakang atau layar mati.
+    * Menampilkan notifikasi berkelanjutan untuk timer.
+* **Notifikasi:**
+    * Notifikasi penyelesaian sesi (Fokus, Istirahat Pendek, Istirahat Panjang berakhir).
+* **Arsitektur & Teknologi:**
+    * Arsitektur MVVM diterapkan secara konsisten.
+    * Jetpack Compose untuk UI.
+    * Hilt untuk Dependency Injection.
+    * Kotlin Coroutines dan Flow untuk operasi asinkron dan manajemen state.
+    * Proto DataStore untuk preferensi.
+* **Pengujian:**
+    * Unit test untuk ViewModels (`MainViewModel`, `PomodoroTimerViewModel`, `SettingsViewModel`).
+    * Unit test untuk lapisan data (`PreferencesManager`).
+    * UI test untuk `FocusWriteScreen`.
+    * Semua tes yang ada dilaporkan lolos.
 
-## Daftar Pekerjaan di Masa Depan (Future To-Do List)
+**Secara Keseluruhan:** Aplikasi ini fungsional dan memenuhi tujuan utama yang dituangkan dalam dokumentasi proyek (alat Pomodoro minimalis dan Focus Write). Basis kode terstruktur dengan baik.
 
-### Prioritas Tinggi (Fitur Inti & Fungsionalitas Dasar)
+## Daftar Pekerjaan di Masa Depan & Potensi Peningkatan
 
-1.  **[✅ SELESAI] Implementasi Notifikasi Timer:**
-    * [x] Buat notifikasi untuk akhir setiap sesi Pomodoro (Focus, Short Break, Long Break).
-    * [x] Pastikan notifikasi berfungsi bahkan ketika aplikasi di background.
-    * [ ] Tambahkan opsi suara notifikasi (bisa di iterasi berikutnya).
-2.  **[✅ SELESAI] Foreground Service untuk Timer Akurat:**
-    * [x] Implementasikan Foreground Service untuk memastikan timer Pomodoro berjalan terus meskipun aplikasi tidak aktif atau layar terkunci.
-    * [x] Tampilkan notifikasi persisten saat timer berjalan di service.
-    * [x] Kelola lifecycle service dengan benar.
-3.  **[✅ SELESAI] Penyimpanan Teks untuk Fitur "Focus Write" (Logging ke Logcat):**
-    * [x] Implementasikan logging teks focus write ke Logcat saat sesi berakhir.
-    * [x] Integrasi state teks dengan PomodoroTimerViewModel.
-    * [x] Reset teks otomatis setelah logging.
-    * [ ] Upgrade ke penyimpanan permanen (file lokal/database) di iterasi berikutnya.
-4.  **[✅ SELESAI] UI Pengaturan (Settings Screen):**
-    * [x] Buat layar Pengaturan baru.
-    * [x] Izinkan pengguna untuk mengubah durasi sesi Focus, Short Break, dan Long Break.
-    * [x] Hubungkan UI Pengaturan dengan `PreferencesManager`.
-5.  **[✅ SELESAI] Instrumented Test untuk FocusWriteScreen:**
-    * [x] Buat test case untuk memverifikasi keberadaan elemen UI dasar.
-    * [x] Tambahkan testTag ke komponen UI untuk mendukung testing.
-    * [x] Setup struktur testing UI yang solid.
-6.  **Penyempurnaan UI/UX `FocusWriteScreen`:**
-    * [ ] Perjelas interaksi antara timer Pomodoro dan input teks (misalnya, apakah input dinonaktifkan saat break?).
-    * [ ] Tingkatkan feedback visual (misalnya, transisi state timer, progress bar yang lebih informatif).
-    * [ ] Pertimbangkan mode "distraction-free" yang lebih immersive.
+Berdasarkan kondisi saat ini dan filosofi proyek, berikut adalah area potensial untuk pengembangan dan penyempurnaan di masa depan:
 
-### Prioritas Menengah (Penyempurnaan & Fitur Tambahan)
+### Fungsionalitas Inti & Penyempurnaan UX:
 
-6.  **State Restoration yang Lebih Kuat:**
-    * [ ] Pastikan `PomodoroTimerViewModel` dan `FocusWriteScreen` (terutama teks yang belum disimpan) dapat memulihkan state setelah process death (menggunakan `SavedStateHandle`).
-7.  **Instrumented Tests untuk UI:**
-    * [ ] Tulis instrumented tests untuk `FocusWriteScreen` untuk memverifikasi interaksi tombol, tampilan timer, dan input teks.
-8.  **Estetika dan Tema Aplikasi:**
-    * [ ] Sempurnakan tema warna dan tipografi aplikasi.
-    * [ ] Pertimbangkan mode gelap/terang.
-9.  **Pelacakan Progres dan Statistik Sederhana:**
-    * [ ] Simpan jumlah sesi Pomodoro yang diselesaikan per hari.
-    * [ ] Tampilkan statistik sederhana kepada pengguna (misalnya, di layar utama atau layar statistik baru).
-10. **Suara Notifikasi yang Dapat Disesuaikan:**
-    * [ ] Izinkan pengguna memilih suara notifikasi atau mengunggah suara sendiri.
-11. **Handling Izin Runtime (jika diperlukan di masa depan):**
-    * [ ] Jika ada fitur yang memerlukan izin tambahan (misalnya, akses file lebih lanjut), implementasikan alur permintaan izin yang benar.
+1.  **Notifikasi Suara & Kustomisasi:**
+    * Implementasikan isyarat suara yang berbeda untuk penyelesaian sesi (misalnya, opsi suara detak jam, suara berbeda untuk akhir fokus vs. akhir istirahat).
+    * Izinkan pengguna untuk memilih/menonaktifkan suara di pengaturan.
+    * Pastikan manajemen fokus audio yang tepat jika suara kustom dimainkan.
+2.  **Pemolesan UI/UX:**
+    * **Umpan Balik Visual:** Isyarat visual yang ditingkatkan untuk transisi sesi (misalnya, animasi halus, perubahan warna yang lebih jelas).
+    * **Tampilan Timer:** Pertimbangkan opsi untuk tampilan timer (misalnya, gaya progress bar, timer melingkar).
+    * **Tinjauan Aksesibilitas:** Lakukan audit aksesibilitas menyeluruh (rasio kontras, dukungan TalkBack, ukuran target sentuh).
+3.  **Peningkatan Focus Write (Pendekatan Minimalis):**
+    * **Penghitung Kata Opsional:** Tampilan penghitung kata yang sederhana dan tidak mengganggu.
+    * **Ekspor/Salin Dasar:** Cara yang lebih mudah untuk mengeluarkan teks (misalnya, tombol "salin semua"). (Saat ini pengguna dapat memilih dan menyalin secara manual).
+4.  **Penanganan Error & Ketahanan:**
+    * Tinjau `PomodoroService` untuk kasus-kasus tepi selama peristiwa sistem (misalnya, situasi memori rendah, meskipun foreground service membantu).
+    * Pastikan pemulihan state yang konsisten jika proses aplikasi dimatikan dan dimulai ulang.
+5.  **Mode "Selalu di Atas" (Desktop/Versi Android Tertentu):**
+    * Untuk lingkungan seperti desktop (misalnya, Samsung DeX) atau jika diinginkan, opsi untuk menjaga jendela mini timer selalu terlihat (mungkin memerlukan izin/API khusus). Ini adalah fitur yang lebih canggih.
 
-### Prioritas Rendah (Fitur Lanjutan & Polish)
+### Hutang Teknis & Pemeliharaan:
 
-12. **Tujuan Sesi Harian:**
-    * [ ] Izinkan pengguna mengatur target jumlah sesi Pomodoro per hari.
-    * [ ] Tampilkan progres menuju target tersebut.
-13. **Integrasi Kalender (Opsional Lanjutan):**
-    * [ ] Izinkan pengguna untuk menjadwalkan sesi fokus di kalender mereka.
-14. **Mode "Focus Write" dengan Opsi Ekspor Teks:**
-    * [ ] Tambahkan opsi untuk mengekspor teks dari sesi "Focus Write" ke format file (misalnya, .txt, .md).
-15. **Panduan Pengguna / Onboarding:**
-    * [ ] Buat layar perkenalan singkat untuk pengguna baru.
-16. **Lokalisasi:**
-    * [ ] Persiapkan aplikasi untuk mendukung berbagai bahasa.
+1.  **Cakupan Tes yang Diperluas:**
+    * Pengujian yang lebih komprehensif terhadap logika `PomodoroService`, terutama siklus sesi dan interval istirahat panjang dalam berbagai kondisi.
+    * Uji interaksi antara `MainActivity` dan `MainViewModel`.
+    * Pertimbangkan untuk menambahkan tes untuk kemunculan notifikasi.
+2.  **Dokumentasi Kode (KDoc):**
+    * Tingkatkan cakupan KDoc untuk API publik di ViewModels, Services, dan kelas utilitas.
+3.  **Pemantauan Kinerja:**
+    * Profil aplikasi untuk penggunaan baterai dan CPU, terutama foreground service dan pembaruan timer, untuk memastikannya tetap efisien. `PerformanceMonitor.kt` yang ada adalah titik awal.
+4.  **Pembaruan Dependensi:**
+    * Secara teratur periksa dan perbarui dependensi.
 
-## Saran "Baby-Step To-Do List" (Langkah Kecil Berikutnya)
+### Fitur Tambahan (Pertimbangkan dengan hati-hati terhadap minimalisme):
 
-**🎉 SEMUA BABY STEP TELAH SELESAI! 🎉**
+1.  **Tema:**
+    * Variasi tema terang/gelap sederhana di luar default sistem jika belum sepenuhnya kuat.
+2.  **Statistik Dasar:**
+    * Lacak Pomodoro yang diselesaikan per hari/minggu (statistik yang sangat sederhana, hanya lokal). Ini bisa memotivasi tetapi menambah kompleksitas.
 
-Semua baby step dasar telah berhasil diselesaikan:
+## "Baby-Step" To-Do List (Langkah Berikutnya yang Segera)
 
-1.  **[✅ SELESAI] Baby Step: Notifikasi Sederhana untuk Akhir Sesi Fokus.**
-    * **Status:** SELESAI - Notifikasi berhasil diimplementasikan dengan event-driven approach.
-<<<<<<< HEAD
-    * **File Terkait:** `PomodoroTimerViewModel.kt`, `MainActivity.kt`, `NotificationHelper.kt`.
-=======
-2.  **[✅ SELESAI] Baby Step: Input Durasi Sesi Fokus di `PreferencesManager` dan UI Pengaturan Sederhana.**
-    * **Tugas:** Tambahkan satu field input di layar Pengaturan (buat layar baru yang sangat sederhana) untuk mengubah durasi sesi Fokus. Simpan dan ambil nilai ini menggunakan `PreferencesManager`.
-    * **Detail:** Buat Composable baru untuk Settings, gunakan `TextField` untuk input, dan pastikan `PomodoroTimerViewModel` membaca durasi ini.
-    * **File Terkait:** `PreferencesManager.kt`, `PomodoroTimerViewModel.kt`, `SettingsScreen.kt`, `SettingsViewModel.kt`.
-    * **Status:** SELESAI - Settings Screen dan ViewModel berhasil diimplementasikan dengan navigasi yang berfungsi.
-3.  **Baby Step: Simpan Teks dari `FocusWriteScreen` ke Logcat Saat Sesi Berakhir (Placeholder untuk Penyimpanan Nyata).**
-    * **Tugas:** Modifikasi `FocusWriteScreen` atau `PomodoroTimerViewModel` sehingga ketika sesi fokus berakhir, teks yang ada di `textState` di-log ke Logcat.
-    * **Detail:** Ini hanya langkah sementara untuk memikirkan alur penyimpanan sebelum implementasi penyimpanan file/database yang sebenarnya.
-    * **File Terkait:** `FocusWriteScreen.kt`, `PomodoroTimerViewModel.kt`.
-4.  **Baby Step: Membuat Dasar Foreground Service (Tanpa Logika Timer Komplit).**
-    * **Tugas:** Buat kelas `Service` baru, deklarasikan di `AndroidManifest.xml` sebagai foreground service. Implementasikan `onStartCommand` untuk memulai service dalam mode foreground dengan notifikasi placeholder.
-    * **Detail:** Fokus pada setup dasar service dan notifikasi persistennya. Belum perlu memindahkan semua logika timer ke sini.
-    * **File Terkait:** Buat `PomodoroService.kt`, `AndroidManifest.xml`.
-5.  **[✅ SELESAI] Baby Step: Menulis Satu Instrumented Test untuk `FocusWriteScreen`.**
-    * **Tugas:** Buat satu tes UI sederhana yang memeriksa apakah tombol "Start" ditampilkan di `FocusWriteScreen`.
-    * **Detail:** Gunakan `createComposeRule` dan `onNodeWithText("Start").assertIsDisplayed()`.
-    * **File Terkait:** `ExampleInstrumentedTest.kt` atau buat file test baru untuk `FocusWriteScreen`.
-    * **Status:** SELESAI - Instrumented test berhasil diimplementasikan dan berjalan dengan baik.
->>>>>>> baby-step-5-instrumented-test
+Mengingat fungsionalitas inti stabil dan telah diuji:
 
-2.  **[✅ SELESAI] Baby Step: Input Durasi Sesi Fokus di `PreferencesManager` dan UI Pengaturan Sederhana.**
-    * **Status:** SELESAI - Settings Screen dan ViewModel berhasil diimplementasikan dengan navigasi yang berfungsi.
-    * **File Terkait:** `PreferencesManager.kt`, `PomodoroTimerViewModel.kt`, `SettingsScreen.kt`, `SettingsViewModel.kt`.
+1.  **✅ Gabungkan ke Branch Main/Stabil (jika belum):**
+    * Pastikan semua perubahan terbaru dan tes yang lolos berada di branch yang stabil.
+2.  **Sesi Pengujian Manual Menyeluruh:**
+    * Lakukan pengujian manual ekstensif di berbagai skenario:
+        * Siklus Pomodoro penuh (beberapa fokus -> istirahat pendek -> istirahat panjang).
+        * Menjeda/melanjutkan selama berbagai jenis sesi.
+        * Melewatkan sesi.
+        * Mengatur ulang timer.
+        * Mengubah pengaturan saat timer berjalan/dijeda/diam.
+        * Aplikasi di latar belakang, layar mati untuk waktu yang lama.
+        * Aplikasi ditutup dan dibuka kembali – periksa pemulihan state timer dan teks Focus Write.
+        * Paksa henti aplikasi dan periksa pemulihan.
+3.  **Tindak Lanjuti Temuan `debug_log.txt`:**
+    * Selidiki log yang tidak biasa di `debug_log.txt` (seperti entri "Force stopping") untuk memastikan itu bukan indikasi masalah mendasar. Bersihkan dan pantau entri baru selama pengujian menyeluruh.
+4.  **Pemolesan UI Kecil (Yang Mudah Dikerjakan):**
+    * Tinjau label teks, penempatan tombol, dan padding untuk inkonsistensi kecil atau area untuk perbaikan segera yang selaras dengan minimalisme.
+    * Contoh: Pastikan jenis sesi saat ini (Fokus, Pendek, Panjang) selalu jelas terlihat di layar timer.
+5.  **✅ SELESAI - Notifikasi Suara Dasar:**
+    * ✅ Implementasi notifikasi suara untuk penyelesaian sesi telah selesai:
+        * ✅ Modifikasi `NotificationHelper` untuk memainkan suara notifikasi default sistem.
+        * ✅ Menambahkan event terpisah untuk notifikasi akhir sesi fokus dan istirahat.
+        * ✅ Integrasi dengan `PomodoroTimerViewModel` dan `MainActivity`.
+        * ✅ Semua unit test dan instrumented test lolos.
+    * **Catatan:** Menggunakan suara notifikasi default sistem untuk kesederhanaan. File audio kustom dapat ditambahkan di masa depan jika diperlukan.
+    * **Opsional untuk masa depan:** Menambahkan sakelar pengaturan untuk mengaktifkan/menonaktifkan suara.
+6.  **Sprint Dokumentasi (KDoc):**
+    * Tinjau `PomodoroService.kt`, `PomodoroTimerViewModel.kt`, dan `PreferencesManager.kt` dan tambahkan/perbaiki komentar KDoc untuk semua fungsi publik dan bagian logika penting. Ini membuat pengembangan di masa depan lebih mudah.
 
-3.  **[✅ SELESAI] Baby Step: Simpan Teks dari `FocusWriteScreen` ke Logcat Saat Sesi Berakhir.**
-    * **Status:** SELESAI - Logging teks focus write ke Logcat berhasil diimplementasikan dengan integrasi ViewModel.
-    * **File Terkait:** `FocusWriteScreen.kt`, `PomodoroTimerViewModel.kt`.
-
-4.  **[✅ SELESAI] Baby Step: Membuat Dasar Foreground Service.**
-    * **Status:** SELESAI - PomodoroService berhasil diimplementasikan dengan notifikasi persisten dan lifecycle management.
-    * **File Terkait:** `PomodoroService.kt`, `AndroidManifest.xml`.
-
-5.  **[✅ SELESAI] Baby Step: Menulis Satu Instrumented Test untuk `FocusWriteScreen`.**
-    * **Status:** SELESAI - FocusWriteScreenTest berhasil dibuat dengan testTag dan struktur testing UI yang solid.
-    * **File Terkait:** `FocusWriteScreenTest.kt`, `FocusWriteScreen.kt`.
-
-**Langkah Selanjutnya:**
-Proyek siap untuk tahap pengembangan berikutnya. Pertimbangkan untuk fokus pada:
-- Penyempurnaan UI/UX
-- Penyimpanan teks permanen
-- Fitur statistik dan tracking
-- Optimisasi performa
-- Testing yang lebih komprehensif
+Dengan berfokus pada langkah-langkah kecil ini, Anda dapat memperkuat versi yang sudah kuat saat ini dan kemudian secara strategis memilih dari daftar "Pekerjaan di Masa Depan" berdasarkan umpan balik pengguna (jika sudah ada) atau visi Anda untuk evolusi aplikasi, selalu dengan mengingat filosofi minimalis "PureFocus".

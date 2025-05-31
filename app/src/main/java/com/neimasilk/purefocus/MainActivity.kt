@@ -87,11 +87,18 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             
             // Observasi event notifikasi dari PomodoroTimerViewModel
-            LaunchedEffect(pomodoroViewModel) {
-                pomodoroViewModel.showFocusEndNotificationEvent.collect {
-                    NotificationHelper.showFocusSessionEndNotification(context)
-                }
+        LaunchedEffect(pomodoroViewModel) {
+            pomodoroViewModel.showFocusEndNotificationEvent.collect {
+                NotificationHelper.showFocusSessionEndNotification(context)
             }
+        }
+        
+        // Observasi event notifikasi akhir sesi istirahat
+        LaunchedEffect(pomodoroViewModel) {
+            pomodoroViewModel.showBreakEndNotificationEvent.collect {
+                NotificationHelper.showBreakSessionEndNotification(context)
+            }
+        }
             
             // Observasi event service command dari PomodoroTimerViewModel
             LaunchedEffect(pomodoroViewModel) {

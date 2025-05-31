@@ -43,6 +43,10 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
     // Event untuk menampilkan notifikasi akhir sesi fokus
     private val _showFocusEndNotificationEvent = MutableSharedFlow<Unit>()
     val showFocusEndNotificationEvent: SharedFlow<Unit> = _showFocusEndNotificationEvent.asSharedFlow()
+    
+    // Event untuk menampilkan notifikasi akhir sesi istirahat
+    private val _showBreakEndNotificationEvent = MutableSharedFlow<Unit>()
+    val showBreakEndNotificationEvent: SharedFlow<Unit> = _showBreakEndNotificationEvent.asSharedFlow()
 
     // Event untuk mengelola foreground service
     private val _serviceCommandEvent = MutableSharedFlow<ServiceAction>()
@@ -119,6 +123,11 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
                 // TODO: Add logic for LONG_BREAK after POMODOROS_PER_CYCLE in a future baby-step
             }
             SessionType.SHORT_BREAK, SessionType.LONG_BREAK -> { // Consolidate break handling
+                // Emit event untuk notifikasi akhir sesi istirahat
+                viewModelScope.launch {
+                    _showBreakEndNotificationEvent.emit(Unit)
+                }
+                
                 _uiState.update {
                     it.copy(
                         currentSessionType = SessionType.WORK,
