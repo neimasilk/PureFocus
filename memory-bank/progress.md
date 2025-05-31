@@ -58,6 +58,7 @@
 **Recently Completed Baby-Steps:** 
 - Baby-Step 1: Notifikasi Sederhana untuk Akhir Sesi Fokus (SELESAI ✅)
 - Baby-Step 2: Input Durasi Sesi Fokus di UI Pengaturan Sederhana (SELESAI ✅)
+- Baby-Step 3: Simpan Teks dari FocusWriteScreen ke Logcat (SELESAI ✅)
 - ✅ All tasks for Phase 0 are complete.
 - ✅ Application is running on the emulator.
 - ✅ Full-screen text editor UI implemented (`FocusWriteScreen.kt`).
@@ -152,6 +153,8 @@
 - ✅ **First Runnable Build (Phase 0 Complete)** (May 31, 2025) - Basic Android app with MVVM architecture builds and runs on emulator.
 - ✅ **Baby Step 1: Notifications** (January 2025) - Notifikasi sederhana untuk akhir sesi fokus berhasil diimplementasikan.
 - ✅ **Baby Step 2: Settings UI** (January 2025) - UI Pengaturan sederhana dengan input durasi fokus berhasil diimplementasikan.
+- ✅ **Baby Step 3: Focus Write Text Logging** (January 2025) - Teks dari FocusWriteScreen berhasil disimpan ke Logcat saat sesi fokus berakhir atau dilewati.
+- ✅ **Baby Step 4: Foreground Service** (January 2025) - PomodoroService sebagai foreground service berhasil diimplementasikan dengan notifikasi persisten, integrasi dengan PomodoroTimerViewModel, dan perbaikan masalah izin notifikasi.
 
 ### Upcoming Milestones
 - ⏳ **Text Editor Foundation Complete** (Target: June 3-4, 2025) - Core text editing UI and auto-save.

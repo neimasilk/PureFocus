@@ -25,9 +25,15 @@
     * `SettingsViewModel` untuk manajemen state pengaturan.
     * Navigasi antara `FocusWriteScreen` dan `SettingsScreen` di `MainActivity`.
     * Integrasi dengan `PreferencesManager` untuk penyimpanan pengaturan.
+* **[BARU] Foreground Service untuk Timer** telah diimplementasikan:
+    * `PomodoroService` sebagai foreground service untuk menjaga timer tetap berjalan.
+    * Notifikasi persisten yang menampilkan status timer dan waktu tersisa.
+    * Integrasi dengan `PomodoroTimerViewModel` melalui `SharedFlow` untuk kontrol service.
+    * Pembaruan `AndroidManifest.xml` dengan deklarasi service dan izin yang diperlukan.
+    * Perbaikan masalah izin notifikasi di `NotificationHelper.kt`.
 
 **Kesimpulan Status:**
-Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Baby Step 1 (Notifikasi)** dan **Baby Step 2 (Settings UI)** telah berhasil diselesaikan, menambahkan sistem notifikasi yang berfungsi dan UI pengaturan yang terintegrasi. Aplikasi kini memiliki fondasi yang lebih kuat dengan fitur notifikasi dan pengaturan yang dapat digunakan pengguna. Langkah selanjutnya adalah melanjutkan ke Baby Step 3, 4, dan 5 untuk melengkapi fitur-fitur dasar yang tersisa.
+Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Baby Step 1 (Notifikasi)**, **Baby Step 2 (Settings UI)**, dan **Baby Step 4 (Foreground Service)** telah berhasil diselesaikan. Aplikasi kini memiliki sistem notifikasi yang berfungsi, UI pengaturan yang terintegrasi, dan foreground service yang memastikan timer berjalan dengan akurat bahkan saat aplikasi di background. Semua unit test lolos dan build berhasil. Langkah selanjutnya adalah melanjutkan ke Baby Step 3 dan 5 untuk melengkapi fitur-fitur dasar yang tersisa.
 
 ## Daftar Pekerjaan di Masa Depan (Future To-Do List)
 
@@ -37,10 +43,10 @@ Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan lay
     * [x] Buat notifikasi untuk akhir setiap sesi Pomodoro (Focus, Short Break, Long Break).
     * [x] Pastikan notifikasi berfungsi bahkan ketika aplikasi di background.
     * [ ] Tambahkan opsi suara notifikasi (bisa di iterasi berikutnya).
-2.  **Foreground Service untuk Timer Akurat:**
-    * [ ] Implementasikan Foreground Service untuk memastikan timer Pomodoro berjalan terus meskipun aplikasi tidak aktif atau layar terkunci.
-    * [ ] Tampilkan notifikasi persisten saat timer berjalan di service.
-    * [ ] Kelola lifecycle service dengan benar.
+2.  **[✅ SELESAI] Foreground Service untuk Timer Akurat:**
+    * [x] Implementasikan Foreground Service untuk memastikan timer Pomodoro berjalan terus meskipun aplikasi tidak aktif atau layar terkunci.
+    * [x] Tampilkan notifikasi persisten saat timer berjalan di service.
+    * [x] Kelola lifecycle service dengan benar.
 3.  **Penyimpanan Teks untuk Fitur "Focus Write":**
     * [ ] Tentukan mekanisme penyimpanan teks (misalnya, file lokal per sesi, database sederhana).
     * [ ] Implementasikan fungsi simpan otomatis atau manual untuk teks yang diketik di `FocusWriteScreen`.

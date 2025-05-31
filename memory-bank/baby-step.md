@@ -8,8 +8,8 @@ Dokumen ini berisi panduan langkah-demi-langkah (baby steps) untuk pengembangan 
 
 ✅ **Baby Step 1: Notifikasi Sederhana untuk Akhir Sesi Fokus** - SELESAI
 ✅ **Baby Step 2: Input Durasi Sesi Fokus di UI Pengaturan Sederhana** - SELESAI
-🔄 **Baby Step 3: Simpan Teks dari FocusWriteScreen ke Logcat** - BELUM DIKERJAKAN
-🔄 **Baby Step 4: Membuat Dasar Foreground Service** - BELUM DIKERJAKAN
+✅ **Baby Step 3: Simpan Teks dari FocusWriteScreen ke Logcat** - SELESAI
+✅ **Baby Step 4: Membuat Dasar Foreground Service** - SELESAI
 🔄 **Baby Step 5: Menulis Satu Instrumented Test untuk FocusWriteScreen** - BELUM DIKERJAKAN
 
 ## Daftar Baby Steps
@@ -36,9 +36,17 @@ Dokumen ini berisi panduan langkah-demi-langkah (baby steps) untuk pengembangan 
 
 ### Baby Step 3: Simpan Teks dari `FocusWriteScreen` ke Logcat Saat Sesi Fokus Berakhir
 
-**STATUS: BELUM DIKERJAKAN 🔄**
+**STATUS: SELESAI ✅**
 
 **Tujuan:** Sebagai langkah awal sebelum implementasi penyimpanan permanen, log teks yang diketik pengguna di `FocusWriteScreen` ke Logcat ketika sesi Fokus Pomodoro berakhir.
+
+**IMPLEMENTASI YANG TELAH DISELESAIKAN:**
+- ✅ State `focusWriteText` ditambahkan ke `PomodoroTimerViewModel`
+- ✅ Integrasi teks dari `FocusWriteScreen` ke ViewModel melalui `updateFocusWriteText()`
+- ✅ Logging teks ke Logcat saat sesi fokus berakhir atau dilewati
+- ✅ Reset teks otomatis setelah logging
+- ✅ Unit test lengkap dengan MockK untuk mocking Android Log
+- ✅ Semua test berhasil lolos (BUILD SUCCESSFUL)
 
 **Detail Tugas:**
 
@@ -86,7 +94,7 @@ Dokumen ini berisi panduan langkah-demi-langkah (baby steps) untuk pengembangan 
 
 ### Baby Step 4: Membuat Dasar Foreground Service (Tanpa Logika Timer Komplit)
 
-**STATUS: BELUM DIKERJAKAN 🔄**
+**STATUS: SELESAI ✅**
 
 **Tujuan:** Membuat struktur dasar untuk `ForegroundService` yang akan bertanggung jawab menjaga timer tetap berjalan akurat di background. Untuk baby step ini, fokus pada setup service dan notifikasi persistennya saja, belum memindahkan logika timer.
 

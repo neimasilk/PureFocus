@@ -1,6 +1,7 @@
 package com.neimasilk.purefocus
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -36,6 +37,7 @@ import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.ui.MainViewModel
 import com.neimasilk.purefocus.ui.PomodoroTimerViewModel
 import com.neimasilk.purefocus.ui.SettingsViewModel
+import com.neimasilk.purefocus.service.PomodoroService
 import com.neimasilk.purefocus.ui.screens.FocusWriteScreen
 import com.neimasilk.purefocus.ui.screens.SettingsScreen
 import com.neimasilk.purefocus.ui.theme.PureFocusTheme
@@ -91,6 +93,23 @@ class MainActivity : ComponentActivity() {
                 }
             }
             
+            // Observasi event service command dari PomodoroTimerViewModel
+            LaunchedEffect(pomodoroViewModel) {
+                pomodoroViewModel.serviceCommandEvent.collect { action ->
+                    val serviceIntent = Intent(applicationContext, PomodoroService::class.java)
+                    when (action) {
+                        PomodoroTimerViewModel.ServiceAction.START -> {
+                            serviceIntent.action = PomodoroService.ACTION_START_SERVICE
+                            ContextCompat.startForegroundService(applicationContext, serviceIntent)
+                        }
+                        PomodoroTimerViewModel.ServiceAction.STOP -> {
+                            serviceIntent.action = PomodoroService.ACTION_STOP_SERVICE
+                            startService(serviceIntent)
+                        }
+                    }
+                }
+            }
+            
             // Gunakan isDarkMode dari preferences
             PureFocusTheme(darkTheme = uiState.isDarkMode) {
                 // A surface container using the 'background' color from the theme
@@ -118,9 +137,12 @@ class MainActivity : ComponentActivity() {
                                  modifier = Modifier.padding(innerPadding)
                              )
                         } else {
+                            // Collect teks dari PomodoroTimerViewModel untuk Focus Write
+                            val focusWriteText by pomodoroViewModel.focusWriteText.collectAsState()
+                            
                             FocusWriteScreen(
-                                textFieldValue = uiState.textFieldValue,
-                                onTextFieldValueChanged = { viewModel.updateTextFieldValue(it) },
+                                text = focusWriteText,
+                                onTextChanged = { pomodoroViewModel.updateFocusWriteText(it) },
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }

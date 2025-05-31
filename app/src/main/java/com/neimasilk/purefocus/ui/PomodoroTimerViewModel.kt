@@ -1,5 +1,6 @@
 package com.neimasilk.purefocus.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neimasilk.purefocus.data.PreferencesManager
@@ -43,6 +44,14 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
     private val _showFocusEndNotificationEvent = MutableSharedFlow<Unit>()
     val showFocusEndNotificationEvent: SharedFlow<Unit> = _showFocusEndNotificationEvent.asSharedFlow()
 
+    // Event untuk mengelola foreground service
+    private val _serviceCommandEvent = MutableSharedFlow<ServiceAction>()
+    val serviceCommandEvent: SharedFlow<ServiceAction> = _serviceCommandEvent.asSharedFlow()
+
+    // State untuk teks Focus Write
+    private val _focusWriteText = MutableStateFlow("")
+    val focusWriteText: StateFlow<String> = _focusWriteText.asStateFlow()
+
     private var timerJob: Job? = null
 
     fun startTimer() {
@@ -51,6 +60,11 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
         }
 
         _uiState.update { it.copy(isTimerRunning = true) }
+        
+        // Emit event untuk memulai foreground service
+        viewModelScope.launch {
+            _serviceCommandEvent.emit(ServiceAction.START)
+        }
 
         timerJob = viewModelScope.launch {
             var currentTime = _uiState.value.timeLeftInMillis
@@ -79,6 +93,15 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
         val currentState = _uiState.value
         when (currentState.currentSessionType) {
             SessionType.WORK -> {
+                // Log teks Focus Write saat sesi fokus berakhir (hanya jika ada teks)
+                val currentText = _focusWriteText.value
+                if (currentText.isNotEmpty()) {
+                    Log.d("FocusWrite", "Sesi Fokus Selesai. Teks: $currentText")
+                }
+                
+                // Reset teks setelah sesi fokus berakhir
+                _focusWriteText.value = ""
+                
                 // Emit event untuk notifikasi akhir sesi fokus
                 viewModelScope.launch {
                     _showFocusEndNotificationEvent.emit(Unit)
@@ -109,6 +132,12 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
 
     fun resetTimer() {
         pauseTimer()
+        
+        // Emit event untuk menghentikan foreground service
+        viewModelScope.launch {
+            _serviceCommandEvent.emit(ServiceAction.STOP)
+        }
+        
         // Resets current session to a full WORK session, keeps completed cycle count.
         _uiState.update {
             it.copy(
@@ -123,7 +152,27 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
     fun skipSession() {
         // pauseTimer() is called by handleSessionFinish, so not strictly needed here
         // but explicitly calling it ensures isTimerRunning is false before handleSessionFinish logic
-        pauseTimer() 
+        pauseTimer()
+        
+        // Jika sedang dalam sesi WORK, reset teks dan log sebelum transisi
+        val currentState = _uiState.value
+        if (currentState.currentSessionType == SessionType.WORK) {
+            val currentText = _focusWriteText.value
+            if (currentText.isNotEmpty()) {
+                Log.d("FocusWrite", "Sesi Fokus Dilewati. Teks: $currentText")
+            }
+            _focusWriteText.value = ""
+        }
+        
         handleSessionFinish() // This will transition to the next session and set its duration
     }
+
+    /**
+     * Update teks Focus Write
+     */
+    fun updateFocusWriteText(newText: String) {
+        _focusWriteText.value = newText
+    }
+    
+    enum class ServiceAction { START, STOP }
 }

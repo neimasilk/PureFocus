@@ -1,9 +1,13 @@
 package com.neimasilk.purefocus.ui
 
+import android.util.Log
 import app.cash.turbine.test
 import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.model.PomodoroState
 import com.neimasilk.purefocus.model.SessionType
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +33,10 @@ class PomodoroTimerViewModelTests {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         
+        // Mock Android Log
+        mockkStatic(Log::class)
+        every { Log.d(any(), any()) } returns 0
+        
         // Mock PreferencesManager
         mockPreferencesManager = mock()
         whenever(mockPreferencesManager.focusDuration).thenReturn(MutableStateFlow(25))
@@ -39,6 +47,7 @@ class PomodoroTimerViewModelTests {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkStatic(Log::class)
     }
 
     @Test
@@ -194,5 +203,56 @@ class PomodoroTimerViewModelTests {
         assertEquals(25 * 60 * 1000L, state.timeLeftInMillis)
         assertFalse(state.isTimerRunning)
         assertEquals("Pomodoros should NOT increment when skipping SHORT_BREAK", 1, state.pomodorosCompletedInCycle)
+    }
+
+    @Test
+    fun `focusWriteText initial state is empty`() = testScope.runTest {
+        assertEquals("", viewModel.focusWriteText.value)
+    }
+
+    @Test
+    fun `updateFocusWriteText updates text state`() = testScope.runTest {
+        val testText = "This is a test text"
+        viewModel.updateFocusWriteText(testText)
+        assertEquals(testText, viewModel.focusWriteText.value)
+    }
+
+    @Test
+    fun `focusWriteText is reset when work session finishes`() = testScope.runTest {
+        // Set some text
+        val testText = "Focus session text"
+        viewModel.updateFocusWriteText(testText)
+        assertEquals(testText, viewModel.focusWriteText.value)
+
+        // Start timer and let work session finish
+        viewModel.startTimer()
+        testScope.testScheduler.advanceTimeBy(25 * 60 * 1000L + 1000L)
+        testScope.testScheduler.runCurrent()
+
+        // Text should be reset after work session finishes
+        assertEquals("", viewModel.focusWriteText.value)
+        
+        // Verify session transitioned to SHORT_BREAK
+        assertEquals(SessionType.SHORT_BREAK, viewModel.uiState.value.currentSessionType)
+    }
+
+    @Test
+    fun `focusWriteText is reset when work session is skipped`() = testScope.runTest {
+        // Set some text
+        val testText = "Focus session text"
+        viewModel.updateFocusWriteText(testText)
+        assertEquals(testText, viewModel.focusWriteText.value)
+
+        // Ensure we're in WORK session
+        assertEquals(SessionType.WORK, viewModel.uiState.value.currentSessionType)
+
+        // Skip work session
+        viewModel.skipSession()
+
+        // Text should be reset after work session is skipped
+        assertEquals("", viewModel.focusWriteText.value)
+        
+        // Verify session transitioned to SHORT_BREAK
+        assertEquals(SessionType.SHORT_BREAK, viewModel.uiState.value.currentSessionType)
     }
 }

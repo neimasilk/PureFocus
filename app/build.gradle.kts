@@ -91,6 +91,8 @@ dependencies {
     // Gunakan versi yang lebih rendah atau lebih stabil dari Mockito
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
     testImplementation("org.mockito:mockito-inline:3.12.4")
+    // MockK untuk mock Android classes
+    testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4") // For testing coroutines
     testImplementation("app.cash.turbine:turbine:0.12.1") // For StateFlow testing
     testImplementation("org.robolectric:robolectric:4.11.1") // For Android unit testing

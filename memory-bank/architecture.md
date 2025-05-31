@@ -1,9 +1,9 @@
 # PureFocus - Architecture Documentation
 
-**Document Version:** 1.0  
-**Date:** May 29, 2025  
+**Document Version:** 1.1  
+**Date:** January 2025  
 **Project:** PureFocus - Minimalist Focus Writing App  
-**Status:** Initial Setup - Architecture Planning
+**Status:** Phase 1 Complete - Core Features Implemented
 
 ## Architecture Overview
 
@@ -50,6 +50,15 @@
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────┐
+│                   System Services Layer                     │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────┐ │
+│  │  PomodoroService│  │ NotificationHelper│  │Performance  │ │
+│  │ (Foreground)    │  │                 │  │ Monitor     │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────┐
 │                   Storage Layer                             │
 │              SharedPreferences (Primary)                   │
 └─────────────────────────────────────────────────────────────┘
@@ -80,16 +89,17 @@
 - Manages keyboard and input state
 
 **PomodoroTimerViewModel:**
-- Timer logic and state management
-- Session tracking (work/break cycles)
-- Notification scheduling
-- Background timer persistence
+- ✅ Timer logic and state management (IMPLEMENTED)
+- ✅ Session tracking (work/break cycles) (IMPLEMENTED)
+- ✅ Notification scheduling (IMPLEMENTED)
+- ✅ Focus write text integration and logging (IMPLEMENTED)
+- Background timer persistence (PLANNED)
 
 **SettingsViewModel:**
-- User preference management
-- Theme switching logic
-- Timer configuration
-- Word count toggle
+- ✅ User preference management (IMPLEMENTED)
+- Theme switching logic (PLANNED)
+- ✅ Timer configuration (IMPLEMENTED)
+- Word count toggle (PLANNED)
 
 ### Data Layer
 
@@ -110,6 +120,27 @@
 - Theme preference management
 - App configuration
 - Performance settings
+
+### System Services Layer
+
+**PomodoroService (Foreground Service):**
+- Maintains timer accuracy in background
+- Displays persistent notification with timer status
+- Integrates with PomodoroTimerViewModel via SharedFlow
+- Handles service lifecycle management
+- Ensures timer continues during app backgrounding
+
+**NotificationHelper:**
+- Manages notification channels and permissions
+- Creates and displays timer notifications
+- Handles notification actions and updates
+- Provides consistent notification styling
+
+**PerformanceMonitor:**
+- Tracks app performance metrics
+- Monitors memory usage and performance
+- Provides debugging and optimization insights
+- Mock implementation for testing
 
 ### Storage Layer
 

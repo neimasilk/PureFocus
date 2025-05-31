@@ -1,8 +1,14 @@
 # PureFocus - Panduan Tugas Manual
 
-**Document Version:** 1.0  
-**Date:** 31 Mei 2025  
+**Document Version:** 1.1  
+**Date:** January 2025  
 **Purpose:** Panduan untuk tugas-tugas yang perlu dilakukan secara manual oleh developer
+
+## Status Update: Baby Steps 1-3 Completed ✅
+
+**Baby Step 1 (Notifikasi):** SELESAI - Sistem notifikasi untuk akhir sesi fokus telah diimplementasikan
+**Baby Step 2 (Settings UI):** SELESAI - UI pengaturan dengan input durasi fokus telah diimplementasikan
+**Baby Step 3 (Focus Write Text Logging):** SELESAI - Teks dari FocusWriteScreen berhasil disimpan ke Logcat saat sesi fokus berakhir
 
 ## Status Verifikasi Baby-Step "Project Foundation Setup"
 

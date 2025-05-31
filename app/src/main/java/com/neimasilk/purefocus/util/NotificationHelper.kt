@@ -3,8 +3,10 @@ package com.neimasilk.purefocus.util
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.neimasilk.purefocus.MainActivity
 import com.neimasilk.purefocus.PureFocusApplication
 import com.neimasilk.purefocus.R
@@ -38,7 +40,9 @@ object NotificationHelper {
             .setContentIntent(pendingIntent)
             .build()
         
-        // Tampilkan notifikasi
-        NotificationManagerCompat.from(context).notify(FOCUS_END_NOTIFICATION_ID, notification)
+        // Tampilkan notifikasi hanya jika permission tersedia
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            NotificationManagerCompat.from(context).notify(FOCUS_END_NOTIFICATION_ID, notification)
+        }
     }
 }

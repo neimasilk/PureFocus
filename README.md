@@ -30,6 +30,8 @@ PureFocus is designed with one unwavering principle: **Speed and Simplicity Abov
 - Standard 25-minute work sessions
 - 5-minute short breaks, 15-30 minute long breaks
 - Gentle, non-disruptive notifications
+- **Foreground service** ensures timer accuracy in background
+- **Persistent notifications** show timer status when app is minimized
 - Zero impact on writing performance
 
 ### 🎨 Minimal Design
@@ -210,8 +212,13 @@ This project is developed following the "Panduan Vibe Coding Indonesia V1.2.1" m
 
 ## Current Project Status
 
-* **Stage:** Stage 0: Initial Project Setup & Document Planning (Completed, as per Vibe Coding).
-* **Next Step:** Stage 1: Environment Setup & Implementation Plan Clarification.
+* **Stage:** Phase 1 - Core Features Implementation (In Progress)
+* **Completed Baby Steps:**
+  * ✅ Baby Step 1: Notifications - Basic notification system for focus session end
+  * ✅ Baby Step 2: Settings UI - Simple settings screen with focus duration input
+  * ✅ Baby Step 3: Focus Write Text Logging - Text logging from FocusWriteScreen
+  * ✅ Baby Step 4: Foreground Service - PomodoroService with persistent notifications
+* **Next Step:** Baby Step 5: Instrumented UI Tests for FocusWriteScreen
 
 ## Initial Target Platform
 
