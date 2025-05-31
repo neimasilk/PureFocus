@@ -20,7 +20,9 @@ import kotlinx.coroutines.launch
  */
 data class MainUiState(
     val isDarkMode: Boolean = false,
-    val textFieldValue: TextFieldValue = TextFieldValue(text = "", selection = TextRange(0))
+    val textFieldValue: TextFieldValue = TextFieldValue(text = "", selection = TextRange(0)),
+    val wordCount: Int = 0,
+    val characterCount: Int = 0
 )
 
 /**
@@ -35,9 +37,33 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
         textFieldValue = TextFieldValue(
             text = preferencesManager.lastText,
             selection = TextRange(preferencesManager.lastText.length)
-        )
+        ),
+        wordCount = calculateWordCount(preferencesManager.lastText),
+        characterCount = calculateCharacterCount(preferencesManager.lastText)
     ))
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    
+    /**
+     * Menghitung jumlah kata dalam teks
+     * @param text Teks yang akan dihitung kata-katanya
+     * @return Jumlah kata dalam teks
+     */
+    private fun calculateWordCount(text: String): Int {
+        val trimmedText = text.trim()
+        if (trimmedText.isEmpty()) return 0
+        
+        // Split berdasarkan whitespace dan filter kata yang tidak kosong
+        return trimmedText.split(Regex("\\s+")).filter { it.isNotEmpty() }.size
+    }
+    
+    /**
+     * Menghitung jumlah karakter dalam teks (termasuk spasi dan newline)
+     * @param text Teks yang akan dihitung karakternya
+     * @return Jumlah karakter dalam teks
+     */
+    private fun calculateCharacterCount(text: String): Int {
+        return text.length
+    }
 
     /**
      * Toggle antara mode gelap dan terang
@@ -64,14 +90,29 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
      * Update TextFieldValue untuk mendukung pemulihan posisi kursor
      */
     fun updateTextFieldValue(newValue: TextFieldValue) {
-        _uiState.update { it.copy(textFieldValue = newValue) }
+        val newWordCount = calculateWordCount(newValue.text)
+        val newCharacterCount = calculateCharacterCount(newValue.text)
+        
+        _uiState.update { 
+            it.copy(
+                textFieldValue = newValue,
+                wordCount = newWordCount,
+                characterCount = newCharacterCount
+            )
+        }
     }
     
     /**
      * Menghapus semua teks dan membersihkan storage
      */
     fun clearText() {
-        _uiState.update { it.copy(textFieldValue = TextFieldValue()) }
+        _uiState.update { 
+            it.copy(
+                textFieldValue = TextFieldValue(),
+                wordCount = 0,
+                characterCount = 0
+            )
+        }
         viewModelScope.launch {
             preferencesManager.clearFocusWriteText()
         }
@@ -92,12 +133,17 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
         viewModelScope.launch {
             preferencesManager.getFocusWriteText().collect { savedText ->
                 if (savedText.isNotEmpty() && _uiState.value.textFieldValue.text.isEmpty()) {
+                    val newWordCount = calculateWordCount(savedText)
+                    val newCharacterCount = calculateCharacterCount(savedText)
+                    
                     _uiState.update { currentState ->
                         currentState.copy(
                             textFieldValue = TextFieldValue(
                                 text = savedText,
                                 selection = TextRange(savedText.length)
-                            )
+                            ),
+                            wordCount = newWordCount,
+                            characterCount = newCharacterCount
                         )
                     }
                 }

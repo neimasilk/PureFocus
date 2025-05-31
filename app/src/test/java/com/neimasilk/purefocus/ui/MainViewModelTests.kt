@@ -203,4 +203,218 @@ class MainViewModelTests {
         // Then - text should be saved immediately
         assertEquals(textToSave, runBlocking { preferencesManager.getFocusWriteText().first() })
     }
+    
+    // Word Count Tests
+    @Test
+    fun `word count is zero for empty string`() = testScope.runTest {
+        // When
+        viewModel.updateText("")
+        
+        // Then
+        assertEquals(0, viewModel.uiState.value.wordCount)
+    }
+    
+    @Test
+    fun `word count is zero for whitespace only string`() = testScope.runTest {
+        // When
+        viewModel.updateText("   \n\t  ")
+        
+        // Then
+        assertEquals(0, viewModel.uiState.value.wordCount)
+    }
+    
+    @Test
+    fun `word count is one for single word`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello")
+        
+        // Then
+        assertEquals(1, viewModel.uiState.value.wordCount)
+    }
+    
+    @Test
+    fun `word count handles multiple words with single spaces`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello world test")
+        
+        // Then
+        assertEquals(3, viewModel.uiState.value.wordCount)
+    }
+    
+    @Test
+    fun `word count handles multiple words with multiple spaces`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello    world     test")
+        
+        // Then
+        assertEquals(3, viewModel.uiState.value.wordCount)
+    }
+    
+    @Test
+    fun `word count handles words with newlines and tabs`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello\nworld\ttest")
+        
+        // Then
+        assertEquals(3, viewModel.uiState.value.wordCount)
+    }
+    
+    @Test
+    fun `word count handles text with punctuation`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello, world! How are you?")
+        
+        // Then
+        assertEquals(5, viewModel.uiState.value.wordCount)
+    }
+    
+    @Test
+    fun `word count handles mixed whitespace between words`() = testScope.runTest {
+        // When
+        viewModel.updateText("  Hello\n\nworld\t\ttest  ")
+        
+        // Then
+        assertEquals(3, viewModel.uiState.value.wordCount)
+    }
+    
+    // Character Count Tests
+    @Test
+    fun `character count is zero for empty string`() = testScope.runTest {
+        // When
+        viewModel.updateText("")
+        
+        // Then
+        assertEquals(0, viewModel.uiState.value.characterCount)
+    }
+    
+    @Test
+    fun `character count is one for single character`() = testScope.runTest {
+        // When
+        viewModel.updateText("A")
+        
+        // Then
+        assertEquals(1, viewModel.uiState.value.characterCount)
+    }
+    
+    @Test
+    fun `character count includes spaces and newlines`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello world\ntest")
+        
+        // Then
+        assertEquals(17, viewModel.uiState.value.characterCount) // "Hello world\ntest" = 17 chars
+    }
+    
+    @Test
+    fun `character count handles whitespace only string`() = testScope.runTest {
+        // When
+        viewModel.updateText("   \n\t  ")
+        
+        // Then
+        assertEquals(7, viewModel.uiState.value.characterCount) // 3 spaces + newline + tab + 2 spaces
+    }
+    
+    @Test
+    fun `character count handles unicode characters`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello 🌟 world")
+        
+        // Then
+        assertEquals(13, viewModel.uiState.value.characterCount)
+    }
+    
+    // Integration Tests for Counts
+    @Test
+    fun `updateText updates both word and character counts`() = testScope.runTest {
+        // When
+        viewModel.updateText("Hello world")
+        
+        // Then
+        assertEquals(2, viewModel.uiState.value.wordCount)
+        assertEquals(11, viewModel.uiState.value.characterCount)
+    }
+    
+    @Test
+    fun `updateTextFieldValue updates both word and character counts`() = testScope.runTest {
+        // Given
+        val textFieldValue = TextFieldValue("Hello world test", selection = TextRange(5))
+        
+        // When
+        viewModel.updateTextFieldValue(textFieldValue)
+        
+        // Then
+        assertEquals(3, viewModel.uiState.value.wordCount)
+        assertEquals(16, viewModel.uiState.value.characterCount)
+        assertEquals(TextRange(5), viewModel.uiState.value.textFieldValue.selection)
+    }
+    
+    @Test
+    fun `clearText resets both word and character counts to zero`() = testScope.runTest {
+        // Given
+        viewModel.updateText("Hello world test")
+        assertEquals(3, viewModel.uiState.value.wordCount)
+        assertEquals(16, viewModel.uiState.value.characterCount)
+        
+        // When
+        viewModel.clearText()
+        
+        // Then
+        assertEquals(0, viewModel.uiState.value.wordCount)
+        assertEquals(0, viewModel.uiState.value.characterCount)
+    }
+    
+    @Test
+    fun `text loaded from preferences calculates correct counts`() = testScope.runTest {
+        // Given
+        val savedText = "Hello world from preferences"
+        preferencesManager.saveFocusWriteText(savedText)
+        
+        // When - create a new viewModel to trigger init
+        val newViewModel = MainViewModel(preferencesManager)
+        
+        // Then - verify counts are calculated correctly for loaded text
+        assertEquals(savedText, newViewModel.uiState.value.textFieldValue.text)
+        assertEquals(4, newViewModel.uiState.value.wordCount) // "Hello world from preferences"
+        assertEquals(28, newViewModel.uiState.value.characterCount)
+    }
+    
+    @Test
+    fun `counts persist correctly with auto-save and auto-load`() = testScope.runTest {
+        // Given
+        val testText = "Auto save and load test"
+        viewModel.updateText(testText)
+        
+        // Wait for auto-save
+        testScope.testScheduler.advanceTimeBy(1100)
+        
+        // Verify text is saved
+        assertEquals(testText, runBlocking { preferencesManager.getFocusWriteText().first() })
+        
+        // When - create new viewModel to test auto-load
+        val newViewModel = MainViewModel(preferencesManager)
+        
+        // Then - verify counts are correct after auto-load
+        assertEquals(testText, newViewModel.uiState.value.textFieldValue.text)
+        assertEquals(5, newViewModel.uiState.value.wordCount)
+        assertEquals(24, newViewModel.uiState.value.characterCount)
+    }
+    
+    @Test
+    fun `performance test for large text word count calculation`() = testScope.runTest {
+        // Given - create large text (1000+ words)
+        val largeText = (1..1000).joinToString(" ") { "word$it" }
+        
+        // When
+        val startTime = System.currentTimeMillis()
+        viewModel.updateText(largeText)
+        val endTime = System.currentTimeMillis()
+        
+        // Then - should complete quickly (less than 100ms for safety margin)
+        val duration = endTime - startTime
+        assert(duration < 100) { "Word count calculation took too long: ${duration}ms" }
+        
+        // Verify counts are correct
+        assertEquals(1000, viewModel.uiState.value.wordCount)
+        assertEquals(largeText.length, viewModel.uiState.value.characterCount)
+    }
 }

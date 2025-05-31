@@ -2,6 +2,7 @@ package com.neimasilk.purefocus.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Alignment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.neimasilk.purefocus.util.PerformanceMonitor
 
 /**
@@ -46,6 +48,8 @@ fun FocusWriteScreen(
     text: String,
     onTextChanged: (String) -> Unit,
     onClearText: () -> Unit = {},
+    wordCount: Int = 0,
+    characterCount: Int = 0,
     modifier: Modifier = Modifier
 ) {
     // Konversi String ke TextFieldValue untuk digunakan internal
@@ -63,6 +67,8 @@ fun FocusWriteScreen(
             }
         },
         onClearText = onClearText,
+        wordCount = wordCount,
+        characterCount = characterCount,
         modifier = modifier
     )
 }
@@ -78,6 +84,8 @@ fun FocusWriteScreen(
     textFieldValue: TextFieldValue,
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
     onClearText: () -> Unit = {},
+    wordCount: Int = 0,
+    characterCount: Int = 0,
     modifier: Modifier = Modifier
 ) {
     // Implementasi FocusWriteScreen dengan TextFieldValue
@@ -85,6 +93,8 @@ fun FocusWriteScreen(
         value = textFieldValue,
         onValueChange = onTextFieldValueChanged,
         onClearText = onClearText,
+        wordCount = wordCount,
+        characterCount = characterCount,
         modifier = modifier
     )
 }
@@ -98,6 +108,8 @@ private fun FocusWriteScreenImpl(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     onClearText: () -> Unit = {},
+    wordCount: Int = 0,
+    characterCount: Int = 0,
     modifier: Modifier = Modifier
 ) {
     // Mulai timer untuk mengukur performa
@@ -191,6 +203,18 @@ private fun FocusWriteScreenImpl(
                 }
             )
         }
+        
+        // Tampilan word count dan character count di bottom-right corner
+        Text(
+            text = "$wordCount words • $characterCount characters",
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        )
     }
     
     // Set fokus ke text field saat komposisi selesai

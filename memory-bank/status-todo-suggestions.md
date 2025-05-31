@@ -14,6 +14,7 @@
     * **[BARU]** Fungsionalitas "Clear All Text" dengan dialog konfirmasi telah diimplementasi di Focus Write Screen.
     * **[BARU]** Auto-save dan auto-load teks di Focus Write Screen menggunakan SharedPreferences dengan debouncing 1 detik.
     * **[BARU]** Persistent storage untuk teks Focus Write - teks tersimpan otomatis dan dipulihkan saat aplikasi dibuka kembali.
+    * **[BARU - JANUARI 2025]** Word count dan character count real-time di Focus Write Screen - menampilkan jumlah kata dan karakter secara live saat mengetik.
     * Navigasi antar layar (Timer, Settings, Focus Write) menggunakan Jetpack Compose Navigation.
 * **Kualitas & Teknis:**
     * Arsitektur MVVM dengan Hilt untuk Dependency Injection.
@@ -30,7 +31,7 @@
 ### Prioritas Utama Berikutnya:
 
 1.  **Focus Write Screen - Fitur Tambahan:**
-    * Word count / character count display.
+    * **[SELESAI]** ~~Word count / character count display.~~
     * Mode full-screen opsional untuk pengalaman menulis yang lebih imersif.
     * Export/share text functionality (ke file, email, atau aplikasi lain).
     * Multiple text documents/notes management.
@@ -78,10 +79,41 @@
     * Update `FocusWriteScreen` untuk memuat teks saat masuk dan menyimpan saat keluar (atau dengan tombol).
     * Tambahkan unit test untuk logika simpan/load teks.
 4.  **UI Test untuk Simpan/Load Teks Focus Write:** Pastikan teks yang disimpan muncul kembali.
-5.  **Rencanakan Penambahan Word Count:**
-    * Identifikasi bagaimana word count akan dihitung (real-time saat mengetik atau saat teks berubah).
-    * Desain bagaimana word count akan ditampilkan di UI `FocusWriteScreen`.
+5.  **[SELESAI]** ~~Rencanakan Penambahan Word Count:~~
+    * ~~Identifikasi bagaimana word count akan dihitung (real-time saat mengetik atau saat teks berubah).~~
+    * ~~Desain bagaimana word count akan ditampilkan di UI `FocusWriteScreen`.~~
 
-Dengan langkah-langkah kecil ini, Anda bisa mulai mengerjakan fitur penyimpanan teks untuk `FocusWriteScreen` yang merupakan langkah logis berikutnya berdasarkan rencana dan status saat ini.
+## Baby-Step Todolist Berikutnya (Januari 2025)
 
-Selamat melanjutkan pengembangan PureFocus! Proyek ini terlihat menjanjikan.
+Setelah berhasil mengimplementasi word count feature, berikut adalah langkah-langkah kecil berikutnya yang bisa dikerjakan:
+
+### Prioritas Tinggi:
+1. **Mode Full-Screen untuk Focus Write:**
+   * Tambahkan toggle button untuk masuk/keluar mode full-screen
+   * Sembunyikan navigation bar dan status bar saat full-screen aktif
+   * Pastikan word count tetap terlihat dalam mode full-screen
+
+2. **Export/Share Text Functionality:**
+   * Implementasi share text ke aplikasi lain (email, messaging, notes)
+   * Tambahkan opsi export ke file .txt di storage device
+   * Buat dialog untuk memilih format export (plain text, dengan metadata)
+
+3. **Undo/Redo Functionality:**
+   * Implementasi text history stack untuk undo/redo
+   * Tambahkan gesture atau button untuk undo/redo
+   * Optimasi memory usage untuk text history
+
+### Prioritas Menengah:
+4. **Multiple Text Documents Management:**
+   * Desain UI untuk mengelola multiple notes/documents
+   * Implementasi database lokal (Room) untuk menyimpan multiple documents
+   * Fitur create, rename, delete documents
+
+5. **Text Formatting Options:**
+   * Implementasi basic formatting (bold, italic)
+   * Bullet points dan numbering
+   * Simple markdown support
+
+Dengan langkah-langkah kecil ini, Anda bisa terus mengembangkan Focus Write Screen menjadi editor teks yang lebih powerful sambil tetap mempertahankan filosofi minimalis PureFocus.
+
+Selamat melanjutkan pengembangan PureFocus! Proyek ini semakin matang dan menjanjikan.
