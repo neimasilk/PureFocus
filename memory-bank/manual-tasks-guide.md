@@ -108,6 +108,10 @@ Perlu diupdate untuk menggunakan ViewModel dan sistem tema yang persisten.
 
 Perlu diupdate untuk mendukung persistensi tema.
 
+
+
+
+
 ## Tugas Manual yang Harus Dilakukan Developer
 
 ### Prioritas Tinggi (Harus dilakukan sekarang):

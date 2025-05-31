@@ -38,6 +38,9 @@ Every implementation step must prioritize:
 - Performance profiling tools accessible
 
 ### Step 0.2: Core Architecture Setup
+*   **Status:** Selesai (Sesuai `progress.md`)
+*   **Deskripsi Tambahan:** Untuk MVP, `PreferencesManager` yang menggunakan `SharedPreferences` akan menjadi mekanisme utama penyimpanan preferensi dan data sederhana. `DataStore` (khususnya `ProtoDataStore`) dan `Room` adalah pertimbangan untuk evolusi mendatang jika diperlukan struktur data yang lebih kompleks atau penyimpanan data relasional (misalnya, untuk statistik sesi).
+
 **Duration:** 2-3 days  
 **Objective:** Implement foundational architecture and performance monitoring
 
@@ -45,7 +48,7 @@ Every implementation step must prioritize:
 - Set up MVVM architecture with ViewModel
 - Configure StateFlow/SharedFlow for state management
 - Implement basic theme system (light/dark)
-- Set up SharedPreferences wrapper
+- Set up `PreferencesManager` (menggunakan `SharedPreferences`) untuk pengelolaan data dan preferensi.
 - Configure ProGuard/R8 for release builds
 - Implement performance monitoring utilities
 
@@ -65,13 +68,15 @@ Every implementation step must prioritize:
 ## Phase 1: Core Text Editor (Week 2)
 
 ### Step 1.1: Basic Text Input Implementation
+*   **Status:** Selesai (Sesuai `progress.md`)
+*   **Deskripsi Tambahan (Mode "Focus Write"):** Teks yang ditulis pengguna dalam mode ini **akan otomatis hilang/direset** setiap kali sesi fokus baru dimulai atau timer direset. Ini adalah perilaku yang diinginkan untuk MVP untuk mendorong pengguna memulai dari awal tanpa beban tulisan sebelumnya. Opsi untuk menyimpan teks secara eksplisit atau otomatis antar sesi tidak termasuk dalam lingkup MVP saat ini dan dipertimbangkan untuk versi berikutnya.
 **Duration:** 2-3 days  
 **Objective:** Create high-performance, full-screen text editor
 
 **Tasks:**
 - Implement full-screen Compose text field
 - Configure optimal text input performance
-- Set up auto-save mechanism to SharedPreferences
+- Set up auto-save mechanism ke `PreferencesManager` (menggunakan `SharedPreferences`) untuk satu draft teks.
 - Implement basic text styling (font, size, color)
 - Add keyboard handling and text selection
 
@@ -164,6 +169,8 @@ Every implementation step must prioritize:
 ## Phase 3: Settings and Polish (Week 4)
 
 ### Step 3.1: Essential Settings Implementation
+*   **Status:** Sebagian Selesai (Sesuai `progress.md` - Pengaturan durasi timer sudah ada)
+*   **Deskripsi Tambahan (UI/UX Refinement Awal):** Aspek UI/UX yang dianggap selesai untuk MVP mencakup: Tema dasar (terang/gelap), tipografi yang jelas, tata letak layar utama (Timer, Focus Write, Pengaturan) yang fungsional, dan kontrol timer yang intuitif.
 **Duration:** 2-3 days  
 **Objective:** Add minimal, essential customization options
 

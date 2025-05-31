@@ -21,6 +21,10 @@
 
 ## High-Level Architecture
 
+PureFocus menerapkan prinsip-prinsip Clean Architecture dengan pemisahan *concerns* untuk meningkatkan *testability* dan *maintainability*. Meskipun saat ini semua komponen berada dalam satu modul `app`, pemisahan logis antar lapisan tetap dijaga. Pemisahan fisik ke modul-modul terpisah (misalnya, `feature`, `domain`, `data`) adalah pertimbangan untuk evolusi proyek di masa mendatang.
+
+Berikut adalah gambaran arsitektur tingkat tinggi:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                       │
@@ -82,6 +86,8 @@
 
 ### ViewModel Layer
 
+Bertanggung jawab untuk menyimpan dan mengelola data terkait UI, serta menangani logika presentasi.
+
 **TextEditorViewModel:**
 - Manages text state and auto-save
 - Handles text operations (copy, clear)
@@ -89,11 +95,21 @@
 - Manages keyboard and input state
 
 **PomodoroTimerViewModel:**
-- ✅ Timer logic and state management (IMPLEMENTED)
-- ✅ Session tracking (work/break cycles) (IMPLEMENTED)
-- ✅ Notification scheduling (IMPLEMENTED)
-- ✅ Focus write text integration and logging (IMPLEMENTED)
-- Background timer persistence (PLANNED)
+- Mengelola logika dan state timer Pomodoro (sesi kerja, istirahat pendek, istirahat panjang).
+- Melacak siklus sesi dan progres pengguna.
+- Berkomunikasi dengan `PomodoroService` untuk menjalankan timer di background.
+- Mengirim event ke `MainActivity` untuk menampilkan notifikasi akhir sesi melalui `NotificationHelper`.
+- Mengelola teks yang ditulis pengguna dalam mode "Focus Write", menyimpannya melalui `PreferencesManager`.
+
+**MainViewModel:**
+- Mengelola state UI utama seperti mode tema (gelap/terang).
+- Menyimpan dan memuat teks terakhir yang ditulis pengguna dari `PreferencesManager`.
+- Menghitung jumlah kata dan karakter.
+- Menyediakan fungsi untuk membersihkan teks dan menyimpan teks secara manual (meskipun auto-save adalah mekanisme utama).
+
+**SettingsViewModel:**
+- Mengelola preferensi pengguna yang dapat dikonfigurasi melalui layar Pengaturan.
+- Menyimpan dan mengambil durasi timer (fokus, istirahat pendek, istirahat panjang) dan interval istirahat panjang dari `PreferencesManager`.
 
 **SettingsViewModel:**
 - ✅ User preference management (IMPLEMENTED)
@@ -102,6 +118,8 @@
 - Word count toggle (PLANNED)
 
 ### Data Layer
+
+Bertanggung jawab untuk menyediakan dan memanipulasi data aplikasi. Saat ini, lapisan data sangat bergantung pada `PreferencesManager` yang menggunakan `SharedPreferences`.
 
 **TextRepository:**
 - Text persistence to SharedPreferences
@@ -115,20 +133,29 @@
 - Timer configuration storage
 - Background state management
 
-**PreferencesRepository:**
-- User settings storage
-- Theme preference management
-- App configuration
-- Performance settings
+**PreferencesManager (menggunakan SharedPreferences):**
+- Bertindak sebagai sumber utama penyimpanan data persisten untuk MVP ini.
+- Menyimpan preferensi pengguna seperti durasi timer, mode tema, dan teks terakhir yang ditulis dalam mode "Focus Write".
+- Menyediakan fungsi untuk menyimpan, mengambil, dan menghapus data preferensi.
+- `ProtoDataStore` dengan `UserSettings` adalah mekanisme yang dipertimbangkan untuk pengelolaan preferensi yang lebih terstruktur di masa depan, namun untuk saat ini `SharedPreferences` melalui `PreferencesManager` adalah implementasi yang digunakan.
+
+*Catatan tentang Room:* `Room` database dipertimbangkan untuk fitur masa depan seperti penyimpanan statistik sesi atau beberapa dokumen. Namun, untuk MVP saat ini, `Room` belum diimplementasikan, dan penyimpanan data utama dilakukan melalui `PreferencesManager`.
 
 ### System Services Layer
 
+Menyediakan fungsionalitas yang berjalan di background atau berinteraksi dengan sistem Android.
+
 **PomodoroService (Foreground Service):**
-- Maintains timer accuracy in background
-- Displays persistent notification with timer status
-- Integrates with PomodoroTimerViewModel via SharedFlow
-- Handles service lifecycle management
-- Ensures timer continues during app backgrounding
+- Bertanggung jawab untuk menjalankan logika timer Pomodoro secara akurat bahkan ketika aplikasi berada di background.
+- Menampilkan notifikasi foreground yang persisten untuk memberitahu pengguna bahwa timer aktif.
+- Menerima perintah (start, pause, reset) dari `PomodoroTimerViewModel` melalui `Intent`.
+- Tidak secara langsung berinteraksi dengan `PomodoroTimerViewModel` melalui `SharedFlow` dalam implementasi saat ini; komunikasi bersifat satu arah dari ViewModel ke Service melalui `Intent`, dan Service berjalan independen untuk timer.
+- Mengelola siklus hidupnya sendiri dan memastikan timer terus berjalan selama sesi aktif.
+
+**NotificationHelper:**
+- Utilitas untuk membuat dan menampilkan notifikasi kepada pengguna.
+- Digunakan oleh `MainActivity` (berdasarkan event dari `PomodoroTimerViewModel`) untuk memberitahu akhir sesi fokus atau istirahat.
+- Mengelola channel notifikasi dan memastikan notifikasi ditampilkan dengan benar sesuai versi Android.
 
 **NotificationHelper:**
 - Manages notification channels and permissions
@@ -144,7 +171,18 @@
 
 ### Storage Layer
 
-**SharedPreferences Structure:**
+**SharedPreferences (via PreferencesManager):**
+- Mekanisme penyimpanan utama untuk MVP.
+- Digunakan untuk menyimpan semua preferensi pengguna dan data aplikasi sederhana seperti teks terakhir.
+
+**Struktur Kunci SharedPreferences yang Utama (dikelola oleh `PreferencesManager` melalui `PrefKeys`):**
+```
+PureFocus_Preferences:
+├── ${PrefKeys.KEY_DARK_MODE} (Boolean) - Mode tema (gelap/terang)
+├── ${PrefKeys.KEY_FOCUS_WRITE_TEXT} (String) - Teks terakhir dari mode Focus Write
+├── ${PrefKeys.KEY_FOCUS_DURATION} (Int) - Durasi sesi fokus (menit)
+// ... (kunci lain untuk durasi istirahat pendek, panjang, interval, dll.)
+```
 ```
 PureFocus_Preferences:
 ├── text_draft (String) - Current text content

@@ -117,3 +117,78 @@ Setelah berhasil mengimplementasi word count feature, berikut adalah langkah-lan
 Dengan langkah-langkah kecil ini, Anda bisa terus mengembangkan Focus Write Screen menjadi editor teks yang lebih powerful sambil tetap mempertahankan filosofi minimalis PureFocus.
 
 Selamat melanjutkan pengembangan PureFocus! Proyek ini semakin matang dan menjanjikan.
+
+---
+---
+# File: status-todo-suggestions.md (Tambahan/Update)
+---
+
+## Langkah Minimum Kritis Sebelum Rilis Publik (Pasca-Penyelesaian Dokumentasi)
+
+Bagian ini merinci tugas-tugas paling penting yang disarankan untuk diselesaikan setelah dokumentasi rampung, guna meningkatkan kelayakan aplikasi untuk rilis publik (v1.0). Fokusnya adalah pada stabilitas pengalaman pengguna inti dan kejelasan fungsionalitas.
+
+### 1. Stabilisasi Perilaku Teks pada "Focus Write Mode"
+
+**Masalah:** Teks yang ditulis di `FocusWriteScreen` saat ini dapat hilang saat perubahan konfigurasi (misalnya rotasi layar) atau jika pengguna tidak sengaja keluar dari mode tersebut sebelum sesi selesai. Meskipun desainnya mungkin "teks menghilang di akhir sesi", kehilangan teks *selama* sesi aktif karena rotasi adalah masalah UX.
+
+**Tugas Minimum yang Harus Dilakukan:**
+
+* **[TODO-RILIS-1.1] Amankan State Teks `FocusWriteScreen` dari Perubahan Konfigurasi:**
+    * **File:** `app/src/main/java/com/neimasilk/purefocus/ui/screens/FocusWriteScreen.kt`
+    * **Perubahan:** Modifikasi state `textState` agar menggunakan `rememberSaveable` bukan hanya `remember`.
+        * Ganti `var textState by remember { mutableStateOf("") }`
+        * Menjadi `var textState by rememberSaveable { mutableStateOf("") }`
+    * **Tujuan:** Memastikan teks yang sedang ditulis tidak hilang saat pengguna memutar layar atau saat sistem Android menghentikan sementara dan membuat ulang Activity.
+* **[TODO-RILIS-1.2] (Opsional, tapi Sangat Direkomendasikan) Klarifikasi UI tentang Perilaku Teks:**
+    * **File:** `app/src/main/java/com/neimasilk/purefocus/ui/screens/FocusWriteScreen.kt`
+    * **Perubahan:** Tambahkan teks non-intrusif (misalnya `Text` Composable dengan `fontSize` kecil di bawah area input) yang menjelaskan bahwa teks akan di-reset untuk sesi fokus baru. Contoh: *"Teks akan dikosongkan saat sesi fokus baru dimulai."*
+    * **Tujuan:** Mengelola ekspektasi pengguna mengenai sifat "ephemeral" dari teks, jika diputuskan tidak ada opsi simpan permanen untuk MVP.
+
+### 2. Amankan State Input pada Layar Pengaturan
+
+**Masalah:** Mirip dengan Focus Write, input pengguna pada layar Pengaturan (misalnya saat sedang mengubah durasi) bisa hilang jika terjadi perubahan konfigurasi sebelum disimpan.
+
+**Tugas Minimum yang Harus Dilakukan:**
+
+* **[TODO-RILIS-2.1] Amankan State Input Field di `SettingsScreen` dari Perubahan Konfigurasi:**
+    * **File:** `app/src/main/java/com/neimasilk/purefocus/ui/screens/SettingsScreen.kt`
+    * **Perubahan:** Untuk setiap `TextField` yang state-nya dipegang oleh `remember { mutableStateOf(...) }`, ganti menjadi `rememberSaveable { mutableStateOf(...) }`. Ini berlaku untuk `focusDurationInput`, `shortBreakDurationInput`, `longBreakDurationInput`, dan `longBreakIntervalInput`.
+        * Contoh: Ganti `var focusDurationInput by remember { mutableStateOf(settings.focusDurationMinutes.toString()) }`
+        * Menjadi `var focusDurationInput by rememberSaveable { mutableStateOf(settings.focusDurationMinutes.toString()) }` (lakukan untuk semua input serupa).
+    * **Tujuan:** Memastikan pengguna tidak kehilangan input yang sedang diketik di form pengaturan jika terjadi rotasi layar.
+
+### 3. Implementasi Opsi Dasar Kontrol Suara Notifikasi
+
+**Masalah:** Aplikasi saat ini selalu memainkan suara notifikasi. Pengguna tidak memiliki kontrol untuk menonaktifkannya, yang bisa menjadi sumber gangguan.
+
+**Tugas Minimum yang Harus Dilakukan:**
+
+* **[TODO-RILIS-3.1] Tambahkan Preferensi Pengaturan Suara:**
+    * **File:** `app/src/main/proto/user_settings.proto` (atau file proto Anda jika namanya berbeda, dan `PreferencesManager.kt`)
+    * **Perubahan:**
+        * Tambahkan field baru `bool enable_sound_notifications = 5;` (atau nomor berikutnya yang tersedia) ke message `UserSettings`.
+        * Update `PreferencesManager.kt` untuk mengenali dan mengelola preferensi baru ini (termasuk nilai default, misalnya `true`).
+* **[TODO-RILIS-3.2] Tambahkan UI Switch di `SettingsScreen`:**
+    * **File:** `app/src/main/java/com/neimasilk/purefocus/ui/SettingsViewModel.kt`
+    * **File:** `app/src/main/java/com/neimasilk/purefocus/ui/screens/SettingsScreen.kt`
+    * **Perubahan:**
+        * Di `SettingsViewModel`, tambahkan fungsi untuk mengupdate `enableSoundNotifications`.
+        * Di `SettingsScreen`, tambahkan `Switch` Composable yang terikat dengan state `enableSoundNotifications` dari `SettingsViewModel`. Beri label yang jelas seperti "Aktifkan Suara Notifikasi".
+* **[TODO-RILIS-3.3] Kondisikan Pemutaran Suara Notifikasi:**
+    * **File:** `app/src/main/java/com/neimasilk/purefocus/util/NotificationHelper.kt` (atau di `PomodoroService.kt` jika logika suara ada di sana).
+    * **Perubahan:** Sebelum memanggil `setSound()` pada `NotificationCompat.Builder` atau sebelum memainkan suara notifikasi, baca nilai preferensi `enableSoundNotifications` (melalui `PreferencesManager` yang di-inject). Hanya mainkan suara jika preferensi tersebut `true`.
+        * Contoh di `NotificationHelper` dalam `showTimerNotification` atau `showSessionFinishedNotification`:
+            ```kotlin
+            // ... builder setup ...
+            // val userSettings = preferencesManager.userSettingsFlow.first() // Perlu cara untuk akses preferencesManager
+            // if (userSettings.enableSoundNotifications) {
+            // builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+            // } else {
+            // builder.setSound(null)
+            // }
+            // ...
+            ```
+            *Catatan: Akses `PreferencesManager` di `NotificationHelper` mungkin memerlukan sedikit refactoring atau penyediaan dependensi yang sesuai jika belum ada.*
+---
+**Catatan Penting:**
+* Daftar di atas adalah **minimum absolut** untuk meningkatkan stabilitas dasar dan kenyamanan pengguna sebelum rilis.

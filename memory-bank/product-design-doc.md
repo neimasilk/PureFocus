@@ -11,20 +11,19 @@
 
 **Core Philosophy:** Speed and simplicity above all else. Every design decision must pass the test: "Does this make the app faster and simpler?"
 
-## 2. Target Users
+## 3. Target Pengguna
 
-### Primary Users
-- **Writers and Content Creators:** Bloggers, journalists, authors who need distraction-free writing sessions
-- **Students:** For essay writing, note-taking, and academic work requiring deep concentration
-- **Professionals:** For drafting reports, emails, and documents without interruptions
-- **Productivity Enthusiasts:** Users who practice deep work and single-tasking methodologies
+*   **Pelajar dan Mahasiswa:** Membutuhkan fokus saat belajar atau mengerjakan tugas.
+*   **Penulis dan Kreator Konten:** Mencari lingkungan bebas distraksi untuk menulis artikel, blog, atau naskah.
+*   **Programmer dan Pekerja Pengetahuan:** Perlu konsentrasi tinggi untuk tugas-tugas yang kompleks.
+*   **Siapapun yang ingin meningkatkan produktivitas** dengan mengurangi gangguan digital saat bekerja dengan teks.
 
-### User Characteristics
-- Value simplicity over feature richness
-- Frustrated with bloated, slow productivity apps
-- Understand and appreciate the Pomodoro Technique
-- Prefer mobile writing for convenience and portability
-- Willing to sacrifice advanced features for speed and focus
+### User Stories
+
+*   **Sebagai seorang pelajar,** saya ingin dapat mengatur timer fokus agar saya bisa belajar tanpa gangguan selama periode waktu tertentu, dan mendapatkan notifikasi ketika sesi berakhir sehingga saya bisa istirahat sejenak.
+*   **Sebagai seorang penulis,** saya ingin antarmuka yang minimalis tanpa banyak tombol atau menu yang mengganggu, sehingga saya bisa sepenuhnya berkonsentrasi pada tulisan saya.
+*   **Sebagai seorang programmer,** saya ingin aplikasi ini ringan dan cepat, serta dapat menyimpan pekerjaan saya secara otomatis sehingga saya tidak khawatir kehilangan progres jika terjadi sesuatu.
+*   **Sebagai pengguna umum,** saya ingin dapat dengan mudah mengatur durasi fokus dan istirahat sesuai kebutuhan saya, dan melihat statistik sederhana tentang seberapa banyak waktu fokus yang telah saya capai.
 
 ## 3. Core Features (MVP)
 
@@ -114,56 +113,32 @@
 - **Accessibility:** Support for screen readers and large text
 - **Offline Capability:** Full functionality without internet
 
-## 6. Success Metrics
+## 7. Persyaratan Non-Fungsional (Non-Functional Requirements)
 
-### 6.1 Performance Metrics
-- App launch time measurements
-- UI responsiveness benchmarks
-- Memory and battery usage analytics
-- Crash-free session rates
+*   **Kinerja:**
+    *   Waktu startup aplikasi: < 2 detik.
+    *   Responsivitas UI: Interaksi pengguna harus terasa instan, tanpa lag yang terlihat.
+    *   Penggunaan memori: Tetap rendah, idealnya di bawah 100MB saat penggunaan aktif.
+*   **Keandalan:**
+    *   Aplikasi harus stabil dan tidak crash selama sesi fokus.
+    *   Timer harus akurat dan notifikasi harus dikirim tepat waktu.
+    *   Penyimpanan otomatis harus berfungsi dengan andal untuk mencegah kehilangan data.
+*   **Kegunaan (Usability):**
+    *   Antarmuka harus intuitif dan mudah dipelajari, bahkan untuk pengguna non-teknis.
+    *   Pengaturan harus mudah diakses dan dipahami.
+*   **Keamanan:**
+    *   Data pengguna (teks tulisan) harus disimpan secara lokal dan aman. Tidak ada pengiriman data ke server eksternal tanpa izin eksplisit pengguna (untuk fitur masa depan seperti sinkronisasi cloud).
+*   **Pemeliharaan (Maintainability):**
+    *   Kode harus bersih, terstruktur dengan baik, dan mudah dimodifikasi atau diperluas di masa mendatang.
+    *   Dokumentasi kode yang memadai.
+*   **Portabilitas:**
+    *   Awalnya fokus pada platform Android. Pertimbangan untuk platform lain (iOS, Desktop) dapat dieksplorasi di masa depan.
 
-### 6.2 User Experience Metrics
-- Time to first character typed
-- Session duration and completion rates
-- User retention and daily active usage
-- App store ratings and reviews
+## 8. Metrik Keberhasilan (Success Metrics)
 
-### 6.3 Feature Usage Metrics
-- Pomodoro timer usage frequency
-- Average writing session length
-- Text copy functionality usage
-- Settings modification frequency
+## 9. Batasan dan Kendala (Constraints and Limitations)
 
-## 7. Constraints and Limitations
-
-### 7.1 MVP Constraints
-- **Single Platform:** Android only for MVP
-- **Plain Text Only:** No rich text formatting
-- **Single Document:** One draft at a time
-- **Local Storage Only:** No cloud sync or backup
-- **Minimal Customization:** Limited theme and timer options
-
-### 7.2 Technical Constraints
-- **No Third-Party UI Libraries:** Jetpack Compose primitives only
-- **Minimal Dependencies:** Essential libraries only
-- **SharedPreferences Storage:** No database for MVP
-- **No Network Features:** Fully offline application
-
-## 8. Future Considerations (Post-MVP)
-
-### 8.1 Potential Enhancements
-- Multiple document support
-- Basic text formatting options
-- Export functionality (PDF, TXT)
-- Cloud backup integration
-- iOS version development
-- Writing statistics and analytics
-
-### 8.2 Expansion Criteria
-- MVP must achieve performance targets
-- User feedback must validate core concept
-- Market demand for additional features
-- Ability to maintain speed and simplicity
+## 10. Pertimbangan Masa Depan (Future Considerations)
 
 ## 9. Risk Assessment
 
