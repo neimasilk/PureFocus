@@ -61,14 +61,30 @@ class PomodoroService : Service() {
         createNotificationChannel()
         preferencesManager = PreferencesManager(this)
         
-        // Initialize dengan durasi work default
-        val workDurationMillis = getWorkDurationMillis()
-        internalState.value = PomodoroServiceState(
-            timeLeftInMillis = workDurationMillis,
-            currentSessionType = SessionType.WORK,
-            isRunning = false,
-            pomodorosCompletedInCycle = 0
-        )
+        // Coba pulihkan state yang tersimpan
+        val savedState = preferencesManager.getSavedServiceState()
+        if (savedState != null) {
+            // Pulihkan state dari preferences
+            internalState.value = PomodoroServiceState(
+                timeLeftInMillis = savedState.timeLeftInMillis,
+                currentSessionType = try {
+                    SessionType.valueOf(savedState.currentSessionType)
+                } catch (e: IllegalArgumentException) {
+                    SessionType.WORK
+                },
+                isRunning = false, // Selalu mulai dalam keadaan pause setelah restart
+                pomodorosCompletedInCycle = savedState.pomodorosCompletedInCycle
+            )
+        } else {
+            // Initialize dengan durasi work default
+            val workDurationMillis = getWorkDurationMillis()
+            internalState.value = PomodoroServiceState(
+                timeLeftInMillis = workDurationMillis,
+                currentSessionType = SessionType.WORK,
+                isRunning = false,
+                pomodorosCompletedInCycle = 0
+            )
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -106,12 +122,20 @@ class PomodoroService : Service() {
 
         timerJob = serviceScope.launch {
             var currentTime = internalState.value.timeLeftInMillis
+            var saveCounter = 0
             while (currentTime > 0 && isActive) {
                 delay(1000L)
                 currentTime -= 1000L
                 internalState.value = internalState.value.copy(
                     timeLeftInMillis = maxOf(0, currentTime)
                 )
+                
+                // Simpan state setiap 10 detik untuk persistence
+                saveCounter++
+                if (saveCounter >= 10) {
+                    saveCurrentState()
+                    saveCounter = 0
+                }
             }
 
             // Timer selesai
@@ -124,6 +148,7 @@ class PomodoroService : Service() {
     private fun pauseTimerInternal() {
         timerJob?.cancel()
         internalState.value = internalState.value.copy(isRunning = false)
+        saveCurrentState() // Simpan state saat pause
     }
 
     private fun resetTimerInternal() {
@@ -133,6 +158,7 @@ class PomodoroService : Service() {
             currentSessionType = SessionType.WORK,
             isRunning = false
         )
+        preferencesManager.clearSavedServiceState() // Hapus state tersimpan saat reset
     }
 
     private fun skipSessionInternal() {
@@ -227,7 +253,24 @@ class PomodoroService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         timerJob?.cancel()
-        serviceScope.coroutineContext.cancel()
-        Log.d("PomodoroService", "Service dihancurkan.")
+        serviceScope.cancel()
+        
+        // Simpan state terakhir sebelum service dihancurkan
+        if (internalState.value.isRunning || internalState.value.timeLeftInMillis > 0) {
+            saveCurrentState()
+        }
+    }
+    
+    /**
+     * Menyimpan state saat ini ke preferences untuk persistence
+     */
+    private fun saveCurrentState() {
+        val currentState = internalState.value
+        preferencesManager.saveServiceState(
+            timeLeftInMillis = currentState.timeLeftInMillis,
+            currentSessionType = currentState.currentSessionType.name,
+            isRunning = currentState.isRunning,
+            pomodorosCompletedInCycle = currentState.pomodorosCompletedInCycle
+        )
     }
 }

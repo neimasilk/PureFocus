@@ -92,6 +92,66 @@ class PreferencesManager(context: Context) {
         _enableSoundNotifications.value = enable
     }
 
+    /**
+     * Menyimpan state service untuk persistence
+     */
+    fun saveServiceState(
+        timeLeftInMillis: Long,
+        currentSessionType: String,
+        isRunning: Boolean,
+        pomodorosCompletedInCycle: Int
+    ) {
+        sharedPreferences.edit {
+            putLong(PrefKeys.KEY_TIME_LEFT_IN_MILLIS, timeLeftInMillis)
+            putString(PrefKeys.KEY_CURRENT_SESSION_TYPE, currentSessionType)
+            putBoolean(PrefKeys.KEY_TIMER_RUNNING, isRunning)
+            putInt(PrefKeys.KEY_POMODOROS_COMPLETED_IN_CYCLE, pomodorosCompletedInCycle)
+            putLong(PrefKeys.KEY_SERVICE_LAST_SAVE_TIMESTAMP, System.currentTimeMillis())
+        }
+    }
+
+    /**
+     * Mengambil state service yang tersimpan
+     */
+    fun getSavedServiceState(): ServiceState? {
+        val timestamp = sharedPreferences.getLong(PrefKeys.KEY_SERVICE_LAST_SAVE_TIMESTAMP, 0L)
+        
+        // Jika tidak ada timestamp atau timestamp terlalu lama (lebih dari 1 jam), abaikan state
+        if (timestamp == 0L || System.currentTimeMillis() - timestamp > 3600000L) {
+            return null
+        }
+        
+        return ServiceState(
+            timeLeftInMillis = sharedPreferences.getLong(PrefKeys.KEY_TIME_LEFT_IN_MILLIS, 0L),
+            currentSessionType = sharedPreferences.getString(PrefKeys.KEY_CURRENT_SESSION_TYPE, "WORK") ?: "WORK",
+            isRunning = sharedPreferences.getBoolean(PrefKeys.KEY_TIMER_RUNNING, false),
+            pomodorosCompletedInCycle = sharedPreferences.getInt(PrefKeys.KEY_POMODOROS_COMPLETED_IN_CYCLE, 0)
+        )
+    }
+
+    /**
+     * Menghapus state service yang tersimpan
+     */
+    fun clearSavedServiceState() {
+        sharedPreferences.edit {
+            remove(PrefKeys.KEY_TIME_LEFT_IN_MILLIS)
+            remove(PrefKeys.KEY_CURRENT_SESSION_TYPE)
+            remove(PrefKeys.KEY_TIMER_RUNNING)
+            remove(PrefKeys.KEY_POMODOROS_COMPLETED_IN_CYCLE)
+            remove(PrefKeys.KEY_SERVICE_LAST_SAVE_TIMESTAMP)
+        }
+    }
+
+    /**
+     * Data class untuk menyimpan state service
+     */
+    data class ServiceState(
+        val timeLeftInMillis: Long,
+        val currentSessionType: String,
+        val isRunning: Boolean,
+        val pomodorosCompletedInCycle: Int
+    )
+
     companion object {
         // PREFERENCES_NAME dipindahkan ke Constants.kt
         // KEY_DARK_MODE dipindahkan ke Constants.kt

@@ -6,9 +6,11 @@ object PrefKeys {
     const val KEY_FOCUS_DURATION = "focus_duration"
     const val KEY_SHORT_BREAK_DURATION = "short_break_duration"
     const val KEY_LONG_BREAK_DURATION = "long_break_duration"
-    const val KEY_TIMER_RUNNING = "timer_running" // Verifikasi apakah masih digunakan
-    const val KEY_CURRENT_SESSION_TYPE = "current_session_type" // Verifikasi apakah masih digunakan
-    const val KEY_TIME_LEFT_IN_MILLIS = "time_left_in_millis" // Verifikasi apakah masih digunakan
+    const val KEY_TIMER_RUNNING = "timer_running"
+    const val KEY_CURRENT_SESSION_TYPE = "current_session_type"
+    const val KEY_TIME_LEFT_IN_MILLIS = "time_left_in_millis"
+    const val KEY_POMODOROS_COMPLETED_IN_CYCLE = "pomodoros_completed_in_cycle"
+    const val KEY_SERVICE_LAST_SAVE_TIMESTAMP = "service_last_save_timestamp"
     const val KEY_FOCUS_WRITE_TEXT = "focus_write_text"
     const val KEY_ENABLE_SOUND_NOTIFICATIONS = "enable_sound_notifications"
     // Tambahkan kunci preferensi lainnya jika teridentifikasi.

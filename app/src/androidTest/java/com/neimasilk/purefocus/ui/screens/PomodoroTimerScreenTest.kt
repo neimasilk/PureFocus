@@ -70,9 +70,43 @@ class PomodoroTimerScreenTest {
         assert(timeChanged) { "Timer did not update after clicking Start." }
     }
 
-    // TODO: Tambahkan tes lain sesuai kebutuhan:
-    // - Pause dan Resume timer
-    // - Reset timer
-    // - Skip session (jika ada)
-    // - Transisi otomatis antar sesi (WORK -> SHORT_BREAK)
+    @Test
+    fun timerScreen_pauseAndResumeTimer_worksCorrectly() {
+        // Start timer
+        composeTestRule.onNodeWithTag("StartButton").performClick()
+        
+        // Verify timer is running (Pause button is displayed)
+        composeTestRule.onNodeWithTag("PauseButton").assertIsDisplayed()
+        
+        // Pause timer
+        composeTestRule.onNodeWithTag("PauseButton").performClick()
+        
+        // Verify timer is paused (Start button is displayed again)
+        composeTestRule.onNodeWithTag("StartButton").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Start").assertIsDisplayed()
+        
+        // Resume timer
+        composeTestRule.onNodeWithTag("StartButton").performClick()
+        
+        // Verify timer is running again (Pause button is displayed)
+        composeTestRule.onNodeWithTag("PauseButton").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Pause").assertIsDisplayed()
+    }
+    
+    @Test
+    fun timerScreen_resetTimer_resetsToDefaultTime() {
+        // Start timer
+        composeTestRule.onNodeWithTag("StartButton").performClick()
+        
+        // Wait a moment for timer to change
+        Thread.sleep(1000)
+        
+        // Reset timer
+        composeTestRule.onNodeWithTag("ResetButton").performClick()
+        
+        // Verify timer is reset to default time (25:00)
+        composeTestRule.onNodeWithText("25:00").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("StartButton").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Start").assertIsDisplayed()
+    }
 }

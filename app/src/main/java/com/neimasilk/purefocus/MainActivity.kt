@@ -30,6 +30,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -53,12 +57,19 @@ class MainActivity : ComponentActivity() {
     private lateinit var pomodoroViewModel: PomodoroTimerViewModel
     private lateinit var settingsViewModel: SettingsViewModel
     
+    // State untuk dialog permission
+    private var showPermissionRationale = mutableStateOf(false)
+    
     // Launcher untuk meminta permission notifikasi
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        // Permission result akan ditangani secara otomatis
-        // Notifikasi akan muncul jika permission diberikan
+        if (isGranted) {
+            // Permission granted, notifications dapat berjalan
+        } else {
+            // Permission denied, tampilkan dialog penjelasan
+            showPermissionRationale.value = true
+        }
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,14 +92,50 @@ class MainActivity : ComponentActivity() {
         pomodoroViewModel = ViewModelProvider(this, pomodoroViewModelFactory)[PomodoroTimerViewModel::class.java]
         settingsViewModel = ViewModelProvider(this, settingsViewModelFactory)[SettingsViewModel::class.java]
         
-        // Request notification permission untuk Android 13+
-        requestNotificationPermissionIfNeeded()
+        // Request notification permission untuk Android 13+ sudah dihandle di dalam Composable
         
         enableEdgeToEdge()
         setContent {
             // Collect UI state dari ViewModel
             val uiState by viewModel.uiState.collectAsState()
             val context = LocalContext.current
+            
+            // State untuk dialog permission rationale
+            val showRationale by showPermissionRationale
+            
+            // Dialog untuk menjelaskan mengapa permission diperlukan
+            if (showRationale) {
+                AlertDialog(
+                    onDismissRequest = { showPermissionRationale.value = false },
+                    title = { Text("Izin Notifikasi Diperlukan") },
+                    text = { 
+                        Text("PureFocus memerlukan izin notifikasi untuk memberi tahu Anda ketika sesi Pomodoro berakhir. Tanpa izin ini, notifikasi timer tidak akan muncul. Anda dapat mengaktifkan izin ini melalui Pengaturan Aplikasi.") 
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showPermissionRationale.value = false }) {
+                            Text("Mengerti")
+                        }
+                    }
+                )
+            }
+            
+            // Request notification permission untuk Android 13+ saat aplikasi pertama dibuka
+            LaunchedEffect(Unit) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    when {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED -> {
+                            // Permission sudah diberikan
+                        }
+                        else -> {
+                            // Request permission langsung
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
+                }
+            }
             
             // Observasi event notifikasi dari PomodoroTimerViewModel
         LaunchedEffect(pomodoroViewModel) {
@@ -186,20 +233,7 @@ class MainActivity : ComponentActivity() {
         PerformanceMonitor.logMemoryUsage()
     }
     
-    /**
-     * Meminta permission notifikasi untuk Android 13+ jika belum diberikan
-     */
-    private fun requestNotificationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-    }
+
 }
 
 @Preview(showBackground = true)

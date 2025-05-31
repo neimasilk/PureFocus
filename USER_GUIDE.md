@@ -34,6 +34,7 @@ After installing PureFocus, you will be immediately greeted with a clean main in
 
 *   **Structured Focus Sessions:** Divide your work into focus intervals (e.g., 25 minutes) followed by short breaks (e.g., 5 minutes).
 *   **End-of-Session Notifications:** The application will notify you when a focus or break session ends.
+*   **State Persistence:** If the app is closed or restarted during an active timer session, it will automatically resume from where it left off when reopened.
 
 ### Session Settings
 
@@ -83,6 +84,7 @@ After installing PureFocus, you will be immediately greeted with a clean main in
 *   **Application not responding:** Try force-closing the application and reopening it.
 *   **Notifications not appearing:** Ensure you have granted notification permissions for PureFocus in your Android system settings.
 *   **Text not saved:** Although there is auto-save, ensure the focus session ends correctly. If you force-close the application mid-session, there is a small chance the latest data might not be saved.
+*   **Timer not resuming after restart:** The app automatically saves timer state every 10 seconds and when paused. If the timer doesn't resume after restarting the app, ensure you restart within 1 hour of the last session (saved states expire after 1 hour for accuracy).
 
 ## 6. Contact Us
 
