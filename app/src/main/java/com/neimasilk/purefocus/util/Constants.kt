@@ -10,6 +10,7 @@ object PrefKeys {
     const val KEY_CURRENT_SESSION_TYPE = "current_session_type" // Verifikasi apakah masih digunakan
     const val KEY_TIME_LEFT_IN_MILLIS = "time_left_in_millis" // Verifikasi apakah masih digunakan
     const val KEY_FOCUS_WRITE_TEXT = "focus_write_text"
+    const val KEY_ENABLE_SOUND_NOTIFICATIONS = "enable_sound_notifications"
     // Tambahkan kunci preferensi lainnya jika teridentifikasi.
 }
 

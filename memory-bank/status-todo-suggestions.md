@@ -99,8 +99,12 @@
 4.  **Unit Test untuk Logika Timer di `PomodoroService`:** Setelah logika timer dipindahkan, tulis unit test untuk memastikan countdown, transisi sesi (awal), dan penanganan command di service berfungsi dengan benar.
 5.  **Review dan Selesaikan TODOs dari `status-todo-suggestions.md` bagian "Langkah Minimum Kritis Sebelum Rilis Publik":**
     * **[TODO-RILIS-1.1] Amankan State Teks `FocusWriteScreen`:** Ganti `remember` dengan `rememberSaveable` untuk `textFieldValueState` di `FocusWriteScreenImpl` (atau `textState` jika merujuk ke versi lama file). *Catatan: Kode saat ini sudah menggunakan `textFieldValueState` yang di-pass dari `MainActivity` via `pomodoroViewModel.focusWriteText`, yang mana `MainViewModel` sudah menangani penyimpanan teks. Jadi, ini mungkin sudah teratasi atau perlu re-evaluasi.* Periksa `FocusWriteScreenImpl` untuk state lokal yang mungkin perlu `rememberSaveable`.
-    * **[TODO-RILIS-2.1] Amankan State Input Field di `SettingsScreen`:** Ganti `remember { mutableStateOf(focusDuration.toString()) }` untuk `durationInput` menjadi `rememberSaveable { mutableStateOf(focusDuration.toString()) }`. Lakukan untuk input field lain jika ada.
-    * **[TODO-RILIS-3.1, 3.2, 3.3] Implementasi Opsi Dasar Kontrol Suara Notifikasi:** Ini adalah fitur baru yang penting dan perlu diimplementasikan sesuai deskripsi di file status.
+    * **[SELESAI] ✅ Amankan State Input Field di `SettingsScreen`:** `durationInput` telah diubah menggunakan `rememberSaveable` untuk mencegah kehilangan input saat rotasi layar.
+    * **[SELESAI] ✅ Implementasi Opsi Dasar Kontrol Suara Notifikasi:** Fitur kontrol suara notifikasi telah diimplementasikan lengkap:
+        * Preferensi `enableSoundNotifications` ditambahkan ke `PreferencesManager`
+        * UI Switch ditambahkan di `SettingsScreen` dengan integrasi `SettingsViewModel`
+        * `NotificationHelper` dimodifikasi untuk kondisional pemutaran suara
+        * `MainActivity` diupdate untuk menggunakan preferensi suara saat memanggil notifikasi
 
 
 
@@ -116,12 +120,8 @@ Setelah menyelesaikan pemindahan logika timer ke service dan implementasi dasar 
     * Setelah `POMODOROS_PER_CYCLE` tercapai, transisikan ke `LONG_BREAK`.
     * Reset `pomodorosCompletedInCycle` setelah `LONG_BREAK`.
     * Tambahkan pengaturan durasi Istirahat Panjang di `SettingsScreen` dan `PreferencesManager`.
-2.  **Selesaikan Implementasi Kontrol Suara Notifikasi (TODO-RILIS-3):**
-    * Pastikan `PreferencesManager` memiliki field untuk `enableSoundNotifications`.
-    * Tambahkan UI Switch di `SettingsScreen` yang terikat ke `SettingsViewModel` untuk mengubah preferensi ini.
-    * Modifikasi `NotificationHelper` (atau di mana pun notifikasi dibuat) untuk hanya memainkan suara jika preferensi ini `true`.
-3.  **Amankan State Input di `SettingsScreen` (TODO-RILIS-2.1):**
-    * Ganti `remember` dengan `rememberSaveable` untuk `durationInput` di `SettingsScreen.kt` agar input tidak hilang saat rotasi layar.
+2.  **[SELESAI] ✅ Implementasi Kontrol Suara Notifikasi:** Telah selesai diimplementasikan dengan lengkap.
+3.  **[SELESAI] ✅ Amankan State Input di `SettingsScreen`:** Telah selesai diimplementasikan menggunakan `rememberSaveable`.
 
 ### Prioritas Menengah (Lanjutan):
 4.  **Peningkatan `FocusWriteScreen`:**

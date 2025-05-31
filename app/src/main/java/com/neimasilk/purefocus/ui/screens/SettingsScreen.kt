@@ -15,12 +15,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +38,8 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val focusDuration by settingsViewModel.focusDuration.collectAsState()
-    var durationInput by remember { mutableStateOf(focusDuration.toString()) }
+    val enableSoundNotifications by settingsViewModel.enableSoundNotifications.collectAsState()
+    var durationInput by rememberSaveable { mutableStateOf(focusDuration.toString()) }
     
     Column(
         modifier = modifier
@@ -118,6 +121,57 @@ fun SettingsScreen(
                     text = "Range: 1-180 minutes",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        
+        // Sound Notifications Setting Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Sound Notifications",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                
+                Text(
+                    text = "Enable or disable notification sounds when sessions end",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Enable Sound Notifications",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    
+                    Switch(
+                        checked = enableSoundNotifications,
+                        onCheckedChange = { isChecked ->
+                            settingsViewModel.toggleSoundNotifications(isChecked)
+                        }
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(
+                    text = if (enableSoundNotifications) "Sound notifications are enabled" else "Sound notifications are disabled",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (enableSoundNotifications) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }

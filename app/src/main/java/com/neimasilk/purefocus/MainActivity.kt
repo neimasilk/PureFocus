@@ -93,14 +93,16 @@ class MainActivity : ComponentActivity() {
             // Observasi event notifikasi dari PomodoroTimerViewModel
         LaunchedEffect(pomodoroViewModel) {
             pomodoroViewModel.showFocusEndNotificationEvent.collect {
-                NotificationHelper.showFocusSessionEndNotification(context)
+                val enableSound = settingsViewModel.enableSoundNotifications.value
+                NotificationHelper.showFocusSessionEndNotification(context, enableSound)
             }
         }
         
         // Observasi event notifikasi akhir sesi istirahat
         LaunchedEffect(pomodoroViewModel) {
             pomodoroViewModel.showBreakEndNotificationEvent.collect {
-                NotificationHelper.showBreakSessionEndNotification(context)
+                val enableSound = settingsViewModel.enableSoundNotifications.value
+                NotificationHelper.showBreakSessionEndNotification(context, enableSound)
             }
         }
             

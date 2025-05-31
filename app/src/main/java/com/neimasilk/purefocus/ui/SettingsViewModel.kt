@@ -15,12 +15,24 @@ class SettingsViewModel(private val preferencesManager: PreferencesManager) : Vi
     val focusDuration: StateFlow<Int> = preferencesManager.focusDuration
     
     /**
+     * StateFlow untuk sound notifications yang dapat diobservasi oleh UI
+     */
+    val enableSoundNotifications: StateFlow<Boolean> = preferencesManager.enableSoundNotifications
+    
+    /**
      * Update focus duration dan simpan ke preferences
      */
     fun updateFocusDuration(duration: Int) {
         if (duration > 0 && duration <= 180) {
             preferencesManager.updateFocusDuration(duration)
         }
+    }
+    
+    /**
+     * Toggle sound notifications preference
+     */
+    fun toggleSoundNotifications(enable: Boolean) {
+        preferencesManager.updateEnableSoundNotifications(enable)
     }
     
     companion object {

@@ -20,6 +20,10 @@ class PreferencesManager(context: Context) {
     // StateFlow untuk focus duration
     private val _focusDuration = MutableStateFlow(getFocusDurationFromPrefs())
     val focusDuration: StateFlow<Int> = _focusDuration.asStateFlow()
+    
+    // StateFlow untuk sound notifications
+    private val _enableSoundNotifications = MutableStateFlow(getEnableSoundNotificationsFromPrefs())
+    val enableSoundNotifications: StateFlow<Boolean> = _enableSoundNotifications.asStateFlow()
 
     /**
      * Preferensi untuk mode tema (gelap/terang)
@@ -71,6 +75,21 @@ class PreferencesManager(context: Context) {
     fun updateFocusDuration(duration: Int) {
         sharedPreferences.edit { putInt(PrefKeys.KEY_FOCUS_DURATION, duration) }
         _focusDuration.value = duration
+    }
+    
+    /**
+     * Mengambil preferensi sound notifications dari SharedPreferences
+     */
+    private fun getEnableSoundNotificationsFromPrefs(): Boolean {
+        return sharedPreferences.getBoolean(PrefKeys.KEY_ENABLE_SOUND_NOTIFICATIONS, true)
+    }
+    
+    /**
+     * Update sound notifications preference dan emit nilai baru ke StateFlow
+     */
+    fun updateEnableSoundNotifications(enable: Boolean) {
+        sharedPreferences.edit { putBoolean(PrefKeys.KEY_ENABLE_SOUND_NOTIFICATIONS, enable) }
+        _enableSoundNotifications.value = enable
     }
 
     companion object {

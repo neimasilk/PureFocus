@@ -19,21 +19,21 @@ object NotificationHelper {
     /**
      * Menampilkan notifikasi ketika sesi fokus berakhir
      */
-    fun showFocusSessionEndNotification(context: Context) {
-        showSessionEndNotification(context, SessionType.WORK)
+    fun showFocusSessionEndNotification(context: Context, enableSound: Boolean = true) {
+        showSessionEndNotification(context, SessionType.WORK, enableSound)
     }
     
     /**
      * Menampilkan notifikasi ketika sesi istirahat berakhir
      */
-    fun showBreakSessionEndNotification(context: Context) {
-        showSessionEndNotification(context, SessionType.SHORT_BREAK)
+    fun showBreakSessionEndNotification(context: Context, enableSound: Boolean = true) {
+        showSessionEndNotification(context, SessionType.SHORT_BREAK, enableSound)
     }
     
     /**
      * Menampilkan notifikasi ketika sesi berakhir dengan suara yang sesuai
      */
-    private fun showSessionEndNotification(context: Context, sessionType: SessionType) {
+    private fun showSessionEndNotification(context: Context, sessionType: SessionType, enableSound: Boolean) {
         // Intent untuk membuka aplikasi ketika notifikasi diklik
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -63,16 +63,21 @@ object NotificationHelper {
             )
         }
         
-        // Buat notifikasi dengan suara
-        val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_ID_SESSION_END) // Menggunakan konstanta dari NotificationConstants
+        // Buat notifikasi dengan atau tanpa suara berdasarkan preferensi
+        val notificationBuilder = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_ID_SESSION_END) // Menggunakan konstanta dari NotificationConstants
             .setSmallIcon(android.R.drawable.ic_dialog_info) // Menggunakan ikon standar untuk sementara
             .setContentTitle(title)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .setSound(soundUri) // Menambahkan suara notifikasi
-            .build()
+        
+        // Hanya tambahkan suara jika enableSound adalah true
+        if (enableSound) {
+            notificationBuilder.setSound(soundUri)
+        }
+        
+        val notification = notificationBuilder.build()
         
         // Tampilkan notifikasi hanya jika permission tersedia
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
