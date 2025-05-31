@@ -33,7 +33,7 @@
     * Perbaikan masalah izin notifikasi di `NotificationHelper.kt`.
 
 **Kesimpulan Status:**
-Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Baby Step 1 (Notifikasi)**, **Baby Step 2 (Settings UI)**, dan **Baby Step 4 (Foreground Service)** telah berhasil diselesaikan. Aplikasi kini memiliki sistem notifikasi yang berfungsi, UI pengaturan yang terintegrasi, dan foreground service yang memastikan timer berjalan dengan akurat bahkan saat aplikasi di background. Semua unit test lolos dan build berhasil. Langkah selanjutnya adalah melanjutkan ke Baby Step 3 dan 5 untuk melengkapi fitur-fitur dasar yang tersisa.
+Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Semua Baby Steps (1-5) telah berhasil diselesaikan**: Notifikasi, Settings UI, Simpan Teks ke Logcat, Foreground Service, dan Instrumented Test. Aplikasi kini memiliki sistem notifikasi yang berfungsi, UI pengaturan yang terintegrasi, foreground service yang memastikan timer berjalan dengan akurat bahkan saat aplikasi di background, logging teks focus write, dan instrumented test untuk UI. Semua unit test dan build berhasil. Proyek siap untuk tahap pengembangan berikutnya dengan fondasi yang solid dan teruji.
 
 ## Daftar Pekerjaan di Masa Depan (Future To-Do List)
 
@@ -113,9 +113,10 @@ Pilih salah satu atau beberapa dari langkah kecil berikut untuk progres yang ter
     * **Tugas:** Buat kelas `Service` baru, deklarasikan di `AndroidManifest.xml` sebagai foreground service. Implementasikan `onStartCommand` untuk memulai service dalam mode foreground dengan notifikasi placeholder.
     * **Detail:** Fokus pada setup dasar service dan notifikasi persistennya. Belum perlu memindahkan semua logika timer ke sini.
     * **File Terkait:** Buat `PomodoroService.kt`, `AndroidManifest.xml`.
-5.  **Baby Step: Menulis Satu Instrumented Test untuk `FocusWriteScreen`.**
+5.  **[✅ SELESAI] Baby Step: Menulis Satu Instrumented Test untuk `FocusWriteScreen`.**
     * **Tugas:** Buat satu tes UI sederhana yang memeriksa apakah tombol "Start" ditampilkan di `FocusWriteScreen`.
     * **Detail:** Gunakan `createComposeRule` dan `onNodeWithText("Start").assertIsDisplayed()`.
     * **File Terkait:** `ExampleInstrumentedTest.kt` atau buat file test baru untuk `FocusWriteScreen`.
+    * **Status:** SELESAI - Instrumented test berhasil diimplementasikan dan berjalan dengan baik.
 
 Pilih baby step yang paling sesuai dengan prioritas Anda saat ini. Ini akan membantu menjaga momentum dan memberikan hasil yang terlihat dengan cepat.
