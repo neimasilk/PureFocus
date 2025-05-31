@@ -29,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.neimasilk.purefocus.util.PerformanceMonitor
 
@@ -117,6 +118,7 @@ private fun FocusWriteScreenImpl(
                 .fillMaxSize()
                 .padding(16.dp)
                 .focusRequester(focusRequester)
+                .testTag("focusWriteTextField")
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onLongPress = { showContextMenu = true }
