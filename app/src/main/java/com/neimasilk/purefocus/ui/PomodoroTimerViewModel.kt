@@ -6,8 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.model.PomodoroState
 import com.neimasilk.purefocus.model.SessionType
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import com.neimasilk.purefocus.service.PomodoroService
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -15,24 +14,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-import com.neimasilk.purefocus.util.DefaultSettings // Import tambahan
-
 class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager) : ViewModel() {
-
-    companion object {
-        // SHORT_BREAK_DURATION_MINUTES dipindahkan ke Constants.kt
-        // LONG_BREAK_DURATION_MINUTES dipindahkan ke Constants.kt
-
-        // Using TimeUnit for clarity and correctness
-        val SHORT_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_SHORT_BREAK_DURATION_MINUTES)
-        val LONG_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_LONG_BREAK_DURATION_MINUTES)
-
-        // const val POMODOROS_PER_CYCLE = 4 // For future use
-    }
 
     // Get work duration from preferences
     private fun getWorkDurationMillis(): Long {
@@ -58,6 +43,22 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
     private val _focusWriteText = MutableStateFlow("")
     val focusWriteText: StateFlow<String> = _focusWriteText.asStateFlow()
 
+    init {
+        // Observasi state dari PomodoroService
+        viewModelScope.launch {
+            PomodoroService.serviceState.collect { serviceState ->
+                _uiState.update {
+                    it.copy(
+                        timeLeftInMillis = serviceState.timeLeftInMillis,
+                        currentSessionType = serviceState.currentSessionType,
+                        isTimerRunning = serviceState.isRunning,
+                        pomodorosCompletedInCycle = serviceState.pomodorosCompletedInCycle
+                    )
+                }
+            }
+        }
+    }
+
     fun startPauseTimer() {
         if (_uiState.value.isTimerRunning) {
             pauseTimer()
@@ -67,39 +68,21 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
     }
 
     fun startTimer() {
-        if (_uiState.value.isTimerRunning) {
-            return
-        }
-
-        _uiState.update { it.copy(isTimerRunning = true) }
-        
-        // Emit event untuk memulai foreground service
+        // Delegasikan ke service
         viewModelScope.launch {
             _serviceCommandEvent.emit(ServiceAction.START)
         }
     }
 
     fun pauseTimer() {
-        _uiState.update { it.copy(isTimerRunning = false) }
-        
-        // Emit event untuk pause service
+        // Delegasikan ke service
         viewModelScope.launch {
             _serviceCommandEvent.emit(ServiceAction.PAUSE)
         }
     }
 
-    // handleSessionFinish dipindahkan ke PomodoroService
-
     fun resetTimer() {
-        _uiState.update {
-            it.copy(
-                timeLeftInMillis = getWorkDurationMillis(),
-                currentSessionType = SessionType.WORK,
-                isTimerRunning = false
-            )
-        }
-        
-        // Emit event untuk reset service
+        // Delegasikan ke service
         viewModelScope.launch {
             _serviceCommandEvent.emit(ServiceAction.RESET)
         }
@@ -116,7 +99,7 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
             _focusWriteText.value = ""
         }
         
-        // Emit event untuk skip session
+        // Delegasikan ke service
         viewModelScope.launch {
             _serviceCommandEvent.emit(ServiceAction.SKIP)
         }

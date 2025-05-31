@@ -40,16 +40,21 @@ class PomodoroService : Service() {
         val pomodorosCompletedInCycle: Int = 0
     )
 
-    private val _serviceState = MutableStateFlow(PomodoroServiceState())
-    val serviceState: StateFlow<PomodoroServiceState> = _serviceState.asStateFlow()
+    // Companion object untuk expose state ke ViewModel
+    companion object {
+        private val _serviceState = MutableStateFlow(PomodoroServiceState())
+        val serviceState: StateFlow<PomodoroServiceState> = _serviceState.asStateFlow()
+        
+        val SHORT_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_SHORT_BREAK_DURATION_MINUTES)
+        val LONG_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_LONG_BREAK_DURATION_MINUTES)
+        const val POMODOROS_PER_CYCLE = 4
+    }
+
+    // Internal state reference untuk kemudahan akses
+    private val internalState get() = _serviceState
 
     private var timerJob: Job? = null
     private lateinit var preferencesManager: PreferencesManager
-
-    companion object {
-        val SHORT_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_SHORT_BREAK_DURATION_MINUTES)
-        val LONG_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_LONG_BREAK_DURATION_MINUTES)
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -58,7 +63,7 @@ class PomodoroService : Service() {
         
         // Initialize dengan durasi work default
         val workDurationMillis = getWorkDurationMillis()
-        _serviceState.value = PomodoroServiceState(
+        internalState.value = PomodoroServiceState(
             timeLeftInMillis = workDurationMillis,
             currentSessionType = SessionType.WORK,
             isRunning = false,
@@ -93,18 +98,18 @@ class PomodoroService : Service() {
     }
 
     private fun startTimerInternal() {
-        if (_serviceState.value.isRunning) {
+        if (internalState.value.isRunning) {
             return
         }
 
-        _serviceState.value = _serviceState.value.copy(isRunning = true)
+        internalState.value = internalState.value.copy(isRunning = true)
 
         timerJob = serviceScope.launch {
-            var currentTime = _serviceState.value.timeLeftInMillis
+            var currentTime = internalState.value.timeLeftInMillis
             while (currentTime > 0 && isActive) {
                 delay(1000L)
                 currentTime -= 1000L
-                _serviceState.value = _serviceState.value.copy(
+                internalState.value = internalState.value.copy(
                     timeLeftInMillis = maxOf(0, currentTime)
                 )
             }
@@ -118,12 +123,12 @@ class PomodoroService : Service() {
 
     private fun pauseTimerInternal() {
         timerJob?.cancel()
-        _serviceState.value = _serviceState.value.copy(isRunning = false)
+        internalState.value = internalState.value.copy(isRunning = false)
     }
 
     private fun resetTimerInternal() {
         pauseTimerInternal()
-        _serviceState.value = _serviceState.value.copy(
+        internalState.value = internalState.value.copy(
             timeLeftInMillis = getWorkDurationMillis(),
             currentSessionType = SessionType.WORK,
             isRunning = false
@@ -138,26 +143,47 @@ class PomodoroService : Service() {
     private fun handleSessionFinish() {
         pauseTimerInternal()
 
-        val currentState = _serviceState.value
+        val currentState = internalState.value
         when (currentState.currentSessionType) {
             SessionType.WORK -> {
                 Log.d("PomodoroService", "Sesi fokus selesai")
                 
                 val newPomodorosCompleted = currentState.pomodorosCompletedInCycle + 1
-                _serviceState.value = currentState.copy(
-                    currentSessionType = SessionType.SHORT_BREAK,
-                    timeLeftInMillis = SHORT_BREAK_DURATION_MILLIS,
-                    pomodorosCompletedInCycle = newPomodorosCompleted,
-                    isRunning = false
-                )
-                // TODO: Add logic for LONG_BREAK after POMODOROS_PER_CYCLE in future baby-step
-            }
-            SessionType.SHORT_BREAK, SessionType.LONG_BREAK -> {
-                Log.d("PomodoroService", "Sesi istirahat selesai")
                 
-                _serviceState.value = currentState.copy(
+                // Cek apakah sudah waktunya untuk long break
+                if (newPomodorosCompleted >= POMODOROS_PER_CYCLE) {
+                    internalState.value = currentState.copy(
+                        currentSessionType = SessionType.LONG_BREAK,
+                        timeLeftInMillis = LONG_BREAK_DURATION_MILLIS,
+                        pomodorosCompletedInCycle = newPomodorosCompleted,
+                        isRunning = false
+                    )
+                } else {
+                    internalState.value = currentState.copy(
+                        currentSessionType = SessionType.SHORT_BREAK,
+                        timeLeftInMillis = SHORT_BREAK_DURATION_MILLIS,
+                        pomodorosCompletedInCycle = newPomodorosCompleted,
+                        isRunning = false
+                    )
+                }
+            }
+            SessionType.SHORT_BREAK -> {
+                Log.d("PomodoroService", "Sesi istirahat pendek selesai")
+                
+                internalState.value = currentState.copy(
                     currentSessionType = SessionType.WORK,
                     timeLeftInMillis = getWorkDurationMillis(),
+                    isRunning = false
+                )
+            }
+            SessionType.LONG_BREAK -> {
+                Log.d("PomodoroService", "Sesi istirahat panjang selesai")
+                
+                // Reset cycle setelah long break
+                internalState.value = currentState.copy(
+                    currentSessionType = SessionType.WORK,
+                    timeLeftInMillis = getWorkDurationMillis(),
+                    pomodorosCompletedInCycle = 0,
                     isRunning = false
                 )
             }
