@@ -110,11 +110,19 @@ class MainActivity : ComponentActivity() {
                     val serviceIntent = Intent(applicationContext, PomodoroService::class.java)
                     when (action) {
                         PomodoroTimerViewModel.ServiceAction.START -> {
-                            serviceIntent.action = PomodoroServiceActions.ACTION_START_RESUME // Menggunakan konstanta dari PomodoroServiceActions
+                            serviceIntent.action = PomodoroServiceActions.ACTION_START_RESUME
                             ContextCompat.startForegroundService(applicationContext, serviceIntent)
                         }
-                        PomodoroTimerViewModel.ServiceAction.STOP -> {
-                            serviceIntent.action = PomodoroServiceActions.ACTION_PAUSE // Menggunakan konstanta dari PomodoroServiceActions (asumsi STOP di ViewModel berarti PAUSE di Service)
+                        PomodoroTimerViewModel.ServiceAction.PAUSE -> {
+                            serviceIntent.action = PomodoroServiceActions.ACTION_PAUSE
+                            startService(serviceIntent)
+                        }
+                        PomodoroTimerViewModel.ServiceAction.RESET -> {
+                            serviceIntent.action = PomodoroServiceActions.ACTION_RESET
+                            startService(serviceIntent)
+                        }
+                        PomodoroTimerViewModel.ServiceAction.SKIP -> {
+                            serviceIntent.action = PomodoroServiceActions.ACTION_SKIP
                             startService(serviceIntent)
                         }
                     }

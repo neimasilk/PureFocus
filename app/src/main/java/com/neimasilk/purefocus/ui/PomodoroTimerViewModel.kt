@@ -58,8 +58,6 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
     private val _focusWriteText = MutableStateFlow("")
     val focusWriteText: StateFlow<String> = _focusWriteText.asStateFlow()
 
-    private var timerJob: Job? = null
-
     fun startPauseTimer() {
         if (_uiState.value.isTimerRunning) {
             pauseTimer()
@@ -79,100 +77,35 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
         viewModelScope.launch {
             _serviceCommandEvent.emit(ServiceAction.START)
         }
-
-        timerJob = viewModelScope.launch {
-            var currentTime = _uiState.value.timeLeftInMillis
-            while (currentTime > 0 && isActive) {
-                delay(1000L)
-                currentTime -= 1000L
-                // Ensure timeLeftInMillis doesn't go negative if delay caused slight overrun
-                _uiState.update { it.copy(timeLeftInMillis = maxOf(0, currentTime)) }
-            }
-
-            // After loop finishes (time is up or job cancelled)
-            if (isActive && currentTime <= 0) { // Ensure it was time up, not cancellation
-                handleSessionFinish()
-            }
-        }
     }
 
     fun pauseTimer() {
-        timerJob?.cancel()
         _uiState.update { it.copy(isTimerRunning = false) }
-    }
-
-    private fun handleSessionFinish() {
-        pauseTimer() // Stop any existing timer job and set isTimerRunning to false
-
-        val currentState = _uiState.value
-        when (currentState.currentSessionType) {
-            SessionType.WORK -> {
-                // Log teks Focus Write saat sesi fokus berakhir (hanya jika ada teks)
-                val currentText = _focusWriteText.value
-                if (currentText.isNotEmpty()) {
-                    Log.d("FocusWrite", "Sesi Fokus Selesai. Teks: $currentText")
-                }
-                
-                // Reset teks setelah sesi fokus berakhir
-                _focusWriteText.value = ""
-                
-                // Emit event untuk notifikasi akhir sesi fokus
-                viewModelScope.launch {
-                    _showFocusEndNotificationEvent.emit(Unit)
-                }
-                
-                val newPomodorosCompleted = currentState.pomodorosCompletedInCycle + 1
-                _uiState.update {
-                    it.copy(
-                        currentSessionType = SessionType.SHORT_BREAK,
-                        timeLeftInMillis = SHORT_BREAK_DURATION_MILLIS,
-                        pomodorosCompletedInCycle = newPomodorosCompleted,
-                        isTimerRunning = false // Ensure timer is paused after transition
-                    )
-                }
-                // TODO: Add logic for LONG_BREAK after POMODOROS_PER_CYCLE in a future baby-step
-            }
-            SessionType.SHORT_BREAK, SessionType.LONG_BREAK -> { // Consolidate break handling
-                // Emit event untuk notifikasi akhir sesi istirahat
-                viewModelScope.launch {
-                    _showBreakEndNotificationEvent.emit(Unit)
-                }
-                
-                _uiState.update {
-                    it.copy(
-                        currentSessionType = SessionType.WORK,
-                        timeLeftInMillis = getWorkDurationMillis(),
-                        isTimerRunning = false // Ensure timer is paused after transition
-                    )
-                }
-            }
+        
+        // Emit event untuk pause service
+        viewModelScope.launch {
+            _serviceCommandEvent.emit(ServiceAction.PAUSE)
         }
     }
+
+    // handleSessionFinish dipindahkan ke PomodoroService
 
     fun resetTimer() {
-        pauseTimer()
-        
-        // Emit event untuk menghentikan foreground service
-        viewModelScope.launch {
-            _serviceCommandEvent.emit(ServiceAction.STOP)
-        }
-        
-        // Resets current session to a full WORK session, keeps completed cycle count.
         _uiState.update {
             it.copy(
                 timeLeftInMillis = getWorkDurationMillis(),
                 currentSessionType = SessionType.WORK,
                 isTimerRunning = false
-                // pomodorosCompletedInCycle = it.pomodorosCompletedInCycle // Stays the same as per spec
             )
+        }
+        
+        // Emit event untuk reset service
+        viewModelScope.launch {
+            _serviceCommandEvent.emit(ServiceAction.RESET)
         }
     }
 
     fun skipSession() {
-        // pauseTimer() is called by handleSessionFinish, so not strictly needed here
-        // but explicitly calling it ensures isTimerRunning is false before handleSessionFinish logic
-        pauseTimer()
-        
         // Jika sedang dalam sesi WORK, reset teks dan log sebelum transisi
         val currentState = _uiState.value
         if (currentState.currentSessionType == SessionType.WORK) {
@@ -183,7 +116,10 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
             _focusWriteText.value = ""
         }
         
-        handleSessionFinish() // This will transition to the next session and set its duration
+        // Emit event untuk skip session
+        viewModelScope.launch {
+            _serviceCommandEvent.emit(ServiceAction.SKIP)
+        }
     }
 
     /**
@@ -193,5 +129,5 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
         _focusWriteText.value = newText
     }
     
-    enum class ServiceAction { START, STOP }
+    enum class ServiceAction { START, PAUSE, RESET, SKIP }
 }

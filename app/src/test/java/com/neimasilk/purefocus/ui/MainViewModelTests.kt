@@ -302,7 +302,7 @@ class MainViewModelTests {
         viewModel.updateText("Hello world\ntest")
         
         // Then
-        assertEquals(17, viewModel.uiState.value.characterCount) // "Hello world\ntest" = 17 chars
+        assertEquals(16, viewModel.uiState.value.characterCount) // "Hello world\ntest" = 16 chars
     }
     
     @Test
@@ -320,7 +320,7 @@ class MainViewModelTests {
         viewModel.updateText("Hello 🌟 world")
         
         // Then
-        assertEquals(13, viewModel.uiState.value.characterCount)
+        assertEquals(14, viewModel.uiState.value.characterCount) // 🌟 is 2 UTF-16 code units
     }
     
     // Integration Tests for Counts
@@ -396,7 +396,7 @@ class MainViewModelTests {
         // Then - verify counts are correct after auto-load
         assertEquals(testText, newViewModel.uiState.value.textFieldValue.text)
         assertEquals(5, newViewModel.uiState.value.wordCount)
-        assertEquals(24, newViewModel.uiState.value.characterCount)
+        assertEquals(23, newViewModel.uiState.value.characterCount) // "Auto save and load test" = 23 chars
     }
     
     @Test
