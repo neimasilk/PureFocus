@@ -155,6 +155,7 @@ class MainActivity : ComponentActivity() {
                                 FocusWriteScreen(
                                     text = focusWriteText,
                                     onTextChanged = { pomodoroViewModel.updateFocusWriteText(it) },
+                                    onClearText = { viewModel.clearText() },
                                     modifier = Modifier.weight(1f) // Allow FocusWriteScreen to take available space
                                 )
                                 PomodoroControlsView(
@@ -195,7 +196,8 @@ fun FocusWriteScreenPreview() {
     PureFocusTheme {
         FocusWriteScreen(
             text = "Ini adalah contoh teks untuk preview.",
-            onTextChanged = {}
+            onTextChanged = {},
+            onClearText = {}
         )
     }
 }

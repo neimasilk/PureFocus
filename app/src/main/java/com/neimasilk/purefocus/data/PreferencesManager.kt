@@ -36,6 +36,29 @@ class PreferencesManager(context: Context) {
         set(value) = sharedPreferences.edit { putString(PrefKeys.KEY_FOCUS_WRITE_TEXT, value) }
     
     /**
+     * Menyimpan teks Focus Write ke SharedPreferences
+     */
+    fun saveFocusWriteText(text: String) {
+        sharedPreferences.edit { putString(PrefKeys.KEY_FOCUS_WRITE_TEXT, text) }
+    }
+    
+    /**
+     * Mengambil teks Focus Write dari SharedPreferences sebagai Flow
+     */
+    fun getFocusWriteText(): kotlinx.coroutines.flow.Flow<String> {
+        return kotlinx.coroutines.flow.flow {
+            emit(sharedPreferences.getString(PrefKeys.KEY_FOCUS_WRITE_TEXT, "") ?: "")
+        }
+    }
+    
+    /**
+     * Menghapus teks Focus Write dari SharedPreferences
+     */
+    fun clearFocusWriteText() {
+        sharedPreferences.edit { remove(PrefKeys.KEY_FOCUS_WRITE_TEXT) }
+    }
+    
+    /**
      * Durasi focus session dalam menit (default 25 menit)
      */
     private fun getFocusDurationFromPrefs(): Int {

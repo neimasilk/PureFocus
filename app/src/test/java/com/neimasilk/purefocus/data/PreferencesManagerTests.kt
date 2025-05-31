@@ -2,6 +2,8 @@ package com.neimasilk.purefocus.data
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -91,5 +93,56 @@ class PreferencesManagerTests {
         // Then
         val savedValue = preferencesManager.isDarkMode
         assertEquals(valueToSave, savedValue)
+    }
+    
+    @Test
+    fun `saveFocusWriteText saves text to SharedPreferences`() {
+        // Given
+        val textToSave = "Test focus write text"
+        
+        // When
+        preferencesManager.saveFocusWriteText(textToSave)
+        
+        // Then
+        val savedText = preferencesManager.lastText
+        assertEquals(textToSave, savedText)
+    }
+    
+    @Test
+    fun `getFocusWriteText returns saved text`() = runBlocking {
+        // Given
+        val expectedText = "Saved focus text"
+        preferencesManager.saveFocusWriteText(expectedText)
+        
+        // When
+        val result = preferencesManager.getFocusWriteText().first()
+        
+        // Then
+        assertEquals(expectedText, result)
+    }
+    
+    @Test
+    fun `getFocusWriteText returns empty string when no text saved`() = runBlocking {
+        // Given - fresh PreferencesManager with no stored value
+        
+        // When
+        val result = preferencesManager.getFocusWriteText().first()
+        
+        // Then
+        assertEquals("", result)
+    }
+    
+    @Test
+    fun `clearFocusWriteText removes text from SharedPreferences`() {
+        // Given
+        val textToSave = "Text to be cleared"
+        preferencesManager.saveFocusWriteText(textToSave)
+        
+        // When
+        preferencesManager.clearFocusWriteText()
+        
+        // Then
+        val result = preferencesManager.lastText
+        assertEquals("", result)
     }
 }

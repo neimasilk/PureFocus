@@ -67,25 +67,52 @@ class MainViewModel(private val preferencesManager: PreferencesManager) : ViewMo
         _uiState.update { it.copy(textFieldValue = newValue) }
     }
     
-    // Inisialisasi debouncing untuk auto-save
+    /**
+     * Menghapus semua teks dan membersihkan storage
+     */
+    fun clearText() {
+        _uiState.update { it.copy(textFieldValue = TextFieldValue()) }
+        viewModelScope.launch {
+            preferencesManager.clearFocusWriteText()
+        }
+    }
+    
+    /**
+     * Menyimpan teks secara manual (jika diperlukan)
+     */
+    fun saveTextManually() {
+        viewModelScope.launch {
+            preferencesManager.saveFocusWriteText(_uiState.value.textFieldValue.text)
+        }
+    }
+    
+    // Inisialisasi auto-load dan auto-save
     init {
-        // Observe perubahan text dan simpan ke preferences setelah 500ms tidak ada perubahan
+        // Load saved text saat ViewModel diinisialisasi
+        viewModelScope.launch {
+            preferencesManager.getFocusWriteText().collect { savedText ->
+                if (savedText.isNotEmpty() && _uiState.value.textFieldValue.text.isEmpty()) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            textFieldValue = TextFieldValue(
+                                text = savedText,
+                                selection = TextRange(savedText.length)
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        
+        // Auto-save dengan debouncing 1 detik
         viewModelScope.launch {
             _uiState
                 .map { it.textFieldValue.text }
                 .distinctUntilChanged()
-                .debounce(500) // Tunggu 500ms setelah input terakhir
+                .debounce(1000) // Tunggu 1 detik setelah input terakhir
                 .collect { text ->
-                    // Hanya simpan jika teks tidak kosong atau berbeda dari yang tersimpan
-                    if (text != preferencesManager.lastText) {
-                        preferencesManager.lastText = text
-                        // Gunakan try-catch untuk menangani jika PerformanceMonitor tidak tersedia (dalam test)
-                        // try {
-                        //     PerformanceMonitor.logMemoryUsage() // Monitor penggunaan memori setelah save
-                        // } catch (e: Exception) {
-                        //     // Ignore exception in tests
-                        // }
-                    }
+                    // Simpan teks ke preferences
+                    preferencesManager.saveFocusWriteText(text)
                 }
         }
     }

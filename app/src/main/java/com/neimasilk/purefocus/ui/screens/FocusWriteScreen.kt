@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +45,7 @@ import com.neimasilk.purefocus.util.PerformanceMonitor
 fun FocusWriteScreen(
     text: String,
     onTextChanged: (String) -> Unit,
+    onClearText: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     // Konversi String ke TextFieldValue untuk digunakan internal
@@ -59,6 +62,7 @@ fun FocusWriteScreen(
                 onTextChanged(newValue.text)
             }
         },
+        onClearText = onClearText,
         modifier = modifier
     )
 }
@@ -73,12 +77,14 @@ fun FocusWriteScreen(
 fun FocusWriteScreen(
     textFieldValue: TextFieldValue,
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
+    onClearText: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     // Implementasi FocusWriteScreen dengan TextFieldValue
     FocusWriteScreenImpl(
         value = textFieldValue,
         onValueChange = onTextFieldValueChanged,
+        onClearText = onClearText,
         modifier = modifier
     )
 }
@@ -91,6 +97,7 @@ fun FocusWriteScreen(
 private fun FocusWriteScreenImpl(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    onClearText: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     // Mulai timer untuk mengukur performa
@@ -105,8 +112,9 @@ private fun FocusWriteScreenImpl(
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     
-    // State untuk menu konteks
+    // State untuk menu konteks dan confirmation dialog
     var showContextMenu by remember { mutableStateOf(false) }
+    var showClearConfirmation by remember { mutableStateOf(false) }
     
     Box(
         modifier = modifier.fillMaxSize()
@@ -136,7 +144,7 @@ private fun FocusWriteScreenImpl(
             decorationBox = { innerTextField -> innerTextField() }
         )
         
-        // Menu konteks untuk salin teks
+        // Menu konteks untuk salin teks dan clear text
         DropdownMenu(
             expanded = showContextMenu,
             onDismissRequest = { showContextMenu = false }
@@ -147,6 +155,39 @@ private fun FocusWriteScreenImpl(
                     clipboardManager.setText(AnnotatedString(value.text))
                     Toast.makeText(context, "Teks disalin", Toast.LENGTH_SHORT).show()
                     showContextMenu = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Hapus Semua Teks") },
+                onClick = {
+                    showContextMenu = false
+                    showClearConfirmation = true
+                }
+            )
+        }
+        
+        // Confirmation dialog untuk clear text
+        if (showClearConfirmation) {
+            AlertDialog(
+                onDismissRequest = { showClearConfirmation = false },
+                title = { Text("Hapus Semua Teks?") },
+                text = { Text("Ini akan menghapus semua teks yang Anda tulis secara permanen. Tindakan ini tidak dapat dibatalkan.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            onClearText()
+                            showClearConfirmation = false
+                        }
+                    ) {
+                        Text("Hapus")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showClearConfirmation = false }
+                    ) {
+                        Text("Batal")
+                    }
                 }
             )
         }

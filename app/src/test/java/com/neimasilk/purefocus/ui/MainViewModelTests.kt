@@ -7,6 +7,8 @@ import androidx.test.core.app.ApplicationProvider
 import com.neimasilk.purefocus.data.PreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
@@ -80,24 +82,24 @@ class MainViewModelTests {
         // When
         viewModel.updateText(newText)
         
-        // Advance time by less than debounce delay (500ms)
-        testScope.testScheduler.advanceTimeBy(300)
+        // Advance time by less than debounce delay (1000ms)
+        testScope.testScheduler.advanceTimeBy(500)
         
         // Then - text should not be saved yet
-        assertEquals("", preferencesManager.lastText)
+        assertEquals("", runBlocking { preferencesManager.getFocusWriteText().first() })
         
         // When - advance time past debounce delay
-        testScope.testScheduler.advanceTimeBy(300) // Total 600ms
+        testScope.testScheduler.advanceTimeBy(600) // Total 1100ms
         
         // Then - text should be saved
-        assertEquals(newText, preferencesManager.lastText)
+        assertEquals(newText, runBlocking { preferencesManager.getFocusWriteText().first() })
     }
     
     @Test
     fun `text is loaded from preferences on init`() = testScope.runTest {
         // Given
         val savedText = "Saved text"
-        preferencesManager.lastText = savedText
+        preferencesManager.saveFocusWriteText(savedText)
         
         // When - create a new viewModel to trigger init
         val newViewModel = MainViewModel(preferencesManager)
@@ -118,14 +120,14 @@ class MainViewModelTests {
         viewModel.updateText("Text 3")
         
         // Then - no saves yet
-        assertEquals("", preferencesManager.lastText)
+        assertEquals("", runBlocking { preferencesManager.getFocusWriteText().first() })
         
         // When - advance time past debounce delay
-        testScope.testScheduler.advanceTimeBy(500) // Total 700ms
+        testScope.testScheduler.advanceTimeBy(1000) // Total 1200ms
         testScope.testScheduler.advanceUntilIdle() // Execute all pending coroutines
         
         // Then - only the last text should be saved
-        assertEquals("Text 3", preferencesManager.lastText)
+        assertEquals("Text 3", runBlocking { preferencesManager.getFocusWriteText().first() })
         assertEquals("Text 3", viewModel.uiState.value.textFieldValue.text)
     }
     
@@ -147,12 +149,58 @@ class MainViewModelTests {
         assertEquals(text3.selection, viewModel.uiState.value.textFieldValue.selection)
         
         // When - advance time past debounce delay
-        testScope.testScheduler.advanceTimeBy(500) // Total 700ms
+        testScope.testScheduler.advanceTimeBy(1000) // Total 1200ms
         testScope.testScheduler.advanceUntilIdle() // Execute all pending coroutines
         
         // Then - only the last text should be saved, and selection still preserved
-        assertEquals("Text 3", preferencesManager.lastText)
+        assertEquals("Text 3", runBlocking { preferencesManager.getFocusWriteText().first() })
         assertEquals("Text 3", viewModel.uiState.value.textFieldValue.text)
         assertEquals(TextRange(5), viewModel.uiState.value.textFieldValue.selection)
+    }
+    
+    @Test
+    fun `clearText clears UI state and preferences`() = testScope.runTest {
+        // Given
+        val initialText = "Some text to clear"
+        viewModel.updateText(initialText)
+        
+        // Advance time to save the text
+        testScope.testScheduler.advanceTimeBy(1100)
+        
+        // Verify text is saved
+        assertEquals(initialText, runBlocking { preferencesManager.getFocusWriteText().first() })
+        assertEquals(initialText, viewModel.uiState.value.textFieldValue.text)
+        
+        // When
+        viewModel.clearText()
+        
+        // Advance time to ensure coroutine completes
+        testScope.testScheduler.advanceUntilIdle()
+        
+        // Then - UI state should be cleared
+        assertEquals("", viewModel.uiState.value.textFieldValue.text)
+        assertEquals(TextRange.Zero, viewModel.uiState.value.textFieldValue.selection)
+        
+        // And preferences should be cleared
+        assertEquals("", runBlocking { preferencesManager.getFocusWriteText().first() })
+    }
+    
+    @Test
+    fun `saveTextManually saves current text immediately`() = testScope.runTest {
+        // Given
+        val textToSave = "Text to save manually"
+        viewModel.updateText(textToSave)
+        
+        // Verify text is not saved yet (before debounce)
+        assertEquals("", runBlocking { preferencesManager.getFocusWriteText().first() })
+        
+        // When
+        viewModel.saveTextManually()
+        
+        // Advance time to ensure coroutine completes
+        testScope.testScheduler.advanceUntilIdle()
+        
+        // Then - text should be saved immediately
+        assertEquals(textToSave, runBlocking { preferencesManager.getFocusWriteText().first() })
     }
 }
