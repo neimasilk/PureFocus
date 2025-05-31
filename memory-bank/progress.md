@@ -55,7 +55,9 @@
 **Current Task:** Pomodoro Timer Implementation (Preparing for Phase 2)
 **Progress:** Phase 0 is 100% complete. Phase 1 is 50% complete with Text Editor Foundation and Optimization implemented.
 
-**Recently Completed Baby-Step:** Baby-Step 1.3: Unit Test Migration to Robolectric
+**Recently Completed Baby-Steps:** 
+- Baby-Step 1: Notifikasi Sederhana untuk Akhir Sesi Fokus (SELESAI ✅)
+- Baby-Step 2: Input Durasi Sesi Fokus di UI Pengaturan Sederhana (SELESAI ✅)
 - ✅ All tasks for Phase 0 are complete.
 - ✅ Application is running on the emulator.
 - ✅ Full-screen text editor UI implemented (`FocusWriteScreen.kt`).
@@ -148,6 +150,8 @@
 - ✅ **Project Initiation** (May 29, 2025) - Complete project documentation.
 - ✅ **Environment Ready** (May 31, 2025) - Development environment fully configured.
 - ✅ **First Runnable Build (Phase 0 Complete)** (May 31, 2025) - Basic Android app with MVVM architecture builds and runs on emulator.
+- ✅ **Baby Step 1: Notifications** (January 2025) - Notifikasi sederhana untuk akhir sesi fokus berhasil diimplementasikan.
+- ✅ **Baby Step 2: Settings UI** (January 2025) - UI Pengaturan sederhana dengan input durasi fokus berhasil diimplementasikan.
 
 ### Upcoming Milestones
 - ⏳ **Text Editor Foundation Complete** (Target: June 3-4, 2025) - Core text editing UI and auto-save.

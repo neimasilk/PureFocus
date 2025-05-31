@@ -1,6 +1,9 @@
 package com.neimasilk.purefocus
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.os.StrictMode
 import android.os.SystemClock
 import com.neimasilk.purefocus.BuildConfig
@@ -20,8 +23,29 @@ class PureFocusApplication : Application() {
             enableStrictMode()
         }
         
+        // Create notification channel for Pomodoro notifications
+        createNotificationChannel()
+        
         // Log startup time
         PerformanceMonitor.logStartupTime(startupTime)
+    }
+    
+    /**
+     * Membuat notification channel untuk notifikasi Pomodoro
+     */
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                POMODORO_CHANNEL_ID,
+                "Pomodoro Timer Notifications",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notifications for Pomodoro session updates"
+            }
+            
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager?.createNotificationChannel(channel)
+        }
     }
     
     /**
@@ -43,5 +67,9 @@ class PureFocusApplication : Application() {
                 .penaltyLog()
                 .build()
         )
+    }
+    
+    companion object {
+        const val POMODORO_CHANNEL_ID = "purefocus_pomodoro_channel"
     }
 }

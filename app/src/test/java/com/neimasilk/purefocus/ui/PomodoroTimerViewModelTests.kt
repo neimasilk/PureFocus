@@ -1,10 +1,14 @@
 package com.neimasilk.purefocus.ui
 
 import app.cash.turbine.test
+import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.model.PomodoroState
 import com.neimasilk.purefocus.model.SessionType
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
@@ -19,11 +23,17 @@ class PomodoroTimerViewModelTests {
     private val testScope = TestScope()
     private val testDispatcher = StandardTestDispatcher(testScope.testScheduler)
     private lateinit var viewModel: PomodoroTimerViewModel
+    private lateinit var mockPreferencesManager: PreferencesManager
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = PomodoroTimerViewModel()
+        
+        // Mock PreferencesManager
+        mockPreferencesManager = mock()
+        whenever(mockPreferencesManager.focusDuration).thenReturn(MutableStateFlow(25))
+        
+        viewModel = PomodoroTimerViewModel(mockPreferencesManager)
     }
 
     @After
@@ -34,7 +44,7 @@ class PomodoroTimerViewModelTests {
     @Test
     fun `initial state is correct`() = testScope.runTest {
         val initialState = viewModel.uiState.value
-        assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS, initialState.timeLeftInMillis)
+        assertEquals(25 * 60 * 1000L, initialState.timeLeftInMillis) // 25 minutes in millis
         assertEquals(SessionType.WORK, initialState.currentSessionType)
         assertFalse(initialState.isTimerRunning)
         assertEquals(0, initialState.pomodorosCompletedInCycle)
@@ -52,13 +62,13 @@ class PomodoroTimerViewModelTests {
             testScope.testScheduler.advanceTimeBy(1000L)
             testScope.testScheduler.runCurrent() // Execute tasks scheduled for the current time
             val firstUpdate = awaitItem()
-            assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS - 1000L, firstUpdate.timeLeftInMillis)
+            assertEquals(25 * 60 * 1000L - 1000L, firstUpdate.timeLeftInMillis)
 
             // Advance time by another 1 second (total 2 seconds)
             testScope.testScheduler.advanceTimeBy(1000L)
             testScope.testScheduler.runCurrent()
             val secondUpdate = awaitItem()
-            assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS - 2000L, secondUpdate.timeLeftInMillis)
+            assertEquals(25 * 60 * 1000L - 2000L, secondUpdate.timeLeftInMillis)
 
             // Cancel turbine to avoid further emissions if any
             cancelAndConsumeRemainingEvents()
@@ -112,7 +122,7 @@ class PomodoroTimerViewModelTests {
         viewModel.resetTimer()
 
         val state = viewModel.uiState.value
-        assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS, state.timeLeftInMillis)
+        assertEquals(25 * 60 * 1000L, state.timeLeftInMillis)
         assertEquals(SessionType.WORK, state.currentSessionType)
         assertFalse(state.isTimerRunning)
         assertEquals(0, state.pomodorosCompletedInCycle) // As per spec, resetTimer doesn't reset cycle count
@@ -128,7 +138,7 @@ class PomodoroTimerViewModelTests {
         viewModel.resetTimer()
 
         val state = viewModel.uiState.value
-        assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS, state.timeLeftInMillis)
+        assertEquals(25 * 60 * 1000L, state.timeLeftInMillis)
         assertEquals(SessionType.WORK, state.currentSessionType)
         assertFalse(state.isTimerRunning)
         assertEquals(0, state.pomodorosCompletedInCycle) // As per spec, resetTimer doesn't reset cycle count
@@ -142,7 +152,7 @@ class PomodoroTimerViewModelTests {
             awaitItem() // isTimerRunning = true, WORK session
 
             // Advance time by full work duration plus a bit more to ensure timer finishes
-            testScope.testScheduler.advanceTimeBy(PomodoroTimerViewModel.WORK_DURATION_MILLIS + 1000L)
+            testScope.testScheduler.advanceTimeBy(25 * 60 * 1000L + 1000L)
             testScope.testScheduler.runCurrent()
             
             // Skip intermediate states and get to the final state after session transition
@@ -152,7 +162,7 @@ class PomodoroTimerViewModelTests {
             }
 
             assertEquals(SessionType.SHORT_BREAK, finalState.currentSessionType)
-            assertEquals(PomodoroTimerViewModel.SHORT_BREAK_DURATION_MILLIS, finalState.timeLeftInMillis)
+            assertEquals(5 * 60 * 1000L, finalState.timeLeftInMillis)
             assertFalse(finalState.isTimerRunning)
             assertEquals(1, finalState.pomodorosCompletedInCycle)
             
@@ -166,7 +176,7 @@ class PomodoroTimerViewModelTests {
         viewModel.skipSession()
         val state = viewModel.uiState.value
         assertEquals(SessionType.SHORT_BREAK, state.currentSessionType)
-        assertEquals(PomodoroTimerViewModel.SHORT_BREAK_DURATION_MILLIS, state.timeLeftInMillis)
+        assertEquals(5 * 60 * 1000L, state.timeLeftInMillis)
         assertFalse(state.isTimerRunning)
         assertEquals("Pomodoros should increment when skipping WORK", 1, state.pomodorosCompletedInCycle)
     }
@@ -181,7 +191,7 @@ class PomodoroTimerViewModelTests {
         viewModel.skipSession() // Skip SHORT_BREAK
         val state = viewModel.uiState.value
         assertEquals(SessionType.WORK, state.currentSessionType)
-        assertEquals(PomodoroTimerViewModel.WORK_DURATION_MILLIS, state.timeLeftInMillis)
+        assertEquals(25 * 60 * 1000L, state.timeLeftInMillis)
         assertFalse(state.isTimerRunning)
         assertEquals("Pomodoros should NOT increment when skipping SHORT_BREAK", 1, state.pomodorosCompletedInCycle)
     }

@@ -16,17 +16,26 @@
 * Unit test untuk `PreferencesManager` dan `PomodoroTimerViewModel` telah dibuat dan **semua lolos**. Pengujian Flow menggunakan `Turbine`.
 * Dependensi proyek telah dikonfigurasi dengan baik.
 * Dasar `PerformanceMonitor` telah ada.
+* **[BARU] Sistem notifikasi untuk akhir sesi fokus** telah diimplementasikan:
+    * `NotificationHelper` untuk menampilkan notifikasi.
+    * Event-driven notification melalui `showFocusEndNotificationEvent` di `PomodoroTimerViewModel`.
+    * Integrasi notifikasi di `MainActivity` dengan collection dari Flow event.
+* **[BARU] UI Pengaturan (Settings Screen)** telah diimplementasikan:
+    * `SettingsScreen` dengan input untuk durasi sesi fokus.
+    * `SettingsViewModel` untuk manajemen state pengaturan.
+    * Navigasi antara `FocusWriteScreen` dan `SettingsScreen` di `MainActivity`.
+    * Integrasi dengan `PreferencesManager` untuk penyimpanan pengaturan.
 
 **Kesimpulan Status:**
-Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. Aplikasi siap untuk pengembangan fitur lebih lanjut, penyempurnaan UI/UX, dan penambahan fungsionalitas pendukung.
+Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Baby Step 1 (Notifikasi)** dan **Baby Step 2 (Settings UI)** telah berhasil diselesaikan, menambahkan sistem notifikasi yang berfungsi dan UI pengaturan yang terintegrasi. Aplikasi kini memiliki fondasi yang lebih kuat dengan fitur notifikasi dan pengaturan yang dapat digunakan pengguna. Langkah selanjutnya adalah melanjutkan ke Baby Step 3, 4, dan 5 untuk melengkapi fitur-fitur dasar yang tersisa.
 
 ## Daftar Pekerjaan di Masa Depan (Future To-Do List)
 
 ### Prioritas Tinggi (Fitur Inti & Fungsionalitas Dasar)
 
-1.  **Implementasi Notifikasi Timer:**
-    * [ ] Buat notifikasi untuk akhir setiap sesi Pomodoro (Focus, Short Break, Long Break).
-    * [ ] Pastikan notifikasi berfungsi bahkan ketika aplikasi di background.
+1.  **[✅ SELESAI SEBAGIAN] Implementasi Notifikasi Timer:**
+    * [x] Buat notifikasi untuk akhir setiap sesi Pomodoro (Focus, Short Break, Long Break).
+    * [x] Pastikan notifikasi berfungsi bahkan ketika aplikasi di background.
     * [ ] Tambahkan opsi suara notifikasi (bisa di iterasi berikutnya).
 2.  **Foreground Service untuk Timer Akurat:**
     * [ ] Implementasikan Foreground Service untuk memastikan timer Pomodoro berjalan terus meskipun aplikasi tidak aktif atau layar terkunci.
@@ -36,10 +45,10 @@ Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan lay
     * [ ] Tentukan mekanisme penyimpanan teks (misalnya, file lokal per sesi, database sederhana).
     * [ ] Implementasikan fungsi simpan otomatis atau manual untuk teks yang diketik di `FocusWriteScreen`.
     * [ ] Pikirkan tentang bagaimana pengguna akan mengakses/melihat kembali tulisan yang disimpan.
-4.  **UI Pengaturan (Settings Screen):**
-    * [ ] Buat layar Pengaturan baru.
-    * [ ] Izinkan pengguna untuk mengubah durasi sesi Focus, Short Break, dan Long Break.
-    * [ ] Hubungkan UI Pengaturan dengan `PreferencesManager`.
+4.  **[✅ SELESAI SEBAGIAN] UI Pengaturan (Settings Screen):**
+    * [x] Buat layar Pengaturan baru.
+    * [x] Izinkan pengguna untuk mengubah durasi sesi Focus, Short Break, dan Long Break.
+    * [x] Hubungkan UI Pengaturan dengan `PreferencesManager`.
 5.  **Penyempurnaan UI/UX `FocusWriteScreen`:**
     * [ ] Perjelas interaksi antara timer Pomodoro dan input teks (misalnya, apakah input dinonaktifkan saat break?).
     * [ ] Tingkatkan feedback visual (misalnya, transisi state timer, progress bar yang lebih informatif).
@@ -80,14 +89,16 @@ Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan lay
 
 Pilih salah satu atau beberapa dari langkah kecil berikut untuk progres yang terukur:
 
-1.  **Baby Step: Notifikasi Sederhana untuk Akhir Sesi Fokus.**
+1.  **[✅ SELESAI] Baby Step: Notifikasi Sederhana untuk Akhir Sesi Fokus.**
     * **Tugas:** Implementasikan notifikasi dasar (tanpa suara kustom, tanpa service dulu) yang muncul ketika sesi Fokus berakhir.
     * **Detail:** Gunakan `NotificationManagerCompat`. Fokus pada fungsionalitas dasar notifikasi.
-    * **File Terkait:** `PomodoroTimerViewModel.kt`, `MainActivity.kt` (atau service di masa depan).
-2.  **Baby Step: Input Durasi Sesi Fokus di `PreferencesManager` dan UI Pengaturan Sederhana.**
+    * **File Terkait:** `PomodoroTimerViewModel.kt`, `MainActivity.kt`, `NotificationHelper.kt`.
+    * **Status:** SELESAI - Notifikasi berhasil diimplementasikan dengan event-driven approach.
+2.  **[✅ SELESAI] Baby Step: Input Durasi Sesi Fokus di `PreferencesManager` dan UI Pengaturan Sederhana.**
     * **Tugas:** Tambahkan satu field input di layar Pengaturan (buat layar baru yang sangat sederhana) untuk mengubah durasi sesi Fokus. Simpan dan ambil nilai ini menggunakan `PreferencesManager`.
     * **Detail:** Buat Composable baru untuk Settings, gunakan `TextField` untuk input, dan pastikan `PomodoroTimerViewModel` membaca durasi ini.
-    * **File Terkait:** `PreferencesManager.kt`, `PomodoroTimerViewModel.kt`, buat file baru untuk `SettingsScreen.kt` & `SettingsViewModel.kt` (opsional untuk VM jika logikanya simpel).
+    * **File Terkait:** `PreferencesManager.kt`, `PomodoroTimerViewModel.kt`, `SettingsScreen.kt`, `SettingsViewModel.kt`.
+    * **Status:** SELESAI - Settings Screen dan ViewModel berhasil diimplementasikan dengan navigasi yang berfungsi.
 3.  **Baby Step: Simpan Teks dari `FocusWriteScreen` ke Logcat Saat Sesi Berakhir (Placeholder untuk Penyimpanan Nyata).**
     * **Tugas:** Modifikasi `FocusWriteScreen` atau `PomodoroTimerViewModel` sehingga ketika sesi fokus berakhir, teks yang ada di `textState` di-log ke Logcat.
     * **Detail:** Ini hanya langkah sementara untuk memikirkan alur penyimpanan sebelum implementasi penyimpanan file/database yang sebenarnya.

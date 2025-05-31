@@ -4,195 +4,46 @@ Dokumen ini berisi panduan langkah-demi-langkah (baby steps) untuk pengembangan 
 
 **PERINGATAN KERAS:** JANGAN PERNAH MELANJUTKAN KE BABY-STEP BERIKUTNYA SEBELUM SEMUA TES (UNIT TEST DAN INSTRUMENTED TEST) YANG BERKAITAN DENGAN BABY-STEP YANG SEDANG DIKERJAKAN BENAR-BENAR LOLOS DAN SEMUA FUNGSIONALITAS YANG DIHARAPKAN TELAH TERVERIFIKASI SECARA MANUAL. Pastikan kode bersih, terdokumentasi jika perlu, dan tidak ada *regression* (fitur lama yang rusak). Disiplin dalam pengujian adalah kunci keberhasilan proyek ini.
 
+## Status Keseluruhan Baby Steps
+
+✅ **Baby Step 1: Notifikasi Sederhana untuk Akhir Sesi Fokus** - SELESAI
+✅ **Baby Step 2: Input Durasi Sesi Fokus di UI Pengaturan Sederhana** - SELESAI
+🔄 **Baby Step 3: Simpan Teks dari FocusWriteScreen ke Logcat** - BELUM DIKERJAKAN
+🔄 **Baby Step 4: Membuat Dasar Foreground Service** - BELUM DIKERJAKAN
+🔄 **Baby Step 5: Menulis Satu Instrumented Test untuk FocusWriteScreen** - BELUM DIKERJAKAN
+
 ## Daftar Baby Steps
 
-### Baby Step 1: Notifikasi Sederhana untuk Akhir Sesi Fokus
+### Baby Step 1: Notifikasi Sederhana untuk Akhir Sesi Fokus ✅
 
-**Tujuan:** Memberikan notifikasi kepada pengguna ketika sesi Fokus Pomodoro berakhir. Notifikasi ini bersifat dasar, tanpa suara kustom atau ketergantungan pada Foreground Service untuk saat ini.
-
-**Detail Tugas:**
-
-1.  **Persiapan Channel Notifikasi (Android Oreo ke atas):**
-    * Di `PureFocusApplication.kt` atau tempat sentral lainnya (misalnya, `MainActivity` `onCreate`), buat sebuah *Notification Channel* saat aplikasi pertama kali dijalankan.
-    * Channel ID: `purefocus_pomodoro_channel`
-    * Channel Name (User-Visible): `Pomodoro Timer Notifications`
-    * Channel Description (User-Visible): `Notifications for Pomodoro session updates`
-    * Importance: `NotificationManager.IMPORTANCE_HIGH` (agar muncul sebagai heads-up notification).
-    * Pastikan kode pembuatan channel hanya dijalankan jika `Build.VERSION.SDK_INT >= Build.VERSION_CODES.O`.
-
-2.  **Modifikasi `PomodoroTimerViewModel.kt`:**
-    * **Tambahkan Event untuk Notifikasi:**
-        * Buat sebuah `SharedFlow` baru untuk mengirim event "tampilkan notifikasi akhir sesi fokus".
-            ```kotlin
-            // Di dalam PomodoroTimerViewModel
-            private val _showFocusEndNotificationEvent = MutableSharedFlow<Unit>()
-            val showFocusEndNotificationEvent: SharedFlow<Unit> = _showFocusEndNotificationEvent.asSharedFlow()
-            ```
-    * **Trigger Event:**
-        * Di dalam fungsi `_timerFlow` atau logika yang menangani berakhirnya timer, ketika `currentSessionType` adalah `SessionType.FOCUS` dan timer mencapai 0, emit event ke `_showFocusEndNotificationEvent`.
-            ```kotlin
-            // Contoh di dalam logika timer berakhir
-            if (newRemainingTime == 0L && currentSessionType.value == SessionType.FOCUS) {
-                // ... logika transisi sesi lainnya ...
-                viewModelScope.launch {
-                    _showFocusEndNotificationEvent.emit(Unit)
-                }
-            }
-            ```
-
-3.  **Observasi Event di `MainActivity.kt` (atau Composable Layar Utama):**
-    * Kumpulkan `showFocusEndNotificationEvent` dari `PomodoroTimerViewModel`.
-    * Ketika event diterima, panggil fungsi untuk menampilkan notifikasi.
-    * **PENTING:** Anda memerlukan `Context` untuk membuat notifikasi. Anda bisa mendapatkannya dari `LocalContext.current` di Composable atau meneruskannya jika dari `MainActivity`.
-
-4.  **Implementasi Fungsi untuk Menampilkan Notifikasi:**
-    * Buat fungsi helper, misalnya `showFocusSessionEndNotification(context: Context)`.
-    * Gunakan `NotificationCompat.Builder` untuk membuat notifikasi.
-        * Channel ID: `purefocus_pomodoro_channel` (yang sudah dibuat).
-        * Small Icon: Gunakan ikon standar Android untuk sementara (misalnya, `android.R.drawable.ic_dialog_info`) atau buat ikon notifikasi sederhana untuk aplikasi Anda (misalnya, `R.drawable.ic_notification_pomodoro`). Jika membuat ikon baru, pastikan itu adalah ikon putih transparan sesuai pedoman Android.
-        * Content Title: `Sesi Fokus Selesai!`
-        * Content Text: `Waktunya istirahat sejenak. Sesi Istirahat Singkat akan dimulai.`
-        * Priority: `NotificationCompat.PRIORITY_HIGH`.
-        * AutoCancel: `true` (notifikasi hilang saat diklik).
-    * **Intent untuk Membuka Aplikasi (Opsional, tapi Baik):**
-        * Buat `PendingIntent` yang akan membuka `MainActivity` ketika notifikasi diklik.
-        * `val intent = Intent(context, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }`
-        * `val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)`
-        * Set `setContentIntent(pendingIntent)` pada builder notifikasi.
-    * Gunakan `NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notificationBuilder.build())`. Definisikan `NOTIFICATION_ID` sebagai konstanta (misalnya, `1`).
-
-5.  **Tambahkan Izin Notifikasi (Android 13 ke atas):**
-    * Deklarasikan izin `POST_NOTIFICATIONS` di `AndroidManifest.xml`:
-        `<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>`
-    * Di `MainActivity` (atau layar yang relevan), implementasikan permintaan izin runtime untuk `POST_NOTIFICATIONS` jika `Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU`.
-        * Gunakan `rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission())`.
-        * Minta izin saat aplikasi dimulai atau sebelum notifikasi pertama kali akan ditampilkan.
-
-**Kriteria Lolos (Verifikasi Manual & Tes):**
-* [ ] Channel notifikasi berhasil dibuat saat aplikasi pertama kali dijalankan (periksa di Pengaturan Aplikasi -> Notifikasi).
-* [ ] Ketika sesi FOKUS berakhir, sebuah notifikasi muncul.
-* [ ] Judul dan teks notifikasi sesuai dengan yang didefinisikan.
-* [ ] Ikon notifikasi ditampilkan.
-* [ ] Jika diimplementasikan, mengklik notifikasi akan membuka aplikasi.
-* [ ] (Jika sudah ada tes unit untuk ViewModel) Pastikan event notifikasi di-emit dengan benar oleh ViewModel.
-* [ ] (Jika ada) Instrumented test yang memverifikasi kemunculan notifikasi (mungkin sulit untuk diverifikasi secara otomatis tanpa framework UI testing yang lebih advance atau service, fokus pada verifikasi manual dulu untuk baby step ini).
-* [ ] Tidak ada error atau crash.
-* [ ] Izin notifikasi diminta dengan benar di Android 13+ dan notifikasi muncul setelah izin diberikan.
+**STATUS: SELESAI** - Sistem notifikasi telah berhasil diimplementasikan dengan:
+- `NotificationHelper` untuk menampilkan notifikasi
+- Event-driven notification melalui `showFocusEndNotificationEvent` di `PomodoroTimerViewModel`
+- Integrasi notifikasi di `MainActivity` dengan collection dari Flow event
+- Channel notifikasi dan izin runtime untuk Android 13+
 
 ---
 
-### Baby Step 2: Input Durasi Sesi Fokus di UI Pengaturan Sederhana
+### Baby Step 2: Input Durasi Sesi Fokus di UI Pengaturan Sederhana ✅
 
-**Tujuan:** Memungkinkan pengguna untuk mengubah durasi sesi Fokus melalui UI Pengaturan yang sangat sederhana dan menyimpan nilai ini menggunakan `PreferencesManager`.
-
-**Detail Tugas:**
-
-1.  **Buat `SettingsScreen.kt` Composable Baru:**
-    * Lokasi: `app/src/main/java/com/neimasilk/purefocus/ui/screens/SettingsScreen.kt`
-    * Buat Composable fungsi dasar:
-        ```kotlin
-        @Composable
-        fun SettingsScreen(
-            // viewModel: SettingsViewModel // Akan ditambahkan nanti jika diperlukan logika kompleks
-            // navController: NavController // Jika navigasi diperlukan
-            currentFocusDurationMinutes: Int,
-            onFocusDurationChange: (String) -> Unit
-        ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(title = { Text("Settings") })
-                }
-            ) { paddingValues ->
-                Column(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(16.dp)
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text("Focus Duration (minutes):", style = MaterialTheme.typography.subtitle1)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = currentFocusDurationMinutes.toString(),
-                        onValueChange = { newValue ->
-                            // Hanya izinkan input angka
-                            if (newValue.all { it.isDigit() }) {
-                                onFocusDurationChange(newValue)
-                            }
-                        },
-                        label = { Text("Minutes") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        singleLine = true
-                    )
-                    // TODO: Tambahkan input untuk Short Break dan Long Break di baby step berikutnya
-                }
-            }
-        }
-        ```
-
-2.  **Integrasi dengan Navigasi (jika sudah ada NavController):**
-    * Tambahkan rute baru untuk `SettingsScreen` di sistem navigasi Anda (misalnya, di `MainActivity` atau di mana NavHost Anda dikonfigurasi).
-    * Tambahkan tombol atau ikon di `FocusWriteScreen` atau `TopAppBar` utama untuk navigasi ke `SettingsScreen`.
-
-3.  **Buat `SettingsViewModel.kt` (Sederhana untuk Awal):**
-    * Lokasi: `app/src/main/java/com/neimasilk/purefocus/ui/SettingsViewModel.kt`
-    * Inject `PreferencesManager`.
-    * Simpan `StateFlow` untuk durasi fokus saat ini, yang dibaca dari `PreferencesManager`.
-    * Buat fungsi untuk memperbarui durasi fokus di `PreferencesManager`.
-        ```kotlin
-        // Di SettingsViewModel.kt
-        @HiltViewModel
-        class SettingsViewModel @Inject constructor(
-            private val preferencesManager: PreferencesManager
-        ) : ViewModel() {
-
-            val focusDurationMinutes: StateFlow<Int> = preferencesManager.focusDurationMinutes
-                .map { (it / 60_000L).toInt() } // Konversi dari ms ke menit
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 25) // Default 25 menit
-
-            fun updateFocusDuration(minutesString: String) {
-                viewModelScope.launch {
-                    val minutes = minutesString.toIntOrNull() ?: return@launch // Validasi sederhana
-                    if (minutes > 0) { // Durasi harus positif
-                        preferencesManager.setFocusDurationMinutes(minutes * 60_000L) // Simpan sebagai ms
-                    }
-                }
-            }
-        }
-        ```
-    * Pastikan `PreferencesManager` memiliki fungsi untuk menyimpan dan mengambil durasi fokus dalam milidetik (atau konversikan di ViewModel).
-        * `preferencesManager.focusDurationMinutes` (Flow<Long> dalam ms)
-        * `preferencesManager.setFocusDurationMinutes(durationMs: Long)`
-
-4.  **Hubungkan `SettingsScreen` dengan `SettingsViewModel`:**
-    * Di `SettingsScreen`, dapatkan instance `SettingsViewModel` menggunakan `hiltViewModel()`.
-    * Kumpulkan `focusDurationMinutes` dari ViewModel.
-    * Panggil `viewModel.updateFocusDuration(newMinutes)` saat nilai di `OutlinedTextField` berubah dan valid.
-
-5.  **Modifikasi `PomodoroTimerViewModel.kt`:**
-    * Pastikan `PomodoroTimerViewModel` sudah mengobservasi perubahan durasi fokus dari `PreferencesManager`. Saat ini, `PomodoroTimerViewModel` sudah membaca `preferencesManager.focusDurationMinutes`, `preferencesManager.shortBreakDurationMinutes`, dan `preferencesManager.longBreakDurationMinutes` untuk menginisialisasi durasi defaultnya.
-    * **PENTING:** Logika di `PomodoroTimerViewModel` untuk mereset timer atau sesi (`resetTimerAndSession`, `determineNextSessionType`) harus menggunakan nilai durasi terbaru dari `PreferencesManager` saat sesi baru dimulai atau direset. Ini seharusnya sudah terjadi jika `defaultFocusDurationMs` dkk. di-collect sebagai StateFlow dari `PreferencesManager`. Verifikasi bahwa jika pengguna mengubah durasi di Settings dan kemudian mereset timer atau memulai sesi baru, durasi yang baru tersebut yang digunakan.
-
-**Kriteria Lolos (Verifikasi Manual & Tes):**
-* [ ] Layar Pengaturan dapat diakses dari UI utama.
-* [ ] Layar Pengaturan menampilkan input field untuk durasi fokus.
-* [ ] Nilai awal di input field sesuai dengan nilai yang tersimpan di `PreferencesManager` (atau default jika belum ada).
-* [ ] Mengubah nilai di input field dan keluar dari field (atau menekan tombol simpan jika ada) akan memperbarui nilai di `PreferencesManager`. Verifikasi ini bisa dengan menutup dan membuka kembali aplikasi, lalu memeriksa nilai di layar Pengaturan lagi atau dengan mengamati efeknya pada timer.
-* [ ] `PomodoroTimerViewModel` menggunakan nilai durasi fokus yang baru diatur dari Settings saat sesi fokus baru dimulai atau timer direset.
-* [ ] Input hanya menerima angka positif. Input yang tidak valid (misalnya, teks, angka negatif, 0) ditangani dengan baik (misalnya, diabaikan atau menampilkan pesan error sederhana).
-* [ ] (Jika ada) Unit test untuk `SettingsViewModel` memverifikasi bahwa pemanggilan `updateFocusDuration` benar-benar memanggil fungsi yang sesuai di `PreferencesManager` dengan nilai yang sudah dikonversi.
-* [ ] (Jika ada) Unit test untuk `PreferencesManager` (sudah ada) memverifikasi penyimpanan dan pengambilan nilai durasi.
-* [ ] Tidak ada error atau crash.
+**STATUS: SELESAI** - UI Pengaturan telah berhasil diimplementasikan dengan:
+- `SettingsScreen` dengan input untuk durasi sesi fokus
+- `SettingsViewModel` untuk manajemen state pengaturan
+- Navigasi antara `FocusWriteScreen` dan `SettingsScreen` di `MainActivity`
+- Integrasi dengan `PreferencesManager` untuk penyimpanan pengaturan
 
 ---
 
 ### Baby Step 3: Simpan Teks dari `FocusWriteScreen` ke Logcat Saat Sesi Fokus Berakhir
+
+**STATUS: BELUM DIKERJAKAN 🔄**
 
 **Tujuan:** Sebagai langkah awal sebelum implementasi penyimpanan permanen, log teks yang diketik pengguna di `FocusWriteScreen` ke Logcat ketika sesi Fokus Pomodoro berakhir.
 
 **Detail Tugas:**
 
 1.  **Modifikasi `PomodoroTimerViewModel.kt`:**
+    * **Akses ke State Teks:** ViewModel ini perlu cara untuk mengetahui teks apa yang sedang diketik di `FocusWriteScreen`. Jika state teks (`textState` di `FocusWriteScreen`) dikelola secara lokal di Composable, Anda perlu mengangkatnya (hoist) ke `PomodoroTimerViewModel` atau menyediakan cara bagi `FocusWriteScreen` untuk memberitahu ViewModel tentang teks saat ini.
     * **Akses ke State Teks:** ViewModel ini perlu cara untuk mengetahui teks apa yang sedang diketik di `FocusWriteScreen`. Jika state teks (`textState` di `FocusWriteScreen`) dikelola secara lokal di Composable, Anda perlu mengangkatnya (hoist) ke `PomodoroTimerViewModel` atau menyediakan cara bagi `FocusWriteScreen` untuk memberitahu ViewModel tentang teks saat ini.
         * **Opsi 1 (Hoist State):** Pindahkan `textState` (MutableState) dari `FocusWriteScreen` ke `PomodoroTimerViewModel`. `FocusWriteScreen` akan menerima `textValue: String` dan `onTextChange: (String) -> Unit` dari ViewModel.
             ```kotlin
@@ -234,6 +85,8 @@ Dokumen ini berisi panduan langkah-demi-langkah (baby steps) untuk pengembangan 
 ---
 
 ### Baby Step 4: Membuat Dasar Foreground Service (Tanpa Logika Timer Komplit)
+
+**STATUS: BELUM DIKERJAKAN 🔄**
 
 **Tujuan:** Membuat struktur dasar untuk `ForegroundService` yang akan bertanggung jawab menjaga timer tetap berjalan akurat di background. Untuk baby step ini, fokus pada setup service dan notifikasi persistennya saja, belum memindahkan logika timer.
 
@@ -394,6 +247,8 @@ Dokumen ini berisi panduan langkah-demi-langkah (baby steps) untuk pengembangan 
 ---
 
 ### Baby Step 5: Menulis Satu Instrumented Test untuk `FocusWriteScreen`
+
+**STATUS: BELUM DIKERJAKAN 🔄**
 
 **Tujuan:** Memulai pengujian UI dengan menulis satu instrumented test sederhana untuk `FocusWriteScreen` guna memverifikasi keberadaan elemen UI dasar.
 
