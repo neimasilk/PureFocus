@@ -9,15 +9,12 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.neimasilk.purefocus.R
+import com.neimasilk.purefocus.util.NotificationConstants
+import com.neimasilk.purefocus.util.PomodoroServiceActions
 
 class PomodoroService : Service() {
 
-    companion object {
-        const val ACTION_START_SERVICE = "ACTION_START_SERVICE"
-        const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
-        private const val NOTIFICATION_ID = 2 // ID berbeda dari notifikasi sesi akhir
-        private const val NOTIFICATION_CHANNEL_ID = "purefocus_foreground_service_channel"
-    }
+    // Tidak ada companion object lagi, konstanta dipindah ke Constants.kt
 
     override fun onBind(intent: Intent?): IBinder? {
         return null // Tidak menggunakan binding untuk saat ini
@@ -30,25 +27,26 @@ class PomodoroService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_START_SERVICE -> {
+            PomodoroServiceActions.ACTION_START_RESUME -> { // Menggunakan konstanta dari PomodoroServiceActions
                 startForegroundService()
             }
-            ACTION_STOP_SERVICE -> {
+            PomodoroServiceActions.ACTION_PAUSE -> { // Menggunakan konstanta dari PomodoroServiceActions (asumsi pause juga menghentikan foreground)
                 stopForegroundService()
             }
+            // Tambahkan case untuk ACTION_RESET dan ACTION_SKIP jika diperlukan
         }
         return START_STICKY // Atau START_NOT_STICKY, tergantung kebutuhan
     }
 
     private fun startForegroundService() {
-        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_ID_POMODORO) // Menggunakan konstanta dari NotificationConstants
             .setContentTitle("PureFocus Timer Aktif")
             .setContentText("Sesi Pomodoro sedang berjalan...")
             .setSmallIcon(R.drawable.ic_notification_pomodoro) // Gunakan ikon yang sama atau yang lain
             .setOngoing(true) // Penting untuk notifikasi foreground service
             .build()
 
-        startForeground(NOTIFICATION_ID, notification)
+        startForeground(NotificationConstants.NOTIFICATION_ID_POMODORO, notification) // Menggunakan konstanta dari NotificationConstants
         // TODO: Di baby step selanjutnya, pindahkan logika timer ke sini
         Log.d("PomodoroService", "Foreground service dimulai.")
     }
@@ -62,7 +60,7 @@ class PomodoroService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
+                NotificationConstants.CHANNEL_ID_POMODORO, // Menggunakan konstanta dari NotificationConstants
                 "PureFocus Timer Service",
                 NotificationManager.IMPORTANCE_LOW // Atau DEFAULT, tapi LOW lebih baik untuk notif persisten
             )

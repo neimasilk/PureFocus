@@ -38,9 +38,13 @@ import com.neimasilk.purefocus.ui.MainViewModel
 import com.neimasilk.purefocus.ui.PomodoroTimerViewModel
 import com.neimasilk.purefocus.ui.SettingsViewModel
 import com.neimasilk.purefocus.service.PomodoroService
+import com.neimasilk.purefocus.util.PomodoroServiceActions
 import com.neimasilk.purefocus.ui.screens.FocusWriteScreen
 import com.neimasilk.purefocus.ui.screens.SettingsScreen
 import com.neimasilk.purefocus.ui.theme.PureFocusTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import com.neimasilk.purefocus.ui.PomodoroControlsView
 import com.neimasilk.purefocus.util.NotificationHelper
 import com.neimasilk.purefocus.util.PerformanceMonitor
 
@@ -106,11 +110,11 @@ class MainActivity : ComponentActivity() {
                     val serviceIntent = Intent(applicationContext, PomodoroService::class.java)
                     when (action) {
                         PomodoroTimerViewModel.ServiceAction.START -> {
-                            serviceIntent.action = PomodoroService.ACTION_START_SERVICE
+                            serviceIntent.action = PomodoroServiceActions.ACTION_START_RESUME // Menggunakan konstanta dari PomodoroServiceActions
                             ContextCompat.startForegroundService(applicationContext, serviceIntent)
                         }
                         PomodoroTimerViewModel.ServiceAction.STOP -> {
-                            serviceIntent.action = PomodoroService.ACTION_STOP_SERVICE
+                            serviceIntent.action = PomodoroServiceActions.ACTION_PAUSE // Menggunakan konstanta dari PomodoroServiceActions (asumsi STOP di ViewModel berarti PAUSE di Service)
                             startService(serviceIntent)
                         }
                     }
@@ -147,11 +151,17 @@ class MainActivity : ComponentActivity() {
                             // Collect teks dari PomodoroTimerViewModel untuk Focus Write
                             val focusWriteText by pomodoroViewModel.focusWriteText.collectAsState()
                             
-                            FocusWriteScreen(
-                                text = focusWriteText,
-                                onTextChanged = { pomodoroViewModel.updateFocusWriteText(it) },
-                                modifier = Modifier.padding(innerPadding)
-                            )
+                            Column(modifier = Modifier.padding(innerPadding)) {
+                                FocusWriteScreen(
+                                    text = focusWriteText,
+                                    onTextChanged = { pomodoroViewModel.updateFocusWriteText(it) },
+                                    modifier = Modifier.weight(1f) // Allow FocusWriteScreen to take available space
+                                )
+                                PomodoroControlsView(
+                                    pomodoroViewModel = pomodoroViewModel,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
                     }
                 }

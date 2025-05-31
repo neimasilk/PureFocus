@@ -19,15 +19,17 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
+import com.neimasilk.purefocus.util.DefaultSettings // Import tambahan
+
 class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager) : ViewModel() {
 
     companion object {
-        const val SHORT_BREAK_DURATION_MINUTES = 5L
-        const val LONG_BREAK_DURATION_MINUTES = 15L // For future use
+        // SHORT_BREAK_DURATION_MINUTES dipindahkan ke Constants.kt
+        // LONG_BREAK_DURATION_MINUTES dipindahkan ke Constants.kt
 
         // Using TimeUnit for clarity and correctness
-        val SHORT_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(SHORT_BREAK_DURATION_MINUTES)
-        val LONG_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(LONG_BREAK_DURATION_MINUTES)
+        val SHORT_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_SHORT_BREAK_DURATION_MINUTES)
+        val LONG_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_LONG_BREAK_DURATION_MINUTES)
 
         // const val POMODOROS_PER_CYCLE = 4 // For future use
     }
@@ -57,6 +59,14 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
     val focusWriteText: StateFlow<String> = _focusWriteText.asStateFlow()
 
     private var timerJob: Job? = null
+
+    fun startPauseTimer() {
+        if (_uiState.value.isTimerRunning) {
+            pauseTimer()
+        } else {
+            startTimer()
+        }
+    }
 
     fun startTimer() {
         if (_uiState.value.isTimerRunning) {

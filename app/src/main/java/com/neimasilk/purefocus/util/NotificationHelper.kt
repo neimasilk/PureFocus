@@ -14,8 +14,7 @@ import com.neimasilk.purefocus.R
 import com.neimasilk.purefocus.model.SessionType
 
 object NotificationHelper {
-    private const val FOCUS_END_NOTIFICATION_ID = 1
-    private const val BREAK_END_NOTIFICATION_ID = 2
+    // ID Notifikasi dipindahkan ke NotificationConstants
     
     /**
      * Menampilkan notifikasi ketika sesi fokus berakhir
@@ -55,17 +54,17 @@ object NotificationHelper {
             SessionType.WORK -> Triple(
                 "Sesi Fokus Selesai!",
                 "Waktunya istirahat sejenak. Sesi Istirahat Singkat akan dimulai.",
-                FOCUS_END_NOTIFICATION_ID
+                NotificationConstants.NOTIFICATION_ID_FOCUS_END // Menggunakan konstanta dari NotificationConstants
             )
             SessionType.SHORT_BREAK, SessionType.LONG_BREAK -> Triple(
                 "Sesi Istirahat Selesai!",
                 "Waktunya kembali fokus. Sesi Fokus baru akan dimulai.",
-                BREAK_END_NOTIFICATION_ID
+                NotificationConstants.NOTIFICATION_ID_BREAK_END // Menggunakan konstanta dari NotificationConstants
             )
         }
         
         // Buat notifikasi dengan suara
-        val notification = NotificationCompat.Builder(context, PureFocusApplication.POMODORO_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_ID_SESSION_END) // Menggunakan konstanta dari NotificationConstants
             .setSmallIcon(android.R.drawable.ic_dialog_info) // Menggunakan ikon standar untuk sementara
             .setContentTitle(title)
             .setContentText(text)

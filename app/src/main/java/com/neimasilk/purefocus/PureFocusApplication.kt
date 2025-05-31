@@ -8,6 +8,7 @@ import android.os.StrictMode
 import android.os.SystemClock
 import com.neimasilk.purefocus.BuildConfig
 import com.neimasilk.purefocus.util.PerformanceMonitor
+import com.neimasilk.purefocus.util.NotificationConstants
 
 /**
  * Application class untuk PureFocus.
@@ -35,16 +36,27 @@ class PureFocusApplication : Application() {
      */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                POMODORO_CHANNEL_ID,
-                "Pomodoro Timer Notifications",
+            // Channel untuk Notifikasi Sesi Akhir (Fokus/Istirahat)
+            val sessionEndChannel = NotificationChannel(
+                NotificationConstants.CHANNEL_ID_SESSION_END, // Menggunakan konstanta dari NotificationConstants
+                "Notifikasi Akhir Sesi",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Notifications for Pomodoro session updates"
+                description = "Notifikasi saat sesi fokus atau istirahat berakhir."
+            }
+
+            // Channel untuk Foreground Service Timer Pomodoro
+            val pomodoroServiceChannel = NotificationChannel(
+                NotificationConstants.CHANNEL_ID_POMODORO, // Menggunakan konstanta dari NotificationConstants
+                "PureFocus Timer Service",
+                NotificationManager.IMPORTANCE_LOW 
+            ).apply {
+                description = "Notifikasi persisten untuk timer Pomodoro yang sedang berjalan."
             }
             
             val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager?.createNotificationChannel(channel)
+            notificationManager?.createNotificationChannel(sessionEndChannel)
+            notificationManager?.createNotificationChannel(pomodoroServiceChannel)
         }
     }
     
@@ -69,7 +81,5 @@ class PureFocusApplication : Application() {
         )
     }
     
-    companion object {
-        const val POMODORO_CHANNEL_ID = "purefocus_pomodoro_channel"
-    }
+    // Companion object tidak lagi diperlukan karena konstanta dipindah ke Constants.kt
 }
