@@ -38,7 +38,7 @@
     * Struktur testing UI telah disiapkan untuk pengembangan test lebih lanjut.
 
 **Kesimpulan Status:**
-Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Semua Baby Step (1-5) telah berhasil diselesaikan**: Notifikasi, Settings UI, Focus Write Text Logging, Foreground Service, dan Instrumented Test. Aplikasi kini memiliki sistem notifikasi yang berfungsi, UI pengaturan yang terintegrasi, foreground service yang memastikan timer berjalan dengan akurat bahkan saat aplikasi di background, logging teks focus write, dan struktur testing UI yang solid. Semua unit test lolos, build berhasil, dan instrumented test APK siap dijalankan. Proyek siap untuk tahap pengembangan berikutnya.
+Proyek berada pada tahap di mana fungsionalitas inti dari Pomodoro timer dan layar dasar untuk Focus Write sudah terimplementasi dan teruji pada level ViewModel dan Data. **Semua Baby Steps (1-5) telah berhasil diselesaikan**: Notifikasi, Settings UI, Focus Write Text Logging, Foreground Service, dan Instrumented Test. Aplikasi kini memiliki sistem notifikasi yang berfungsi, UI pengaturan yang terintegrasi, foreground service yang memastikan timer berjalan dengan akurat bahkan saat aplikasi di background, logging teks focus write, dan struktur testing UI yang solid. Semua unit test lolos, build berhasil, dan instrumented test APK siap dijalankan. Proyek siap untuk tahap pengembangan berikutnya dengan fondasi yang solid dan teruji.
 
 ## Daftar Pekerjaan di Masa Depan (Future To-Do List)
 
@@ -109,7 +109,28 @@ Semua baby step dasar telah berhasil diselesaikan:
 
 1.  **[✅ SELESAI] Baby Step: Notifikasi Sederhana untuk Akhir Sesi Fokus.**
     * **Status:** SELESAI - Notifikasi berhasil diimplementasikan dengan event-driven approach.
+<<<<<<< HEAD
     * **File Terkait:** `PomodoroTimerViewModel.kt`, `MainActivity.kt`, `NotificationHelper.kt`.
+=======
+2.  **[✅ SELESAI] Baby Step: Input Durasi Sesi Fokus di `PreferencesManager` dan UI Pengaturan Sederhana.**
+    * **Tugas:** Tambahkan satu field input di layar Pengaturan (buat layar baru yang sangat sederhana) untuk mengubah durasi sesi Fokus. Simpan dan ambil nilai ini menggunakan `PreferencesManager`.
+    * **Detail:** Buat Composable baru untuk Settings, gunakan `TextField` untuk input, dan pastikan `PomodoroTimerViewModel` membaca durasi ini.
+    * **File Terkait:** `PreferencesManager.kt`, `PomodoroTimerViewModel.kt`, `SettingsScreen.kt`, `SettingsViewModel.kt`.
+    * **Status:** SELESAI - Settings Screen dan ViewModel berhasil diimplementasikan dengan navigasi yang berfungsi.
+3.  **Baby Step: Simpan Teks dari `FocusWriteScreen` ke Logcat Saat Sesi Berakhir (Placeholder untuk Penyimpanan Nyata).**
+    * **Tugas:** Modifikasi `FocusWriteScreen` atau `PomodoroTimerViewModel` sehingga ketika sesi fokus berakhir, teks yang ada di `textState` di-log ke Logcat.
+    * **Detail:** Ini hanya langkah sementara untuk memikirkan alur penyimpanan sebelum implementasi penyimpanan file/database yang sebenarnya.
+    * **File Terkait:** `FocusWriteScreen.kt`, `PomodoroTimerViewModel.kt`.
+4.  **Baby Step: Membuat Dasar Foreground Service (Tanpa Logika Timer Komplit).**
+    * **Tugas:** Buat kelas `Service` baru, deklarasikan di `AndroidManifest.xml` sebagai foreground service. Implementasikan `onStartCommand` untuk memulai service dalam mode foreground dengan notifikasi placeholder.
+    * **Detail:** Fokus pada setup dasar service dan notifikasi persistennya. Belum perlu memindahkan semua logika timer ke sini.
+    * **File Terkait:** Buat `PomodoroService.kt`, `AndroidManifest.xml`.
+5.  **[✅ SELESAI] Baby Step: Menulis Satu Instrumented Test untuk `FocusWriteScreen`.**
+    * **Tugas:** Buat satu tes UI sederhana yang memeriksa apakah tombol "Start" ditampilkan di `FocusWriteScreen`.
+    * **Detail:** Gunakan `createComposeRule` dan `onNodeWithText("Start").assertIsDisplayed()`.
+    * **File Terkait:** `ExampleInstrumentedTest.kt` atau buat file test baru untuk `FocusWriteScreen`.
+    * **Status:** SELESAI - Instrumented test berhasil diimplementasikan dan berjalan dengan baik.
+>>>>>>> baby-step-5-instrumented-test
 
 2.  **[✅ SELESAI] Baby Step: Input Durasi Sesi Fokus di `PreferencesManager` dan UI Pengaturan Sederhana.**
     * **Status:** SELESAI - Settings Screen dan ViewModel berhasil diimplementasikan dengan navigasi yang berfungsi.
