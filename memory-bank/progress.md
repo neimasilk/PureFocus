@@ -1,7 +1,7 @@
 # PureFocus - Progress Tracking
 
 **Document Version:** 1.3
-**Date:** 31 Januari 2025
+**Date:** January 31, 2025
 **Project:** PureFocus - Minimalist Focus Writing App
 **Status:** Phase 1 Complete, All Core Features Implemented & Tested
 
@@ -56,9 +56,9 @@
 **Progress:** Phase 0, 1, 2, and 3 are 100% complete. All core features implemented, tested, and validated.
 
 **Recently Completed Baby-Steps:** 
-- Baby-Step 1: Notifikasi Sederhana untuk Akhir Sesi Fokus (SELESAI ✅)
-- Baby-Step 2: Input Durasi Sesi Fokus di UI Pengaturan Sederhana (SELESAI ✅)
-- Baby-Step 3: Simpan Teks dari FocusWriteScreen ke Logcat (SELESAI ✅)
+- Baby-Step 1: Simple Notification for End of Focus Session (DONE ✅)
+- Baby-Step 2: Focus Session Duration Input in Simple Settings UI (DONE ✅)
+- Baby-Step 3: Save Text from FocusWriteScreen to Logcat (DONE ✅)
 - Baby-Step 4: Foreground Service Implementation (SELESAI ✅)
 - Baby-Step 5: Instrumented Tests & UI Automation (SELESAI ✅)
 - ✅ All tasks for Phase 0, 1, 2, and 3 are complete.
@@ -175,10 +175,10 @@
 - ✅ **Project Initiation** (May 29, 2025) - Complete project documentation.
 - ✅ **Environment Ready** (May 31, 2025) - Development environment fully configured.
 - ✅ **First Runnable Build (Phase 0 Complete)** (May 31, 2025) - Basic Android app with MVVM architecture builds and runs on emulator.
-- ✅ **Baby Step 1: Notifications** (January 2025) - Notifikasi sederhana untuk akhir sesi fokus berhasil diimplementasikan.
-- ✅ **Baby Step 2: Settings UI** (January 2025) - UI Pengaturan sederhana dengan input durasi fokus berhasil diimplementasikan.
-- ✅ **Baby Step 3: Focus Write Text Logging** (January 2025) - Teks dari FocusWriteScreen berhasil disimpan ke Logcat saat sesi fokus berakhir atau dilewati.
-- ✅ **Baby Step 4: Foreground Service** (January 2025) - PomodoroService sebagai foreground service berhasil diimplementasikan dengan notifikasi persisten, integrasi dengan PomodoroTimerViewModel, dan perbaikan masalah izin notifikasi.
+- ✅ **Baby Step 1: Notifications** (January 2025) - Simple notification for the end of the focus session successfully implemented.
+- ✅ **Baby Step 2: Settings UI** (January 2025) - Simple Settings UI with focus duration input successfully implemented.
+- ✅ **Baby Step 3: Focus Write Text Logging** (January 2025) - Text from FocusWriteScreen successfully saved to Logcat when the focus session ends or is skipped.
+- ✅ **Baby Step 4: Foreground Service** (January 2025) - PomodoroService as a foreground service successfully implemented with persistent notification, integration with PomodoroTimerViewModel, and resolution of notification permission issues.
 - ✅ **Baby Step 5: Instrumented Tests & UI Automation** (January 2025) - Complete instrumented test suite implemented with UI automation, emulator setup automation, and comprehensive test coverage for all core features.
 
 ### Completed Milestones

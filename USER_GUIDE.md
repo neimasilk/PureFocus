@@ -1,91 +1,91 @@
-# Panduan Pengguna PureFocus
+# PureFocus User Guide
 
-Selamat datang di PureFocus! Aplikasi ini dirancang untuk membantu Anda fokus saat menulis dengan menyediakan lingkungan yang minimalis dan bebas gangguan, terintegrasi dengan timer Pomodoro.
+Welcome to PureFocus! This application is designed to help you focus while writing by providing a minimalist, distraction-free environment integrated with a Pomodoro timer.
 
-## Daftar Isi
+## Table of Contents
 
-1.  [Memulai](#memulai)
-2.  [Fitur Utama](#fitur-utama)
-    *   [Mode Tulis Fokus (Focus Write Mode)](#mode-tulis-fokus-focus-write-mode)
-    *   [Timer Pomodoro Terintegrasi](#timer-pomodoro-terintegrasi)
-    *   [Pengaturan Sesi](#pengaturan-sesi)
-    *   [Penyimpanan Otomatis](#penyimpanan-otomatis)
-3.  [Penggunaan Dasar](#penggunaan-dasar)
-    *   [Memulai Sesi Fokus](#memulai-sesi-fokus)
-    *   [Menulis](#menulis)
-    *   [Mengakhiri Sesi Fokus](#mengakhiri-sesi-fokus)
-    *   [Mengatur Durasi Fokus dan Istirahat](#mengatur-durasi-fokus-dan-istirahat)
-4.  [Tips untuk Produktivitas Maksimal](#tips-untuk-produktivitas-maksimal)
+1.  [Getting Started](#getting-started)
+2.  [Key Features](#key-features)
+    *   [Focus Write Mode](#focus-write-mode)
+    *   [Integrated Pomodoro Timer](#integrated-pomodoro-timer)
+    *   [Session Settings](#session-settings)
+    *   [Auto-save](#auto-save)
+3.  [Basic Usage](#basic-usage)
+    *   [Starting a Focus Session](#starting-a-focus-session)
+    *   [Writing](#writing)
+    *   [Ending a Focus Session](#ending-a-focus-session)
+    *   [Setting Focus and Break Durations](#setting-focus-and-break-durations)
+4.  [Tips for Maximum Productivity](#tips-for-maximum-productivity)
 5.  [Troubleshooting](#troubleshooting)
-6.  [Hubungi Kami](#hubungi-kami)
+6.  [Contact Us](#contact-us)
 
-## 1. Memulai
+## 1. Getting Started
 
-Setelah menginstal PureFocus, Anda akan langsung disambut dengan antarmuka utama yang bersih. Tidak ada proses pengaturan yang rumit, Anda bisa langsung mulai menulis.
+After installing PureFocus, you will be immediately greeted with a clean main interface. There is no complicated setup process; you can start writing right away.
 
-## 2. Fitur Utama
+## 2. Key Features
 
-### Mode Tulis Fokus (Focus Write Mode)
+### Focus Write Mode
 
-*   **Antarmuka Minimalis:** Hanya area teks dan tombol kontrol timer yang esensial. Tidak ada menu, toolbar, atau notifikasi yang mengganggu dari aplikasi lain (selama sesi fokus aktif).
-*   **Bebas Distraksi:** Dirancang untuk membantu Anda berkonsentrasi penuh pada tulisan Anda.
+*   **Minimalist Interface:** Only the text area and essential timer control buttons. No distracting menus, toolbars, or notifications from other applications (during an active focus session).
+*   **Distraction-Free:** Designed to help you concentrate fully on your writing.
 
-### Timer Pomodoro Terintegrasi
+### Integrated Pomodoro Timer
 
-*   **Sesi Fokus Terstruktur:** Bagi pekerjaan Anda menjadi interval fokus (misalnya, 25 menit) diikuti dengan istirahat singkat (misalnya, 5 menit).
-*   **Notifikasi Akhir Sesi:** Aplikasi akan memberi tahu Anda ketika sesi fokus atau istirahat berakhir.
+*   **Structured Focus Sessions:** Divide your work into focus intervals (e.g., 25 minutes) followed by short breaks (e.g., 5 minutes).
+*   **End-of-Session Notifications:** The application will notify you when a focus or break session ends.
 
-### Pengaturan Sesi
+### Session Settings
 
-*   **Durasi Fleksibel:** Anda dapat menyesuaikan durasi sesi fokus dan sesi istirahat sesuai dengan preferensi dan kebutuhan Anda melalui layar Pengaturan.
+*   **Flexible Durations:** You can adjust the duration of focus sessions and break sessions according to your preferences and needs via the Settings screen.
 
-### Penyimpanan Otomatis
+### Auto-save
 
-*   **Jangan Khawatir Kehilangan Pekerjaan:** Teks Anda disimpan secara otomatis secara berkala saat Anda mengetik. Saat sesi fokus berakhir, teks terakhir akan disimpan.
+*   **Don't Worry About Losing Work:** Your text is automatically saved periodically as you type. When a focus session ends, the latest text will be saved.
 
-## 3. Penggunaan Dasar
+## 3. Basic Usage
 
-### Memulai Sesi Fokus
+### Starting a Focus Session
 
-1.  Buka aplikasi PureFocus.
-2.  (Opsional) Pergi ke layar Pengaturan (biasanya ikon gerigi) untuk menyesuaikan durasi fokus dan istirahat jika default tidak sesuai.
-3.  Kembali ke layar utama.
-4.  Tekan tombol "Mulai Fokus" (atau ikon serupa) untuk memulai sesi menulis Anda.
-5.  Timer akan mulai menghitung mundur.
+1.  Open the PureFocus application.
+2.  (Optional) Go to the Settings screen (usually a gear icon) to adjust focus and break durations if the defaults are not suitable.
+3.  Return to the main screen.
+4.  Press the "Start Focus" button (or similar icon) to begin your writing session.
+5.  The timer will start counting down.
 
-### Menulis
+### Writing
 
-*   Setelah sesi dimulai, mulailah mengetik di area teks yang disediakan.
-*   Fokus pada tulisan Anda. Aplikasi akan menangani sisanya.
+*   Once the session starts, begin typing in the provided text area.
+*   Focus on your writing. The application will handle the rest.
 
-### Mengakhiri Sesi Fokus
+### Ending a Focus Session
 
-*   Ketika timer sesi fokus berakhir, Anda akan menerima notifikasi.
-*   Teks yang Anda tulis akan otomatis tersimpan.
-*   Anda dapat memilih untuk memulai sesi istirahat, memulai sesi fokus baru, atau keluar dari aplikasi.
+*   When the focus session timer ends, you will receive a notification.
+*   The text you wrote will be automatically saved.
+*   You can choose to start a break session, start a new focus session, or exit the application.
 
-### Mengatur Durasi Fokus dan Istirahat
+### Setting Focus and Break Durations
 
-1.  Navigasi ke layar Pengaturan.
-2.  Temukan opsi untuk "Durasi Fokus" dan "Durasi Istirahat".
-3.  Masukkan nilai yang Anda inginkan (biasanya dalam menit).
-4.  Pengaturan akan disimpan secara otomatis.
+1.  Navigate to the Settings screen.
+2.  Find the options for "Focus Duration" and "Break Duration".
+3.  Enter your desired values (usually in minutes).
+4.  Settings will be saved automatically.
 
-## 4. Tips untuk Produktivitas Maksimal
+## 4. Tips for Maximum Productivity
 
-*   **Tetapkan Tujuan:** Sebelum memulai sesi fokus, ketahui apa yang ingin Anda capai.
-*   **Hilangkan Gangguan Eksternal:** Cari tempat yang tenang dan matikan notifikasi dari perangkat lain jika memungkinkan.
-*   **Manfaatkan Istirahat:** Gunakan waktu istirahat untuk benar-benar beristirahat. Berdiri, regangkan tubuh, atau alihkan pandangan dari layar.
-*   **Konsisten:** Cobalah untuk menggunakan teknik Pomodoro secara teratur untuk membangun ritme kerja yang baik.
+*   **Set Goals:** Before starting a focus session, know what you want to achieve.
+*   **Eliminate External Distractions:** Find a quiet place and turn off notifications from other devices if possible.
+*   **Utilize Breaks:** Use break time to truly rest. Stand up, stretch, or look away from the screen.
+*   **Be Consistent:** Try to use the Pomodoro technique regularly to build a good work rhythm.
 
 ## 5. Troubleshooting
 
-*   **Aplikasi tidak merespons:** Coba tutup paksa aplikasi dan buka kembali.
-*   **Notifikasi tidak muncul:** Pastikan Anda telah memberikan izin notifikasi untuk PureFocus di pengaturan sistem Android Anda.
-*   **Teks tidak tersimpan:** Meskipun ada penyimpanan otomatis, pastikan sesi fokus berakhir dengan benar. Jika Anda menutup paksa aplikasi di tengah sesi, ada kemungkinan kecil data terakhir tidak tersimpan.
+*   **Application not responding:** Try force-closing the application and reopening it.
+*   **Notifications not appearing:** Ensure you have granted notification permissions for PureFocus in your Android system settings.
+*   **Text not saved:** Although there is auto-save, ensure the focus session ends correctly. If you force-close the application mid-session, there is a small chance the latest data might not be saved.
 
-## 6. Hubungi Kami
+## 6. Contact Us
 
-Jika Anda memiliki pertanyaan, saran, atau menemukan bug, jangan ragu untuk menghubungi kami melalui [Metode Kontak Anda, misal: email support@purefocus.app atau link ke halaman feedback].
+If you have questions, suggestions, or find a bug, don't hesitate to contact us via [Your Contact Method, e.g., email support@purefocus.app or link to a feedback page].
 
-Terima kasih telah menggunakan PureFocus! Selamat menulis dengan fokus!
+Thank you for using PureFocus! Happy focused writing!

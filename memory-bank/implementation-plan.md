@@ -38,8 +38,8 @@ Every implementation step must prioritize:
 - Performance profiling tools accessible
 
 ### Step 0.2: Core Architecture Setup
-*   **Status:** Selesai (Sesuai `progress.md`)
-*   **Deskripsi Tambahan:** Untuk MVP, `PreferencesManager` yang menggunakan `SharedPreferences` akan menjadi mekanisme utama penyimpanan preferensi dan data sederhana. `DataStore` (khususnya `ProtoDataStore`) dan `Room` adalah pertimbangan untuk evolusi mendatang jika diperlukan struktur data yang lebih kompleks atau penyimpanan data relasional (misalnya, untuk statistik sesi).
+*   **Status:** Completed (According to `progress.md`)
+*   **Additional Description:** For the MVP, `PreferencesManager` using `SharedPreferences` will be the primary mechanism for storing preferences and simple data. `DataStore` (specifically `ProtoDataStore`) and `Room` are considerations for future evolution if more complex data structures or relational data storage (e.g., for session statistics) are needed.
 
 **Duration:** 2-3 days  
 **Objective:** Implement foundational architecture and performance monitoring
@@ -48,7 +48,7 @@ Every implementation step must prioritize:
 - Set up MVVM architecture with ViewModel
 - Configure StateFlow/SharedFlow for state management
 - Implement basic theme system (light/dark)
-- Set up `PreferencesManager` (menggunakan `SharedPreferences`) untuk pengelolaan data dan preferensi.
+- Set up `PreferencesManager` (using `SharedPreferences`) for data and preference management.
 - Configure ProGuard/R8 for release builds
 - Implement performance monitoring utilities
 
@@ -68,15 +68,15 @@ Every implementation step must prioritize:
 ## Phase 1: Core Text Editor (Week 2)
 
 ### Step 1.1: Basic Text Input Implementation
-*   **Status:** Selesai (Sesuai `progress.md`)
-*   **Deskripsi Tambahan (Mode "Focus Write"):** Teks yang ditulis pengguna dalam mode ini **akan otomatis hilang/direset** setiap kali sesi fokus baru dimulai atau timer direset. Ini adalah perilaku yang diinginkan untuk MVP untuk mendorong pengguna memulai dari awal tanpa beban tulisan sebelumnya. Opsi untuk menyimpan teks secara eksplisit atau otomatis antar sesi tidak termasuk dalam lingkup MVP saat ini dan dipertimbangkan untuk versi berikutnya.
+*   **Status:** Completed (According to `progress.md`)
+*   **Additional Description (Focus Write Mode):** Text written by the user in this mode **will automatically be lost/reset** each time a new focus session starts or the timer is reset. This is the desired behavior for the MVP to encourage users to start fresh without the burden of previous writing. Options to explicitly or automatically save text between sessions are not included in the current MVP scope and are considered for future versions.
 **Duration:** 2-3 days  
 **Objective:** Create high-performance, full-screen text editor
 
 **Tasks:**
 - Implement full-screen Compose text field
 - Configure optimal text input performance
-- Set up auto-save mechanism ke `PreferencesManager` (menggunakan `SharedPreferences`) untuk satu draft teks.
+- Set up auto-save mechanism to `PreferencesManager` (using `SharedPreferences`) for a single text draft.
 - Implement basic text styling (font, size, color)
 - Add keyboard handling and text selection
 
@@ -169,8 +169,8 @@ Every implementation step must prioritize:
 ## Phase 3: Settings and Polish (Week 4)
 
 ### Step 3.1: Essential Settings Implementation
-*   **Status:** Sebagian Selesai (Sesuai `progress.md` - Pengaturan durasi timer sudah ada)
-*   **Deskripsi Tambahan (UI/UX Refinement Awal):** Aspek UI/UX yang dianggap selesai untuk MVP mencakup: Tema dasar (terang/gelap), tipografi yang jelas, tata letak layar utama (Timer, Focus Write, Pengaturan) yang fungsional, dan kontrol timer yang intuitif.
+*   **Status:** Partially Completed (According to `progress.md` - Timer duration settings already exist)
+*   **Additional Description (Initial UI/UX Refinement):** UI/UX aspects considered complete for the MVP include: Basic theme (light/dark), clear typography, functional main screen layout (Timer, Focus Write, Settings), and intuitive timer controls.
 **Duration:** 2-3 days  
 **Objective:** Add minimal, essential customization options
 

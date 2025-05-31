@@ -1,4 +1,4 @@
-# PureFocus ✅
+# PureFocus: Minimalist Productivity App for Focused Writing
 
 **The Fastest, Most Minimalist Focus Writing App for Android**
 
@@ -11,7 +11,7 @@
 
 > **🎉 MVP COMPLETE!** All core features implemented, tested, and ready for production use.
 
-## 🎯 Vision
+## Vision
 
 PureFocus is designed with one unwavering principle: **Speed and Simplicity Above All Else**. Every design decision, every line of code, and every feature is evaluated against one question: "Does this make the app faster and simpler?"
 
@@ -128,7 +128,7 @@ PureFocus follows the **"Vibe Coding"** methodology:
 4. **Baby Steps** - Small, testable development iterations
 5. **Living Documentation** - Continuously updated project knowledge
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 PureFocus/
@@ -232,7 +232,7 @@ PureFocus/
 
 See [progress.md](memory-bank/progress.md) for detailed development tracking.
 
-## 🤝 Contributing
+## Contributing
 
 PureFocus prioritizes **performance and simplicity** above all else. Contributions must:
 
@@ -249,7 +249,7 @@ PureFocus prioritizes **performance and simplicity** above all else. Contributio
 4. Include performance validation
 5. Update relevant documentation
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
@@ -297,7 +297,7 @@ PureFocus is an Android productivity application fanatically engineered for **ex
 
 The core philosophy is to be an **exceptionally lightweight and intuitively understandable tool** that actively supports single-tasking and deep work principles.
 
-This project is developed following the "Panduan Vibe Coding Indonesia V1.2.1" methodology.
+This project is developed following the "Vibe Coding Indonesia Guide V1.2.1" methodology.
 
 ## Core App Philosophy & Principles
 
@@ -330,14 +330,14 @@ This project is developed following the "Panduan Vibe Coding Indonesia V1.2.1" m
 
 ## Key Technology Highlights (MVP)
 
-* **Language:** Kotlin
-* **UI Toolkit:** Jetpack Compose (with strict adherence to performance best practices and continuous profiling).
+- **Language**: Kotlin
+- **UI Toolkit**: Jetpack Compose
 * **Performance Focus:** Minimal dependencies (no third-party UI component libraries for MVP), ProGuard/R8, Baseline Profiles.
 * **Local Data Storage:** `SharedPreferences` for lean data handling.
 
 ## Development Methodology
 
-This project adheres to the **"Panduan Vibe Coding Indonesia V1.2.1"** framework, emphasizing:
+This project adheres to the **"Vibe Coding Indonesia Guide V1.2.1"** framework, emphasizing:
 * Human as the strategic planner, AI as a competent implementation assistant.
 * Context-rich "Memory Bank" for AI.
 * Iterative development via "Baby Steps".

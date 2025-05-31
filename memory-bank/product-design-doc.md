@@ -11,19 +11,19 @@
 
 **Core Philosophy:** Speed and simplicity above all else. Every design decision must pass the test: "Does this make the app faster and simpler?"
 
-## 3. Target Pengguna
+## 3. Target Users
 
-*   **Pelajar dan Mahasiswa:** Membutuhkan fokus saat belajar atau mengerjakan tugas.
-*   **Penulis dan Kreator Konten:** Mencari lingkungan bebas distraksi untuk menulis artikel, blog, atau naskah.
-*   **Programmer dan Pekerja Pengetahuan:** Perlu konsentrasi tinggi untuk tugas-tugas yang kompleks.
-*   **Siapapun yang ingin meningkatkan produktivitas** dengan mengurangi gangguan digital saat bekerja dengan teks.
+*   **Students:** Need focus while studying or doing assignments.
+*   **Writers and Content Creators:** Seeking a distraction-free environment to write articles, blogs, or scripts.
+*   **Programmers and Knowledge Workers:** Require high concentration for complex tasks.
+*   **Anyone who wants to improve productivity** by reducing digital distractions when working with text.
 
 ### User Stories
 
-*   **Sebagai seorang pelajar,** saya ingin dapat mengatur timer fokus agar saya bisa belajar tanpa gangguan selama periode waktu tertentu, dan mendapatkan notifikasi ketika sesi berakhir sehingga saya bisa istirahat sejenak.
-*   **Sebagai seorang penulis,** saya ingin antarmuka yang minimalis tanpa banyak tombol atau menu yang mengganggu, sehingga saya bisa sepenuhnya berkonsentrasi pada tulisan saya.
-*   **Sebagai seorang programmer,** saya ingin aplikasi ini ringan dan cepat, serta dapat menyimpan pekerjaan saya secara otomatis sehingga saya tidak khawatir kehilangan progres jika terjadi sesuatu.
-*   **Sebagai pengguna umum,** saya ingin dapat dengan mudah mengatur durasi fokus dan istirahat sesuai kebutuhan saya, dan melihat statistik sederhana tentang seberapa banyak waktu fokus yang telah saya capai.
+*   **As a student,** I want to be able to set a focus timer so I can study without interruption for a certain period, and get a notification when the session ends so I can take a short break.
+*   **As a writer,** I want a minimalist interface without many distracting buttons or menus, so I can fully concentrate on my writing.
+*   **As a programmer,** I want this application to be lightweight and fast, and to be able to save my work automatically so I don't worry about losing progress if something happens.
+*   **As a general user,** I want to be able to easily set focus and break durations according to my needs, and see simple statistics about how much focus time I have achieved.
 
 ## 3. Core Features (MVP)
 
@@ -113,32 +113,32 @@
 - **Accessibility:** Support for screen readers and large text
 - **Offline Capability:** Full functionality without internet
 
-## 7. Persyaratan Non-Fungsional (Non-Functional Requirements)
+## 7. Non-Functional Requirements
 
-*   **Kinerja:**
-    *   Waktu startup aplikasi: < 2 detik.
-    *   Responsivitas UI: Interaksi pengguna harus terasa instan, tanpa lag yang terlihat.
-    *   Penggunaan memori: Tetap rendah, idealnya di bawah 100MB saat penggunaan aktif.
-*   **Keandalan:**
-    *   Aplikasi harus stabil dan tidak crash selama sesi fokus.
-    *   Timer harus akurat dan notifikasi harus dikirim tepat waktu.
-    *   Penyimpanan otomatis harus berfungsi dengan andal untuk mencegah kehilangan data.
-*   **Kegunaan (Usability):**
-    *   Antarmuka harus intuitif dan mudah dipelajari, bahkan untuk pengguna non-teknis.
-    *   Pengaturan harus mudah diakses dan dipahami.
-*   **Keamanan:**
-    *   Data pengguna (teks tulisan) harus disimpan secara lokal dan aman. Tidak ada pengiriman data ke server eksternal tanpa izin eksplisit pengguna (untuk fitur masa depan seperti sinkronisasi cloud).
-*   **Pemeliharaan (Maintainability):**
-    *   Kode harus bersih, terstruktur dengan baik, dan mudah dimodifikasi atau diperluas di masa mendatang.
-    *   Dokumentasi kode yang memadai.
-*   **Portabilitas:**
-    *   Awalnya fokus pada platform Android. Pertimbangan untuk platform lain (iOS, Desktop) dapat dieksplorasi di masa depan.
+*   **Performance:**
+    *   Application startup time: < 2 seconds.
+    *   UI Responsiveness: User interactions should feel instant, with no visible lag.
+    *   Memory Usage: Kept low, ideally below 100MB during active use.
+*   **Reliability:**
+    *   The application must be stable and not crash during focus sessions.
+    *   The timer must be accurate and notifications must be delivered on time.
+    *   Automatic saving must function reliably to prevent data loss.
+*   **Usability:**
+    *   The interface must be intuitive and easy to learn, even for non-technical users.
+    *   Settings should be easily accessible and understandable.
+*   **Security:**
+    *   User data (written text) must be stored locally and securely. No data transmission to external servers without explicit user permission (for future features like cloud synchronization).
+*   **Maintainability:**
+    *   The code must be clean, well-structured, and easy to modify or extend in the future.
+    *   Adequate code documentation.
+*   **Portability:**
+    *   Initially focused on the Android platform. Consideration for other platforms (iOS, Desktop) can be explored in the future.
 
-## 8. Metrik Keberhasilan (Success Metrics)
+## 8. Success Metrics
 
-## 9. Batasan dan Kendala (Constraints and Limitations)
+## 9. Constraints and Limitations
 
-## 10. Pertimbangan Masa Depan (Future Considerations)
+## 10. Future Considerations
 
 ## 9. Risk Assessment
 
