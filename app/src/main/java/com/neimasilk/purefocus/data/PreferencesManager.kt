@@ -177,6 +177,32 @@ class PreferencesManager(context: Context) {
             remove(PrefKeys.KEY_TIMER_RUNNING)
             remove(PrefKeys.KEY_POMODOROS_COMPLETED_IN_CYCLE)
             remove(PrefKeys.KEY_SERVICE_LAST_SAVE_TIMESTAMP)
+            remove(PrefKeys.KEY_WAS_TIMER_RUNNING_BEFORE_PAUSE)
+        }
+    }
+    
+    /**
+     * Menyimpan apakah timer sedang berjalan sebelum aplikasi di-pause
+     */
+    fun saveTimerRunningStateBeforePause(wasRunning: Boolean) {
+        sharedPreferences.edit {
+            putBoolean(PrefKeys.KEY_WAS_TIMER_RUNNING_BEFORE_PAUSE, wasRunning)
+        }
+    }
+    
+    /**
+     * Mengambil apakah timer sedang berjalan sebelum aplikasi di-pause
+     */
+    fun getTimerRunningStateBeforePause(): Boolean {
+        return sharedPreferences.getBoolean(PrefKeys.KEY_WAS_TIMER_RUNNING_BEFORE_PAUSE, false)
+    }
+    
+    /**
+     * Menghapus state timer yang tersimpan sebelum pause
+     */
+    fun clearTimerRunningStateBeforePause() {
+        sharedPreferences.edit {
+            remove(PrefKeys.KEY_WAS_TIMER_RUNNING_BEFORE_PAUSE)
         }
     }
 

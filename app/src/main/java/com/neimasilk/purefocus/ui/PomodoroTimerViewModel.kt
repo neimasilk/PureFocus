@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neimasilk.purefocus.data.PreferencesManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.neimasilk.purefocus.model.PomodoroState
 import com.neimasilk.purefocus.model.SessionType
 import com.neimasilk.purefocus.service.PomodoroService
@@ -17,7 +19,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager) : ViewModel() {
+@HiltViewModel
+class PomodoroTimerViewModel @Inject constructor(private val preferencesManager: PreferencesManager) : ViewModel() {
 
     // Get work duration from preferences
     private fun getWorkDurationMillis(): Long {
@@ -110,6 +113,34 @@ class PomodoroTimerViewModel(private val preferencesManager: PreferencesManager)
      */
     fun updateFocusWriteText(newText: String) {
         _focusWriteText.value = newText
+    }
+    
+    /**
+     * Pause timer saat aplikasi tidak di foreground dan simpan state
+     */
+    fun pauseTimerForAppPause() {
+        val currentState = _uiState.value
+        if (currentState.isTimerRunning) {
+            // Simpan bahwa timer sedang berjalan sebelum di-pause
+            preferencesManager.saveTimerRunningStateBeforePause(true)
+            pauseTimer()
+        } else {
+            // Timer tidak sedang berjalan, simpan false
+            preferencesManager.saveTimerRunningStateBeforePause(false)
+        }
+    }
+    
+    /**
+     * Resume timer saat aplikasi kembali ke foreground jika sebelumnya sedang berjalan
+     */
+    fun resumeTimerForAppResume() {
+        val wasRunningBeforePause = preferencesManager.getTimerRunningStateBeforePause()
+        if (wasRunningBeforePause) {
+            // Timer sedang berjalan sebelum aplikasi di-pause, resume timer
+            startTimer()
+        }
+        // Hapus state yang tersimpan setelah digunakan
+        preferencesManager.clearTimerRunningStateBeforePause()
     }
     
     enum class ServiceAction { START, PAUSE, RESET, SKIP }

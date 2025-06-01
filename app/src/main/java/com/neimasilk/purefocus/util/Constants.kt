@@ -13,6 +13,7 @@ object PrefKeys {
     const val KEY_SERVICE_LAST_SAVE_TIMESTAMP = "service_last_save_timestamp"
     const val KEY_FOCUS_WRITE_TEXT = "focus_write_text"
     const val KEY_ENABLE_SOUND_NOTIFICATIONS = "enable_sound_notifications"
+    const val KEY_WAS_TIMER_RUNNING_BEFORE_PAUSE = "was_timer_running_before_pause"
     // Tambahkan kunci preferensi lainnya jika teridentifikasi.
 }
 

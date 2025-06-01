@@ -13,6 +13,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import io.mockk.mockk
+import io.mockk.every
+import kotlinx.coroutines.flow.flowOf
+import com.neimasilk.purefocus.data.PreferencesManager
 
 /**
  * Instrumented test untuk integrasi FocusWriteScreen dengan FocusWriteViewModel.
@@ -31,7 +35,9 @@ class FocusWriteViewModelIntegrationTest {
     @Test
     fun focusWriteScreen_withViewModel_isDisplayed() {
         // Given
-        val viewModel = FocusWriteViewModel()
+        val mockPreferencesManager = mockk<PreferencesManager>(relaxed = true)
+        every { mockPreferencesManager.getFocusWriteText() } returns flowOf("")
+        val viewModel = FocusWriteViewModel(mockPreferencesManager)
         
         // When
         composeTestRule.setContent {
@@ -57,7 +63,9 @@ class FocusWriteViewModelIntegrationTest {
     @Test
     fun focusWriteScreen_textInput_updatesViewModel() {
         // Given
-        val viewModel = FocusWriteViewModel()
+        val mockPreferencesManager = mockk<PreferencesManager>(relaxed = true)
+        every { mockPreferencesManager.getFocusWriteText() } returns flowOf("")
+        val viewModel = FocusWriteViewModel(mockPreferencesManager)
         val testText = "Hello World"
         
         // When
@@ -94,7 +102,9 @@ class FocusWriteViewModelIntegrationTest {
     @Test
     fun focusWriteScreen_emptyText_showsCorrectCounts() {
         // Given
-        val viewModel = FocusWriteViewModel()
+        val mockPreferencesManager = mockk<PreferencesManager>(relaxed = true)
+        every { mockPreferencesManager.getFocusWriteText() } returns flowOf("")
+        val viewModel = FocusWriteViewModel(mockPreferencesManager)
         
         // When
         composeTestRule.setContent {

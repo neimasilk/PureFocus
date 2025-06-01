@@ -26,9 +26,14 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
+@Config(
+    sdk = [28],
+    manifest = Config.NONE
+)
 class PomodoroBottomBarTest {
 
     @get:Rule

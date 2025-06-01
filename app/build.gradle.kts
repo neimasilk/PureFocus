@@ -88,6 +88,9 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.material3)
     
+    // Material Icons Extended
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    
     // Kotlin Coroutines
     implementation(libs.kotlinx.coroutines.android)
     
@@ -118,5 +121,6 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
 }

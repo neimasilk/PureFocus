@@ -11,9 +11,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,9 +42,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.activity.result.ActivityResultLauncher
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+
 import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.ui.MainViewModel
 import com.neimasilk.purefocus.ui.PomodoroTimerViewModel
@@ -53,12 +59,14 @@ import com.neimasilk.purefocus.ui.PomodoroControlsView
 import com.neimasilk.purefocus.ui.PomodoroBottomBar
 import com.neimasilk.purefocus.util.NotificationHelper
 import com.neimasilk.purefocus.util.PerformanceMonitor
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.hilt.navigation.compose.hiltViewModel
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var pomodoroViewModel: PomodoroTimerViewModel
     private lateinit var settingsViewModel: SettingsViewModel
-    private lateinit var focusWriteViewModel: FocusWriteViewModel
     
     // State untuk dialog permission
     private var showPermissionRationale = mutableStateOf(false)
@@ -81,25 +89,17 @@ class MainActivity : ComponentActivity() {
         // Mulai timer untuk mengukur waktu startup
         PerformanceMonitor.startTimer("MainActivity_onCreate")
         
-        // Inisialisasi ViewModel
-        val preferencesManager = PreferencesManager(applicationContext)
-        val mainViewModelFactory = viewModelFactory { 
-            initializer { MainViewModel(preferencesManager) } 
-        }
-        val pomodoroViewModelFactory = viewModelFactory {
-            initializer { PomodoroTimerViewModel(preferencesManager) }
-        }
-        val settingsViewModelFactory = SettingsViewModel.factory(preferencesManager)
-        
-        viewModel = ViewModelProvider(this, mainViewModelFactory)[MainViewModel::class.java]
-        pomodoroViewModel = ViewModelProvider(this, pomodoroViewModelFactory)[PomodoroTimerViewModel::class.java]
-        settingsViewModel = ViewModelProvider(this, settingsViewModelFactory)[SettingsViewModel::class.java]
-        focusWriteViewModel = ViewModelProvider(this)[FocusWriteViewModel::class.java]
+        // ViewModels will be initialized using Hilt within Composables
         
         // Request notification permission untuk Android 13+ sudah dihandle di dalam Composable
         
         enableEdgeToEdge()
         setContent {
+            // Initialize ViewModels using Hilt
+            val viewModel: MainViewModel = hiltViewModel()
+            val pomodoroViewModel: PomodoroTimerViewModel = hiltViewModel()
+            val settingsViewModel: SettingsViewModel = hiltViewModel()
+            
             // Collect UI state dari ViewModel
             val uiState by viewModel.uiState.collectAsState()
             val context = LocalContext.current
@@ -139,6 +139,16 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+            }
+            
+            // Reset timer ke durasi default saat aplikasi dimulai
+            LaunchedEffect(Unit) {
+                // Beri delay untuk memastikan service sudah siap
+                kotlinx.coroutines.delay(500)
+                settingsViewModel.clearSavedServiceState()
+                // Delay lagi sebelum reset timer
+                kotlinx.coroutines.delay(200)
+                pomodoroViewModel.resetTimer()
             }
             
             // Observasi event notifikasi dari PomodoroTimerViewModel
@@ -193,8 +203,9 @@ class MainActivity : ComponentActivity() {
                     
                     Scaffold(
                         floatingActionButton = {
-                            FloatingActionButton(
-                                onClick = { showSettings = !showSettings }
+                            SmallFloatingActionButton(
+                                onClick = { showSettings = !showSettings },
+                                modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Settings,
@@ -205,10 +216,14 @@ class MainActivity : ComponentActivity() {
                         bottomBar = {
                             if (!showSettings) {
                                 PomodoroBottomBar(
-                                    pomodoroViewModel = pomodoroViewModel
+                                    pomodoroViewModel = pomodoroViewModel,
+                                    modifier = Modifier
+                                        .windowInsetsPadding(WindowInsets.navigationBars)
+                                        .imePadding()
                                 )
                             }
-                        }
+                        },
+                        contentWindowInsets = WindowInsets(0)
                     ) { innerPadding ->
                         if (showSettings) {
                              SettingsScreen(
@@ -216,6 +231,9 @@ class MainActivity : ComponentActivity() {
                                  modifier = Modifier.padding(innerPadding)
                              )
                         } else {
+                            // Get FocusWriteViewModel using Hilt
+                            val focusWriteViewModel: FocusWriteViewModel = hiltViewModel()
+                            
                             // Collect teks dari FocusWriteViewModel
                             val focusWriteTextFieldValue by focusWriteViewModel.textFieldValue.collectAsState()
                             
@@ -239,6 +257,21 @@ class MainActivity : ComponentActivity() {
         PerformanceMonitor.logMemoryUsage()
     }
     
+    override fun onPause() {
+        super.onPause()
+        // Pause timer saat aplikasi tidak di foreground dan simpan state
+        if (::pomodoroViewModel.isInitialized) {
+            pomodoroViewModel.pauseTimerForAppPause()
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // Resume timer saat aplikasi kembali ke foreground jika sebelumnya sedang berjalan
+        if (::pomodoroViewModel.isInitialized) {
+            pomodoroViewModel.resumeTimerForAppResume()
+        }
+    }
 
 }
 

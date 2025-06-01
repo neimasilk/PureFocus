@@ -5,9 +5,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,7 +46,7 @@ fun PomodoroBottomBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -63,50 +70,62 @@ fun PomodoroBottomBar(
                 )
             }
             
-            // Control buttons
+            // Control buttons dengan ikon yang intuitif - ukuran lebih kecil
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(
+                // Play/Pause button dengan ikon yang jelas
+                FilledIconButton(
                     onClick = { pomodoroViewModel.startPauseTimer() },
-                    modifier = Modifier.testTag(if (pomodoroState.isTimerRunning) "PauseButton" else "StartButton"),
-                    colors = ButtonDefaults.buttonColors(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .testTag(if (pomodoroState.isTimerRunning) "PauseButton" else "StartButton"),
+                    colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = if (pomodoroState.isTimerRunning) 
                             MaterialTheme.colorScheme.error 
                         else 
                             MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Text(
-                        text = if (pomodoroState.isTimerRunning) "Pause" else "Start",
-                        fontSize = 12.sp
+                    Icon(
+                        imageVector = if (pomodoroState.isTimerRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
+                        contentDescription = if (pomodoroState.isTimerRunning) "Pause Timer" else "Start Timer",
+                        modifier = Modifier.size(18.dp)
                     )
                 }
                 
-                Button(
+                // Reset button dengan ikon refresh
+                FilledIconButton(
                     onClick = { pomodoroViewModel.resetTimer() },
-                    modifier = Modifier.testTag("ResetButton"),
-                    colors = ButtonDefaults.buttonColors(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .testTag("ResetButton"),
+                    colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
-                    Text(
-                        text = "Reset",
-                        fontSize = 12.sp
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Reset Timer",
+                        modifier = Modifier.size(16.dp)
                     )
                 }
                 
-                Button(
+                // Skip button dengan ikon skip next
+                FilledIconButton(
                     onClick = { pomodoroViewModel.skipSession() },
-                    modifier = Modifier.testTag("SkipButton"),
-                    colors = ButtonDefaults.buttonColors(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .testTag("SkipButton"),
+                    colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     )
                 ) {
-                    Text(
-                        text = "Skip",
-                        fontSize = 12.sp
+                    Icon(
+                        imageVector = Icons.Default.SkipNext,
+                        contentDescription = "Skip Session",
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }

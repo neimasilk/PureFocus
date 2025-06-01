@@ -5,6 +5,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neimasilk.purefocus.data.PreferencesManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.neimasilk.purefocus.util.PerformanceMonitor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +31,8 @@ data class MainUiState(
  * ViewModel utama untuk aplikasi PureFocus.
  * Mengelola state UI dan interaksi dengan data layer.
  */
-class MainViewModel(private val preferencesManager: PreferencesManager) : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(private val preferencesManager: PreferencesManager) : ViewModel() {
     
     // State UI yang diobservasi oleh UI
     private val _uiState = MutableStateFlow(MainUiState(
