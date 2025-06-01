@@ -1,93 +1,220 @@
 # PureFocus User Guide
 
-Welcome to PureFocus! This application is designed to help you focus while writing by providing a minimalist, distraction-free environment integrated with a Pomodoro timer.
+Welcome to PureFocus! This application is designed to help you achieve deep focus while writing by providing a minimalist, distraction-free environment integrated with a Pomodoro timer.
 
 ## Table of Contents
 
 1.  [Getting Started](#getting-started)
-2.  [Key Features](#key-features)
-    *   [Focus Write Mode](#focus-write-mode)
-    *   [Integrated Pomodoro Timer](#integrated-pomodoro-timer)
-    *   [Session Settings](#session-settings)
-    *   [Auto-save](#auto-save)
-3.  [Basic Usage](#basic-usage)
-    *   [Starting a Focus Session](#starting-a-focus-session)
-    *   [Writing](#writing)
-    *   [Ending a Focus Session](#ending-a-focus-session)
-    *   [Setting Focus and Break Durations](#setting-focus-and-break-durations)
-4.  [Tips for Maximum Productivity](#tips-for-maximum-productivity)
-5.  [Troubleshooting](#troubleshooting)
-6.  [Contact Us](#contact-us)
+2.  [Core Features Overview](#core-features-overview)
+3.  [Step-by-Step Usage Guide](#step-by-step-usage-guide)
+    *   [Starting Your First Focus Session](#starting-your-first-focus-session)
+    *   [Using Focus Write Mode](#using-focus-write-mode)
+    *   [Managing Pomodoro Sessions](#managing-pomodoro-sessions)
+    *   [Customizing Settings](#customizing-settings)
+4.  [Advanced Features](#advanced-features)
+5.  [Tips for Maximum Productivity](#tips-for-maximum-productivity)
+6.  [Troubleshooting](#troubleshooting)
+7.  [Contact & Support](#contact--support)
 
 ## 1. Getting Started
 
 After installing PureFocus, you will be immediately greeted with a clean main interface. There is no complicated setup process; you can start writing right away.
 
-## 2. Key Features
+**First Launch:**
+- The app opens directly to Focus Write Mode
+- Your cursor is ready in the text area
+- Timer controls are visible at the bottom
+- Settings can be accessed via the gear icon
+
+## 2. Core Features Overview
 
 ### Focus Write Mode
-
-*   **Minimalist Interface:** Only the text area and essential timer control buttons. No distracting menus, toolbars, or notifications from other applications (during an active focus session).
-*   **Distraction-Free:** Designed to help you concentrate fully on your writing.
+- **Full-screen text editor** with no distracting elements
+- **Automatic saving** every few seconds
+- **Text copying** via long-press context menu
+- **Cursor position memory** - resume exactly where you left off
+- **Standard text selection** with Android gestures
 
 ### Integrated Pomodoro Timer
+- **25-minute work sessions** (customizable)
+- **5-minute short breaks** (customizable)
+- **15-30 minute long breaks** (customizable)
+- **Background operation** - timer continues when app is minimized
+- **Gentle notifications** for session transitions
+- **Cycle tracking** - automatic progression through 4 work sessions + long break
 
-*   **Structured Focus Sessions:** Divide your work into focus intervals (e.g., 25 minutes) followed by short breaks (e.g., 5 minutes).
-*   **End-of-Session Notifications:** The application will notify you when a focus or break session ends.
-*   **State Persistence:** If the app is closed or restarted during an active timer session, it will automatically resume from where it left off when reopened.
+### Essential Settings
+- **Theme selection** - Light or Dark mode
+- **Duration customization** - Adjust all timer intervals
+- **Sound notifications** - Enable/disable audio alerts
+- **Automatic persistence** - All settings saved instantly
 
-### Session Settings
+## 3. Step-by-Step Usage Guide
 
-*   **Flexible Durations:** You can adjust the duration of focus sessions and break sessions according to your preferences and needs via the Settings screen.
+### Starting Your First Focus Session
 
-### Auto-save
+1. **Launch PureFocus** - The app opens directly to Focus Write Mode
+2. **Optional: Customize Settings**
+   - Tap the gear icon (⚙️) to access settings
+   - Adjust focus duration (default: 25 minutes)
+   - Set short break duration (default: 5 minutes)
+   - Set long break duration (default: 15 minutes)
+   - Choose light/dark theme
+   - Enable/disable sound notifications
+3. **Start Writing Session**
+   - Tap the "Start" button (▶️) in the bottom control bar
+   - Timer begins counting down immediately
+   - Start typing in the text area
 
-*   **Don't Worry About Losing Work:** Your text is automatically saved periodically as you type. When a focus session ends, the latest text will be saved.
+### Using Focus Write Mode
 
-## 3. Basic Usage
+**Writing:**
+- Simply start typing - the full screen is your canvas
+- Text is automatically saved every few seconds
+- Focus on your content - no formatting distractions
 
-### Starting a Focus Session
+**Text Management:**
+- **Copy text**: Long-press in text area → Select "Copy" from context menu
+- **Clear text**: Long-press → Select "Clear" → Confirm in dialog
+- **Text selection**: Use standard Android gestures (tap and drag)
 
-1.  Open the PureFocus application.
-2.  (Optional) Go to the Settings screen (usually a gear icon) to adjust focus and break durations if the defaults are not suitable.
-3.  Return to the main screen.
-4.  Press the "Start Focus" button (or similar icon) to begin your writing session.
-5.  The timer will start counting down.
+**Session Control:**
+- **Pause**: Tap pause button (⏸️) to temporarily stop timer
+- **Resume**: Tap play button (▶️) to continue
+- **Reset**: Tap reset button (🔄) to restart current session
+- **Skip**: Tap skip button (⏭️) to move to next session type
 
-### Writing
+### Managing Pomodoro Sessions
 
-*   Once the session starts, begin typing in the provided text area.
-*   Focus on your writing. The application will handle the rest.
+**Session Flow:**
+1. **Work Session** (25 min) → **Short Break** (5 min)
+2. **Work Session** (25 min) → **Short Break** (5 min)
+3. **Work Session** (25 min) → **Short Break** (5 min)
+4. **Work Session** (25 min) → **Long Break** (15-30 min)
+5. Cycle repeats automatically
 
-### Ending a Focus Session
+**During Sessions:**
+- Work sessions: Focus on writing, timer shows remaining time
+- Break sessions: Step away from device, timer continues in background
+- Notifications alert you when sessions end
 
-*   When the focus session timer ends, you will receive a notification.
-*   The text you wrote will be automatically saved.
-*   You can choose to start a break session, start a new focus session, or exit the application.
+**Background Operation:**
+- Timer continues when app is minimized
+- Persistent notification shows current session status
+- Return to app anytime to see progress
 
-### Setting Focus and Break Durations
+### Customizing Settings
 
-1.  Navigate to the Settings screen.
-2.  Find the options for "Focus Duration" and "Break Duration".
-3.  Enter your desired values (usually in minutes).
-4.  Settings will be saved automatically.
+**Access Settings:**
+- Tap gear icon (⚙️) from main screen
+- All changes save automatically
 
-## 4. Tips for Maximum Productivity
+**Available Options:**
+- **Focus Duration**: 1-60 minutes (default: 25)
+- **Short Break Duration**: 1-30 minutes (default: 5)
+- **Long Break Duration**: 5-60 minutes (default: 15)
+- **Theme**: Light or Dark mode
+- **Sound Notifications**: Enable/disable audio alerts
 
-*   **Set Goals:** Before starting a focus session, know what you want to achieve.
-*   **Eliminate External Distractions:** Find a quiet place and turn off notifications from other devices if possible.
-*   **Utilize Breaks:** Use break time to truly rest. Stand up, stretch, or look away from the screen.
-*   **Be Consistent:** Try to use the Pomodoro technique regularly to build a good work rhythm.
+## 4. Advanced Features
 
-## 5. Troubleshooting
+### Session Persistence
+- **Automatic Resume**: If app is closed during active session, timer resumes when reopened
+- **State Recovery**: Current session type, remaining time, and cycle count are preserved
+- **Background Continuity**: Timer operates reliably even when device is locked
 
-*   **Application not responding:** Try force-closing the application and reopening it.
-*   **Notifications not appearing:** Ensure you have granted notification permissions for PureFocus in your Android system settings.
-*   **Text not saved:** Although there is auto-save, ensure the focus session ends correctly. If you force-close the application mid-session, there is a small chance the latest data might not be saved.
-*   **Timer not resuming after restart:** The app automatically saves timer state every 10 seconds and when paused. If the timer doesn't resume after restarting the app, ensure you restart within 1 hour of the last session (saved states expire after 1 hour for accuracy).
+### Text Management
+- **Auto-save Frequency**: Text saved every 3-5 seconds while typing
+- **Session Boundaries**: Content automatically saved at session transitions
+- **Memory Efficiency**: Large text documents handled smoothly
 
-## 6. Contact Us
+### Notification System
+- **Gentle Alerts**: Non-intrusive notifications for session changes
+- **Background Notifications**: Persistent notification shows timer status
+- **Sound Options**: Optional audio alerts for session transitions
 
-If you have questions, suggestions, or find a bug, don't hesitate to contact us via [Your Contact Method, e.g., email support@purefocus.app or link to a feedback page].
+## 5. Tips for Maximum Productivity
+
+### Before Starting
+- **Set Clear Goals**: Define what you want to accomplish in each session
+- **Prepare Your Environment**: Minimize external distractions
+- **Have Materials Ready**: Keep research, notes, or references accessible
+
+### During Focus Sessions
+- **Single-Task Focus**: Resist urge to switch between tasks
+- **Write Continuously**: Don't edit while writing - capture ideas first
+- **Trust the Timer**: Let the app manage time so you can focus on content
+- **Stay in Flow**: If ideas are flowing at session end, use "Skip" to continue
+
+### During Breaks
+- **Step Away**: Physical movement helps mental reset
+- **Avoid Screens**: Give your eyes and mind a rest
+- **Hydrate**: Keep water nearby for break periods
+- **Light Activity**: Stretch, walk, or do breathing exercises
+
+### Building Habits
+- **Consistent Schedule**: Use PureFocus at the same time daily
+- **Start Small**: Begin with shorter sessions if 25 minutes feels overwhelming
+- **Track Progress**: Notice how much you accomplish in focused time
+- **Adjust as Needed**: Customize durations to match your attention span
+
+## 6. Troubleshooting
+
+### Timer Issues
+**Timer doesn't start:**
+- Ensure "Start" button is tapped (should show pause icon when active)
+- Check if app has background processing permissions
+- Restart app if timer appears frozen
+
+**Timer doesn't continue in background:**
+- Verify app isn't being killed by battery optimization
+- Check notification permissions are enabled
+- Ensure "Do Not Disturb" isn't blocking timer notifications
+
+### Text Issues
+**Text not saving:**
+- Auto-save occurs every few seconds - look for brief save indicator
+- Ensure device has sufficient storage space
+- Try copying important text as backup if concerned
+
+**Text disappeared:**
+- Check if "Clear" was accidentally selected from context menu
+- Text is preserved between sessions unless manually cleared
+- Restart app to recover from temporary display issues
+
+### Notification Issues
+**No session end notifications:**
+- Check device notification settings for PureFocus
+- Verify "Do Not Disturb" mode isn't blocking alerts
+- Ensure notification permissions are granted
+
+**Sound notifications not working:**
+- Check if sound notifications are enabled in app settings
+- Verify device volume and sound settings
+- Test with different notification sounds
+
+### Performance Issues
+**App crashes or freezes:**
+- Force close and restart the application
+- Restart device if problem persists
+- Ensure sufficient device memory is available
+- Update to latest app version if available
+
+**Slow text input:**
+- Large text documents may cause slight delays
+- Consider breaking very long content into separate sessions
+- Restart app to clear memory if needed
+
+## 7. Contact & Support
+
+For issues not covered in this guide or feature suggestions:
+- **GitHub Issues**: Report bugs or request features
+- **Documentation**: Check project README for technical details
+- **Community**: Share tips and experiences with other users
+
+**Before Reporting Issues:**
+- Note your device model and Android version
+- Describe steps to reproduce the problem
+- Include any error messages or unexpected behavior
 
 Thank you for using PureFocus! Happy focused writing!

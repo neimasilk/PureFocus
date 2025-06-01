@@ -6,6 +6,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * ViewModel untuk mengelola pengaturan aplikasi PureFocus.
+ * 
+ * Kelas ini bertanggung jawab untuk:
+ * - Menyediakan akses ke pengaturan timer (durasi fokus, istirahat)
+ * - Mengelola preferensi notifikasi suara
+ * - Memvalidasi input pengaturan dari pengguna
+ * - Menyimpan perubahan pengaturan secara persisten
+ * 
+ * @param preferencesManager Manager untuk mengakses dan menyimpan preferensi
+ */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(private val preferencesManager: PreferencesManager) : ViewModel() {
     

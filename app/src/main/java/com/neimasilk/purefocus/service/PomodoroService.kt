@@ -28,11 +28,29 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
+/**
+ * Foreground service untuk mengelola timer Pomodoro di background.
+ * 
+ * Service ini bertanggung jawab untuk:
+ * - Menjalankan timer Pomodoro secara persisten di background
+ * - Menampilkan notifikasi foreground untuk status timer
+ * - Mengelola transisi antar sesi (work → break → work)
+ * - Menyimpan dan memulihkan state timer
+ * - Mengirim notifikasi saat sesi berakhir
+ */
 class PomodoroService : Service() {
 
+    /** CoroutineScope untuk operasi asinkron service */
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    // Internal state untuk service
+    /**
+     * Data class yang merepresentasikan state internal service.
+     * 
+     * @param timeLeftInMillis Waktu tersisa dalam milidetik
+     * @param currentSessionType Tipe sesi saat ini (WORK, SHORT_BREAK, LONG_BREAK)
+     * @param isRunning Status apakah timer sedang berjalan
+     * @param pomodorosCompletedInCycle Jumlah pomodoro yang telah diselesaikan dalam siklus
+     */
     data class PomodoroServiceState(
         val timeLeftInMillis: Long = 0L,
         val currentSessionType: SessionType = SessionType.WORK,
@@ -40,20 +58,32 @@ class PomodoroService : Service() {
         val pomodorosCompletedInCycle: Int = 0
     )
 
-    // Companion object untuk expose state ke ViewModel
+    /**
+     * Companion object untuk menyediakan akses global ke state service.
+     * Memungkinkan ViewModel dan komponen lain untuk mengobservasi state timer.
+     */
     companion object {
+        /** StateFlow untuk state service yang dapat diobservasi */
         private val _serviceState = MutableStateFlow(PomodoroServiceState())
         val serviceState: StateFlow<PomodoroServiceState> = _serviceState.asStateFlow()
         
+        /** Durasi istirahat pendek dalam milidetik */
         val SHORT_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_SHORT_BREAK_DURATION_MINUTES)
+        
+        /** Durasi istirahat panjang dalam milidetik */
         val LONG_BREAK_DURATION_MILLIS = TimeUnit.MINUTES.toMillis(DefaultSettings.VM_LONG_BREAK_DURATION_MINUTES)
+        
+        /** Jumlah pomodoro per siklus sebelum istirahat panjang */
         const val POMODOROS_PER_CYCLE = 4
     }
 
-    // Internal state reference untuk kemudahan akses
+    /** Reference internal state untuk kemudahan akses */
     private val internalState get() = _serviceState
 
+    /** Job untuk menjalankan timer countdown */
     private var timerJob: Job? = null
+    
+    /** Manager untuk mengakses preferensi pengguna */
     private lateinit var preferencesManager: PreferencesManager
 
     override fun onCreate() {

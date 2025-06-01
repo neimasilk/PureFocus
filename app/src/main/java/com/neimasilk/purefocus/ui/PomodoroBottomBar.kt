@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import java.util.Locale
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -136,7 +137,7 @@ fun PomodoroBottomBar(
 private fun formatTimerValue(seconds: Int): String {
     val minutes = seconds / 60
     val remainingSeconds = seconds % 60
-    return String.format("%02d:%02d", minutes, remainingSeconds)
+    return String.format(Locale.ROOT, "%02d:%02d", minutes, remainingSeconds)
 }
 
 private fun getCurrentSessionText(sessionType: SessionType): String {

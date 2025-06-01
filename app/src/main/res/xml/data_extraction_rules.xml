@@ -7,9 +7,11 @@
     <cloud-backup>
         <!-- Include user preferences and settings -->
         <include domain="sharedpref" path="."/>
-        <!-- Exclude sensitive or temporary data -->
-        <exclude domain="database" path="."/>
+        <!-- Include file domain first, then exclude cache -->
+        <include domain="file" path="."/>
         <exclude domain="file" path="cache/"/>
+        <!-- Include database domain first, then exclude if needed -->
+        <include domain="database" path="."/>
     </cloud-backup>
     <!--
     <device-transfer>

@@ -15,7 +15,16 @@
 
 PureFocus is designed with one unwavering principle: **Speed and Simplicity Above All Else**. Every design decision, every line of code, and every feature is evaluated against one question: "Does this make the app faster and simpler?"
 
-## ✨ Features
+## 📱 Screenshots
+
+<!-- TODO: Add actual screenshots when available -->
+*Screenshots will be added here to showcase the minimalist interface and key features*
+
+- **Focus Write Mode**: Full-screen text editor with integrated timer
+- **Settings Screen**: Clean, essential configuration options
+- **Timer Controls**: Non-intrusive bottom bar with session management
+
+## ✨ Core Features
 
 ### 🚀 Lightning Fast Performance
 - **< 1 second** app launch time
@@ -23,26 +32,32 @@ PureFocus is designed with one unwavering principle: **Speed and Simplicity Abov
 - **< 50MB** memory usage
 - **< 10MB** app size
 
-### ✍️ Distraction-Free Writing
-- Full-screen, minimalist text editor
-- No formatting distractions - pure focus on content
-- Automatic text saving every few seconds
-- One-tap text copying for easy export
+### ✍️ Focus Write Mode
+- **Full-screen, distraction-free text editor** - No menus, toolbars, or formatting options to distract you
+- **Automatic text saving** - Your work is saved every few seconds, never lose progress
+- **One-tap text copying** - Easy export via context menu
+- **Cursor position restoration** - Resume exactly where you left off
+- **Text selection support** - Standard Android text selection gestures
 
 ### 🍅 Integrated Pomodoro Timer
-- Non-intrusive timer overlay
-- Standard 25-minute work sessions
-- 5-minute short breaks, 15-30 minute long breaks
-- Gentle, non-disruptive notifications
-- **Foreground service** ensures timer accuracy in background
-- **Persistent notifications** show timer status when app is minimized
-- Zero impact on writing performance
+- **Customizable work sessions** - Default 25 minutes, adjustable in settings
+- **Smart break management** - 5-minute short breaks, 15-30 minute long breaks
+- **Background timer service** - Timer continues accurately even when app is minimized
+- **Gentle notifications** - Non-disruptive alerts for session transitions
+- **Session cycle tracking** - Automatic progression through work/break cycles
+- **Timer controls** - Start, pause, reset, and skip sessions with bottom bar controls
 
-### 🎨 Minimal Design
-- Clean light/dark themes
-- Instantly understandable interface
-- Zero learning curve
-- Optional word/character count (disabled by default)
+### ⚙️ Essential Settings
+- **Light/Dark theme toggle** - Comfortable viewing in any lighting
+- **Duration customization** - Adjust focus, short break, and long break durations
+- **Sound notifications** - Optional audio alerts for session transitions
+- **Persistent preferences** - All settings automatically saved
+
+### 🎨 Minimalist Design
+- **Zero learning curve** - Interface purpose obvious within seconds
+- **Maximum 2 taps** to reach any functionality
+- **Immediate response** - No loading states or delays
+- **Clean typography** - Optimized for comfortable reading and writing
 
 ## 🏗️ Architecture
 
