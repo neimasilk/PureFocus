@@ -41,6 +41,7 @@ import com.neimasilk.purefocus.data.PreferencesManager
 import com.neimasilk.purefocus.ui.MainViewModel
 import com.neimasilk.purefocus.ui.PomodoroTimerViewModel
 import com.neimasilk.purefocus.ui.SettingsViewModel
+import com.neimasilk.purefocus.ui.FocusWriteViewModel
 import com.neimasilk.purefocus.service.PomodoroService
 import com.neimasilk.purefocus.util.PomodoroServiceActions
 import com.neimasilk.purefocus.ui.screens.FocusWriteScreen
@@ -56,6 +57,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var pomodoroViewModel: PomodoroTimerViewModel
     private lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var focusWriteViewModel: FocusWriteViewModel
     
     // State untuk dialog permission
     private var showPermissionRationale = mutableStateOf(false)
@@ -91,6 +93,7 @@ class MainActivity : ComponentActivity() {
         viewModel = ViewModelProvider(this, mainViewModelFactory)[MainViewModel::class.java]
         pomodoroViewModel = ViewModelProvider(this, pomodoroViewModelFactory)[PomodoroTimerViewModel::class.java]
         settingsViewModel = ViewModelProvider(this, settingsViewModelFactory)[SettingsViewModel::class.java]
+        focusWriteViewModel = ViewModelProvider(this)[FocusWriteViewModel::class.java]
         
         // Request notification permission untuk Android 13+ sudah dihandle di dalam Composable
         
@@ -205,16 +208,16 @@ class MainActivity : ComponentActivity() {
                                  modifier = Modifier.padding(innerPadding)
                              )
                         } else {
-                            // Collect teks dari PomodoroTimerViewModel untuk Focus Write
-                            val focusWriteText by pomodoroViewModel.focusWriteText.collectAsState()
+                            // Collect teks dari FocusWriteViewModel
+                            val focusWriteTextFieldValue by focusWriteViewModel.textFieldValue.collectAsState()
                             
                             Column(modifier = Modifier.padding(innerPadding)) {
                                 FocusWriteScreen(
-                                    text = focusWriteText,
-                                    onTextChanged = { pomodoroViewModel.updateFocusWriteText(it) },
-                                    onClearText = { viewModel.clearText() },
-                                    wordCount = uiState.wordCount,
-                                    characterCount = uiState.characterCount,
+                                    textFieldValue = focusWriteTextFieldValue,
+                                    onTextFieldValueChanged = { focusWriteViewModel.updateText(it) },
+                                    onClearText = { focusWriteViewModel.clearText() },
+                                    wordCount = focusWriteViewModel.getWordCount(),
+                                    characterCount = focusWriteViewModel.getCharacterCount(),
                                     modifier = Modifier.weight(1f) // Allow FocusWriteScreen to take available space
                                 )
                                 PomodoroControlsView(
