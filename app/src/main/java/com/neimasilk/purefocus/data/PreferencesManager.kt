@@ -21,6 +21,14 @@ class PreferencesManager(context: Context) {
     private val _focusDuration = MutableStateFlow(getFocusDurationFromPrefs())
     val focusDuration: StateFlow<Int> = _focusDuration.asStateFlow()
     
+    // StateFlow untuk short break duration
+    private val _shortBreakDuration = MutableStateFlow(getShortBreakDurationFromPrefs())
+    val shortBreakDuration: StateFlow<Int> = _shortBreakDuration.asStateFlow()
+    
+    // StateFlow untuk long break duration
+    private val _longBreakDuration = MutableStateFlow(getLongBreakDurationFromPrefs())
+    val longBreakDuration: StateFlow<Int> = _longBreakDuration.asStateFlow()
+    
     // StateFlow untuk sound notifications
     private val _enableSoundNotifications = MutableStateFlow(getEnableSoundNotificationsFromPrefs())
     val enableSoundNotifications: StateFlow<Boolean> = _enableSoundNotifications.asStateFlow()
@@ -75,6 +83,36 @@ class PreferencesManager(context: Context) {
     fun updateFocusDuration(duration: Int) {
         sharedPreferences.edit { putInt(PrefKeys.KEY_FOCUS_DURATION, duration) }
         _focusDuration.value = duration
+    }
+    
+    /**
+     * Durasi short break session dalam menit (default 5 menit)
+     */
+    private fun getShortBreakDurationFromPrefs(): Int {
+        return sharedPreferences.getInt(PrefKeys.KEY_SHORT_BREAK_DURATION, DefaultSettings.DEFAULT_SHORT_BREAK_DURATION_MINUTES)
+    }
+    
+    /**
+     * Update short break duration dan emit nilai baru ke StateFlow
+     */
+    fun updateShortBreakDuration(duration: Int) {
+        sharedPreferences.edit { putInt(PrefKeys.KEY_SHORT_BREAK_DURATION, duration) }
+        _shortBreakDuration.value = duration
+    }
+    
+    /**
+     * Durasi long break session dalam menit (default 15 menit)
+     */
+    private fun getLongBreakDurationFromPrefs(): Int {
+        return sharedPreferences.getInt(PrefKeys.KEY_LONG_BREAK_DURATION, DefaultSettings.DEFAULT_LONG_BREAK_DURATION_MINUTES)
+    }
+    
+    /**
+     * Update long break duration dan emit nilai baru ke StateFlow
+     */
+    fun updateLongBreakDuration(duration: Int) {
+        sharedPreferences.edit { putInt(PrefKeys.KEY_LONG_BREAK_DURATION, duration) }
+        _longBreakDuration.value = duration
     }
     
     /**

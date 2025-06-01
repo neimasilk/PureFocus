@@ -38,8 +38,12 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val focusDuration by settingsViewModel.focusDuration.collectAsState()
+    val shortBreakDuration by settingsViewModel.shortBreakDuration.collectAsState()
+    val longBreakDuration by settingsViewModel.longBreakDuration.collectAsState()
     val enableSoundNotifications by settingsViewModel.enableSoundNotifications.collectAsState()
     var durationInput by rememberSaveable { mutableStateOf(focusDuration.toString()) }
+    var shortBreakInput by rememberSaveable { mutableStateOf(shortBreakDuration.toString()) }
+    var longBreakInput by rememberSaveable { mutableStateOf(longBreakDuration.toString()) }
     
     Column(
         modifier = modifier
@@ -125,6 +129,144 @@ fun SettingsScreen(
             }
         }
         
+        // Short Break Duration Setting Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Short Break Duration",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                
+                Text(
+                    text = "Set the duration for short breaks between focus sessions",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = shortBreakInput,
+                        onValueChange = { newValue ->
+                            if (newValue.all { it.isDigit() } && newValue.length <= 2) {
+                                shortBreakInput = newValue
+                            }
+                        },
+                        label = { Text("Minutes") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.width(120.dp)
+                    )
+                    
+                    Button(
+                        onClick = {
+                            val duration = shortBreakInput.toIntOrNull()
+                            if (duration != null && duration > 0 && duration <= 60) {
+                                settingsViewModel.updateShortBreakDuration(duration)
+                            }
+                        },
+                        enabled = shortBreakInput.toIntOrNull()?.let { it > 0 && it <= 60 } == true
+                    ) {
+                        Text("Save")
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(
+                    text = "Current: $shortBreakDuration minutes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Medium
+                )
+                
+                Text(
+                    text = "Range: 1-60 minutes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        
+        // Long Break Duration Setting Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Long Break Duration",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                
+                Text(
+                    text = "Set the duration for long breaks after multiple focus sessions",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = longBreakInput,
+                        onValueChange = { newValue ->
+                            if (newValue.all { it.isDigit() } && newValue.length <= 3) {
+                                longBreakInput = newValue
+                            }
+                        },
+                        label = { Text("Minutes") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.width(120.dp)
+                    )
+                    
+                    Button(
+                        onClick = {
+                            val duration = longBreakInput.toIntOrNull()
+                            if (duration != null && duration > 0 && duration <= 120) {
+                                settingsViewModel.updateLongBreakDuration(duration)
+                            }
+                        },
+                        enabled = longBreakInput.toIntOrNull()?.let { it > 0 && it <= 120 } == true
+                    ) {
+                        Text("Save")
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(
+                    text = "Current: $longBreakDuration minutes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Medium
+                )
+                
+                Text(
+                    text = "Range: 1-120 minutes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        
         // Sound Notifications Setting Card
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -194,7 +336,7 @@ fun SettingsScreen(
                 )
                 
                 Text(
-                    text = "The Pomodoro Technique recommends 25-minute focus sessions for optimal productivity.",
+                    text = "The Pomodoro Technique recommends 25-minute focus sessions with 5-minute short breaks and 15-30 minute long breaks.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(top = 4.dp)

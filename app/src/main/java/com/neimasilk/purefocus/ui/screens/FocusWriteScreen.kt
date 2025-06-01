@@ -48,6 +48,7 @@ fun FocusWriteScreen(
     text: String,
     onTextChanged: (String) -> Unit,
     onClearText: () -> Unit = {},
+    onSaveTextManually: () -> Unit = {},
     wordCount: Int = 0,
     characterCount: Int = 0,
     modifier: Modifier = Modifier
@@ -67,6 +68,7 @@ fun FocusWriteScreen(
             }
         },
         onClearText = onClearText,
+        onSaveTextManually = onSaveTextManually,
         wordCount = wordCount,
         characterCount = characterCount,
         modifier = modifier
@@ -84,6 +86,7 @@ fun FocusWriteScreen(
     textFieldValue: TextFieldValue,
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
     onClearText: () -> Unit = {},
+    onSaveTextManually: () -> Unit = {},
     wordCount: Int = 0,
     characterCount: Int = 0,
     modifier: Modifier = Modifier
@@ -93,6 +96,7 @@ fun FocusWriteScreen(
         value = textFieldValue,
         onValueChange = onTextFieldValueChanged,
         onClearText = onClearText,
+        onSaveTextManually = onSaveTextManually,
         wordCount = wordCount,
         characterCount = characterCount,
         modifier = modifier
@@ -108,6 +112,7 @@ private fun FocusWriteScreenImpl(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     onClearText: () -> Unit = {},
+    onSaveTextManually: () -> Unit = {},
     wordCount: Int = 0,
     characterCount: Int = 0,
     modifier: Modifier = Modifier
@@ -156,7 +161,7 @@ private fun FocusWriteScreenImpl(
             decorationBox = { innerTextField -> innerTextField() }
         )
         
-        // Menu konteks untuk salin teks dan clear text
+        // Menu konteks untuk salin teks, save manual, dan clear text
         DropdownMenu(
             expanded = showContextMenu,
             onDismissRequest = { showContextMenu = false }
@@ -166,6 +171,14 @@ private fun FocusWriteScreenImpl(
                 onClick = {
                     clipboardManager.setText(AnnotatedString(value.text))
                     Toast.makeText(context, "Teks disalin", Toast.LENGTH_SHORT).show()
+                    showContextMenu = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text("Simpan Manual") },
+                onClick = {
+                    onSaveTextManually()
+                    Toast.makeText(context, "Teks disimpan", Toast.LENGTH_SHORT).show()
                     showContextMenu = false
                 }
             )

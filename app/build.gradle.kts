@@ -56,6 +56,12 @@ android {
         compose = true
         buildConfig = true
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -97,6 +103,10 @@ dependencies {
     testImplementation("app.cash.turbine:turbine:0.12.1") // For StateFlow testing
     testImplementation("org.robolectric:robolectric:4.11.1") // For Android unit testing
     testImplementation("androidx.test:core:1.5.0") // For ApplicationProvider
+    // Compose testing for unit tests
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

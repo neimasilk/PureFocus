@@ -50,6 +50,7 @@ import com.neimasilk.purefocus.ui.theme.PureFocusTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import com.neimasilk.purefocus.ui.PomodoroControlsView
+import com.neimasilk.purefocus.ui.PomodoroBottomBar
 import com.neimasilk.purefocus.util.NotificationHelper
 import com.neimasilk.purefocus.util.PerformanceMonitor
 
@@ -200,6 +201,13 @@ class MainActivity : ComponentActivity() {
                                     contentDescription = if (showSettings) "Back to Focus" else "Settings"
                                 )
                             }
+                        },
+                        bottomBar = {
+                            if (!showSettings) {
+                                PomodoroBottomBar(
+                                    pomodoroViewModel = pomodoroViewModel
+                                )
+                            }
                         }
                     ) { innerPadding ->
                         if (showSettings) {
@@ -211,20 +219,15 @@ class MainActivity : ComponentActivity() {
                             // Collect teks dari FocusWriteViewModel
                             val focusWriteTextFieldValue by focusWriteViewModel.textFieldValue.collectAsState()
                             
-                            Column(modifier = Modifier.padding(innerPadding)) {
-                                FocusWriteScreen(
-                                    textFieldValue = focusWriteTextFieldValue,
-                                    onTextFieldValueChanged = { focusWriteViewModel.updateText(it) },
-                                    onClearText = { focusWriteViewModel.clearText() },
-                                    wordCount = focusWriteViewModel.getWordCount(),
-                                    characterCount = focusWriteViewModel.getCharacterCount(),
-                                    modifier = Modifier.weight(1f) // Allow FocusWriteScreen to take available space
-                                )
-                                PomodoroControlsView(
-                                    pomodoroViewModel = pomodoroViewModel,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
+                            FocusWriteScreen(
+                                textFieldValue = focusWriteTextFieldValue,
+                                onTextFieldValueChanged = { focusWriteViewModel.updateText(it) },
+                                onClearText = { focusWriteViewModel.clearText() },
+                                onSaveTextManually = { focusWriteViewModel.saveTextManually() },
+                                wordCount = focusWriteViewModel.getWordCount(),
+                                characterCount = focusWriteViewModel.getCharacterCount(),
+                                modifier = Modifier.padding(innerPadding)
+                            )
                         }
                     }
                 }
