@@ -32,13 +32,25 @@ class PreferencesManager(context: Context) {
     // StateFlow untuk sound notifications
     private val _enableSoundNotifications = MutableStateFlow(getEnableSoundNotificationsFromPrefs())
     val enableSoundNotifications: StateFlow<Boolean> = _enableSoundNotifications.asStateFlow()
+    
+    // StateFlow untuk dark mode
+    private val _isDarkMode = MutableStateFlow(getDarkModeFromPrefs())
+    val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
 
     /**
-     * Preferensi untuk mode tema (gelap/terang)
+     * Mengambil preferensi dark mode dari SharedPreferences
      */
-    var isDarkMode: Boolean
-        get() = sharedPreferences.getBoolean(PrefKeys.KEY_DARK_MODE, false)
-        set(value) = sharedPreferences.edit { putBoolean(PrefKeys.KEY_DARK_MODE, value) }
+    private fun getDarkModeFromPrefs(): Boolean {
+        return sharedPreferences.getBoolean(PrefKeys.KEY_DARK_MODE, false)
+    }
+    
+    /**
+     * Update dark mode preference dan emit nilai baru ke StateFlow
+     */
+    fun updateDarkMode(isDark: Boolean) {
+        sharedPreferences.edit { putBoolean(PrefKeys.KEY_DARK_MODE, isDark) }
+        _isDarkMode.value = isDark
+    }
 
     /**
      * Teks terakhir yang ditulis pengguna

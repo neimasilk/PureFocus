@@ -48,6 +48,7 @@ fun SettingsScreen(
     val shortBreakDuration by settingsViewModel.shortBreakDuration.collectAsState()
     val longBreakDuration by settingsViewModel.longBreakDuration.collectAsState()
     val enableSoundNotifications by settingsViewModel.enableSoundNotifications.collectAsState()
+    val isDarkMode by settingsViewModel.isDarkMode.collectAsState()
     var durationInput by rememberSaveable { mutableStateOf(focusDuration.toString()) }
     var shortBreakInput by rememberSaveable { mutableStateOf(shortBreakDuration.toString()) }
     var longBreakInput by rememberSaveable { mutableStateOf(longBreakDuration.toString()) }
@@ -279,6 +280,48 @@ fun SettingsScreen(
                     text = if (enableSoundNotifications) "Enabled" else "Disabled",
                     style = MaterialTheme.typography.bodySmall,
                     color = if (enableSoundNotifications) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+        
+        // Dark Mode Setting Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Text(
+                    text = "Dark Mode",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Enable Dark Theme",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    
+                    Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { isChecked ->
+                            settingsViewModel.toggleDarkMode(isChecked)
+                        }
+                    )
+                }
+                
+                Text(
+                    text = if (isDarkMode) "Dark" else "Light",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isDarkMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }

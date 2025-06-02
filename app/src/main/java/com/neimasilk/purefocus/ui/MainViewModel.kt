@@ -15,6 +15,9 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
 
 /**
@@ -34,17 +37,36 @@ data class MainUiState(
 @HiltViewModel
 class MainViewModel @Inject constructor(private val preferencesManager: PreferencesManager) : ViewModel() {
     
-    // State UI yang diobservasi oleh UI
-    private val _uiState = MutableStateFlow(MainUiState(
-        isDarkMode = preferencesManager.isDarkMode,
-        textFieldValue = TextFieldValue(
-            text = preferencesManager.lastText,
-            selection = TextRange(preferencesManager.lastText.length)
-        ),
-        wordCount = calculateWordCount(preferencesManager.lastText),
-        characterCount = calculateCharacterCount(preferencesManager.lastText)
+    // State UI internal untuk text field
+    private val _textState = MutableStateFlow(TextFieldValue(
+        text = preferencesManager.lastText,
+        selection = TextRange(preferencesManager.lastText.length)
     ))
-    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    
+    // Combine dark mode dari preferences dengan text state
+    val uiState: StateFlow<MainUiState> = combine(
+        preferencesManager.isDarkMode,
+        _textState
+    ) { isDarkMode, textFieldValue ->
+        MainUiState(
+            isDarkMode = isDarkMode,
+            textFieldValue = textFieldValue,
+            wordCount = calculateWordCount(textFieldValue.text),
+            characterCount = calculateCharacterCount(textFieldValue.text)
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = MainUiState(
+            isDarkMode = false,
+            textFieldValue = TextFieldValue(
+                text = preferencesManager.lastText,
+                selection = TextRange(preferencesManager.lastText.length)
+            ),
+            wordCount = calculateWordCount(preferencesManager.lastText),
+            characterCount = calculateCharacterCount(preferencesManager.lastText)
+        )
+    )
     
     /**
      * Menghitung jumlah kata dalam teks
@@ -72,10 +94,9 @@ class MainViewModel @Inject constructor(private val preferencesManager: Preferen
      * Toggle antara mode gelap dan terang
      */
     fun toggleTheme() {
-        _uiState.update { currentState ->
-            val newDarkMode = !currentState.isDarkMode
-            preferencesManager.isDarkMode = newDarkMode
-            currentState.copy(isDarkMode = newDarkMode)
+        viewModelScope.launch {
+            val currentDarkMode = preferencesManager.isDarkMode.value
+            preferencesManager.updateDarkMode(!currentDarkMode)
         }
     }
 
@@ -84,7 +105,7 @@ class MainViewModel @Inject constructor(private val preferencesManager: Preferen
      * untuk mengurangi operasi I/O yang berlebihan
      */
     fun updateText(newText: String) {
-        val currentValue = _uiState.value.textFieldValue
+        val currentValue = _textState.value
         val newValue = currentValue.copy(text = newText)
         updateTextFieldValue(newValue)
     }
@@ -93,29 +114,14 @@ class MainViewModel @Inject constructor(private val preferencesManager: Preferen
      * Update TextFieldValue untuk mendukung pemulihan posisi kursor
      */
     fun updateTextFieldValue(newValue: TextFieldValue) {
-        val newWordCount = calculateWordCount(newValue.text)
-        val newCharacterCount = calculateCharacterCount(newValue.text)
-        
-        _uiState.update { 
-            it.copy(
-                textFieldValue = newValue,
-                wordCount = newWordCount,
-                characterCount = newCharacterCount
-            )
-        }
+        _textState.value = newValue
     }
     
     /**
      * Menghapus semua teks dan membersihkan storage
      */
     fun clearText() {
-        _uiState.update { 
-            it.copy(
-                textFieldValue = TextFieldValue(),
-                wordCount = 0,
-                characterCount = 0
-            )
-        }
+        _textState.value = TextFieldValue()
         viewModelScope.launch {
             preferencesManager.clearFocusWriteText()
         }
@@ -126,7 +132,7 @@ class MainViewModel @Inject constructor(private val preferencesManager: Preferen
      */
     fun saveTextManually() {
         viewModelScope.launch {
-            preferencesManager.saveFocusWriteText(_uiState.value.textFieldValue.text)
+            preferencesManager.saveFocusWriteText(_textState.value.text)
         }
     }
     
@@ -135,28 +141,19 @@ class MainViewModel @Inject constructor(private val preferencesManager: Preferen
         // Load saved text saat ViewModel diinisialisasi
         viewModelScope.launch {
             preferencesManager.getFocusWriteText().collect { savedText ->
-                if (savedText.isNotEmpty() && _uiState.value.textFieldValue.text.isEmpty()) {
-                    val newWordCount = calculateWordCount(savedText)
-                    val newCharacterCount = calculateCharacterCount(savedText)
-                    
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            textFieldValue = TextFieldValue(
-                                text = savedText,
-                                selection = TextRange(savedText.length)
-                            ),
-                            wordCount = newWordCount,
-                            characterCount = newCharacterCount
-                        )
-                    }
+                if (savedText.isNotEmpty() && _textState.value.text.isEmpty()) {
+                    _textState.value = TextFieldValue(
+                        text = savedText,
+                        selection = TextRange(savedText.length)
+                    )
                 }
             }
         }
         
         // Auto-save dengan debouncing 1 detik
         viewModelScope.launch {
-            _uiState
-                .map { it.textFieldValue.text }
+            _textState
+                .map { it.text }
                 .distinctUntilChanged()
                 .debounce(1000) // Tunggu 1 detik setelah input terakhir
                 .collect { text ->

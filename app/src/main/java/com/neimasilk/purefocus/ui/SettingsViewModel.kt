@@ -41,6 +41,11 @@ class SettingsViewModel @Inject constructor(private val preferencesManager: Pref
     val enableSoundNotifications: StateFlow<Boolean> = preferencesManager.enableSoundNotifications
     
     /**
+     * StateFlow untuk dark mode yang dapat diobservasi oleh UI
+     */
+    val isDarkMode: StateFlow<Boolean> = preferencesManager.isDarkMode
+    
+    /**
      * Update focus duration dan simpan ke preferences
      */
     fun updateFocusDuration(duration: Int) {
@@ -72,6 +77,13 @@ class SettingsViewModel @Inject constructor(private val preferencesManager: Pref
      */
     fun toggleSoundNotifications(enable: Boolean) {
         preferencesManager.updateEnableSoundNotifications(enable)
+    }
+    
+    /**
+     * Toggle dark mode preference
+     */
+    fun toggleDarkMode(isDark: Boolean) {
+        preferencesManager.updateDarkMode(isDark)
     }
     
     /**
