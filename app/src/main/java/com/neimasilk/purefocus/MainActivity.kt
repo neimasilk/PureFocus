@@ -203,21 +203,20 @@ class MainActivity : ComponentActivity() {
                     
                     Scaffold(
                         bottomBar = {
-                            if (!showSettings) {
-                                PomodoroBottomBar(
-                                    pomodoroViewModel = pomodoroViewModel,
-                                    onSettingsClick = { showSettings = true },
-                                    modifier = Modifier
-                                        .windowInsetsPadding(WindowInsets.navigationBars)
-                                        .imePadding()
-                                )
-                            }
+                            PomodoroBottomBar(
+                                pomodoroViewModel = pomodoroViewModel,
+                                onSettingsClick = { showSettings = true },
+                                modifier = Modifier
+                                    .windowInsetsPadding(WindowInsets.navigationBars)
+                                    .imePadding()
+                            )
                         },
                         contentWindowInsets = WindowInsets(0)
                     ) { innerPadding ->
                         if (showSettings) {
                              SettingsScreen(
                                  settingsViewModel = settingsViewModel,
+                                 onBackClick = { showSettings = false },
                                  modifier = Modifier.padding(innerPadding)
                              )
                         } else {

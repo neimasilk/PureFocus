@@ -9,10 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
@@ -35,6 +41,7 @@ import com.neimasilk.purefocus.ui.SettingsViewModel
 @Composable
 fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val focusDuration by settingsViewModel.focusDuration.collectAsState()
@@ -48,37 +55,44 @@ fun SettingsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Header
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        // Header with back button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+            Text(
+                text = "Settings",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
         
         // Focus Duration Setting Card
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
                 Text(
-                    text = "Focus Session Duration",
+                    text = "Focus Duration",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(bottom = 8.dp)
-                )
-                
-                Text(
-                    text = "Set the duration for your focus sessions in minutes",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 16.dp)
                 )
                 
                 Row(
@@ -88,7 +102,6 @@ fun SettingsScreen(
                     OutlinedTextField(
                         value = durationInput,
                         onValueChange = { newValue ->
-                            // Hanya izinkan angka
                             if (newValue.all { it.isDigit() } && newValue.length <= 3) {
                                 durationInput = newValue
                             }
@@ -96,7 +109,7 @@ fun SettingsScreen(
                         label = { Text("Minutes") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        modifier = Modifier.width(120.dp)
+                        modifier = Modifier.width(100.dp)
                     )
                     
                     Button(
@@ -112,19 +125,11 @@ fun SettingsScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
-                    text = "Current: $focusDuration minutes",
+                    text = "Current: $focusDuration min (1-180)",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium
-                )
-                
-                Text(
-                    text = "Range: 1-180 minutes",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
@@ -132,23 +137,16 @@ fun SettingsScreen(
         // Short Break Duration Setting Card
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
                 Text(
                     text = "Short Break Duration",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(bottom = 8.dp)
-                )
-                
-                Text(
-                    text = "Set the duration for short breaks between focus sessions",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 16.dp)
                 )
                 
                 Row(
@@ -165,7 +163,7 @@ fun SettingsScreen(
                         label = { Text("Minutes") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        modifier = Modifier.width(120.dp)
+                        modifier = Modifier.width(100.dp)
                     )
                     
                     Button(
@@ -181,19 +179,11 @@ fun SettingsScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
-                    text = "Current: $shortBreakDuration minutes",
+                    text = "Current: $shortBreakDuration min (1-60)",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium
-                )
-                
-                Text(
-                    text = "Range: 1-60 minutes",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
@@ -201,23 +191,16 @@ fun SettingsScreen(
         // Long Break Duration Setting Card
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
                 Text(
                     text = "Long Break Duration",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(bottom = 8.dp)
-                )
-                
-                Text(
-                    text = "Set the duration for long breaks after multiple focus sessions",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 16.dp)
                 )
                 
                 Row(
@@ -234,7 +217,7 @@ fun SettingsScreen(
                         label = { Text("Minutes") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        modifier = Modifier.width(120.dp)
+                        modifier = Modifier.width(100.dp)
                     )
                     
                     Button(
@@ -250,19 +233,11 @@ fun SettingsScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
-                    text = "Current: $longBreakDuration minutes",
+                    text = "Current: $longBreakDuration min (1-120)",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium
-                )
-                
-                Text(
-                    text = "Range: 1-120 minutes",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
@@ -270,10 +245,10 @@ fun SettingsScreen(
         // Sound Notifications Setting Card
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
                 Text(
                     text = "Sound Notifications",
@@ -282,20 +257,13 @@ fun SettingsScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 
-                Text(
-                    text = "Enable or disable notification sounds when sessions end",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Enable Sound Notifications",
+                        text = "Enable Sound",
                         style = MaterialTheme.typography.bodyLarge
                     )
                     
@@ -307,13 +275,11 @@ fun SettingsScreen(
                     )
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
-                    text = if (enableSoundNotifications) "Sound notifications are enabled" else "Sound notifications are disabled",
+                    text = if (enableSoundNotifications) "Enabled" else "Disabled",
                     style = MaterialTheme.typography.bodySmall,
                     color = if (enableSoundNotifications) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Medium
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
@@ -323,10 +289,11 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
                 Text(
                     text = "💡 Tip",
@@ -336,8 +303,8 @@ fun SettingsScreen(
                 )
                 
                 Text(
-                    text = "The Pomodoro Technique recommends 25-minute focus sessions with 5-minute short breaks and 15-30 minute long breaks.",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "Recommended: 25min focus, 5min short break, 15-30min long break.",
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(top = 4.dp)
                 )
