@@ -202,21 +202,11 @@ class MainActivity : ComponentActivity() {
                     var showSettings by remember { mutableStateOf(false) }
                     
                     Scaffold(
-                        floatingActionButton = {
-                            SmallFloatingActionButton(
-                                onClick = { showSettings = !showSettings },
-                                modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = if (showSettings) "Back to Focus" else "Settings"
-                                )
-                            }
-                        },
                         bottomBar = {
                             if (!showSettings) {
                                 PomodoroBottomBar(
                                     pomodoroViewModel = pomodoroViewModel,
+                                    onSettingsClick = { showSettings = true },
                                     modifier = Modifier
                                         .windowInsetsPadding(WindowInsets.navigationBars)
                                         .imePadding()

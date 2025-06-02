@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -34,6 +35,7 @@ import com.neimasilk.purefocus.ui.PomodoroTimerViewModel
 @Composable
 fun PomodoroBottomBar(
     pomodoroViewModel: PomodoroTimerViewModel,
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val uiState by pomodoroViewModel.uiState.collectAsState()
@@ -126,6 +128,23 @@ fun PomodoroBottomBar(
                     Icon(
                         imageVector = Icons.Default.SkipNext,
                         contentDescription = "Skip Session",
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+                
+                // Settings button
+                FilledIconButton(
+                    onClick = onSettingsClick,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .testTag("SettingsButton"),
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.outline
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings",
                         modifier = Modifier.size(16.dp)
                     )
                 }
