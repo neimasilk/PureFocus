@@ -132,7 +132,7 @@ fun PomodoroBottomBar(
                     )
                 }
                 
-                // Settings button
+                // Settings button - dipindahkan ke sebelah kanan skip button
                 FilledIconButton(
                     onClick = onSettingsClick,
                     modifier = Modifier
